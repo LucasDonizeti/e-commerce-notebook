@@ -1,7 +1,7 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.entidade.EntidadeDominio;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.pessoa.Pessoa;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

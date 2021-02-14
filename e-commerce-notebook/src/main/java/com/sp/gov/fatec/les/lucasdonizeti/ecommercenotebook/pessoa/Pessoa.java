@@ -2,7 +2,7 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.pessoa;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.entidade.EntidadeDominio;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name = "_pessoa")
 @Entity
 public class Pessoa extends EntidadeDominio {
-    @OneToMany(mappedBy = "pessoa")
+    @OneToMany
     @JsonManagedReference
     private List<Documento> documentos = new ArrayList<>();
 }
