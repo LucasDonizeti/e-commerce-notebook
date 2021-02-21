@@ -115,17 +115,24 @@
                     </tr>
                 </thead>
             </table>
-            <table class="table">
+            <table class="table align-items-center">
                 <thead>
                     <tr>
                         <th class="col" style="width: 15%;">
                             Frete
                         </th>
-                        <th class="col" style="width: 30%;">
-                            <span> Rua A, 15</span>
-                        </th>
-                        <th class="col" style="width: 40%;">
-                            Mogi das Cruzes/SP
+                        <th class="col" style="width: 70%;">
+                            <div class="row">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupEndereco">Endereço de
+                                            entrega</label>
+                                    </div>
+                                    <select class="custom-select" id="inputGroupEndereco">
+                                        <option value="1">Rua a, 15 Mogi das Cruzes/SP</option>
+                                    </select>
+                                </div>
+                            </div>
                         </th>
                         <th class="col" style="width: 15%;">
                             R$15,00

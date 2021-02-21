@@ -57,14 +57,14 @@
                             <span>Visão Geral</span>
                         </a>
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action active">
-                        <a href="editarPerfil.html" style="text-decoration: none; color: white;">
+                    <button type="button" class="list-group-item list-group-item-action">
+                        <a href="editarPerfil.html" style="text-decoration: none; color: blue;">
                             <ion-icon name="pencil-outline"></ion-icon>
                             Editar Perfil
                         </a>
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action">
-                        <a href="mudarSenha.html" style="text-decoration: none; color: blue;">
+                    <button type="button" class="list-group-item list-group-item-action active">
+                        <a href="mudarSenha.html" style="text-decoration: none; color: white;">
                             <ion-icon name="lock-open-outline"></ion-icon>
                             Mudar Senha
                         </a>
@@ -78,34 +78,43 @@
                 </div>
             </div>
         </div>
-        <div class="row  col-md-9 align-items-center justify-content-md-center">
+        <div class="row col-md-9 align-items-center justify-content-md-center">
             <div class="col-md-12">
-                <h3>Editar Perfil</h3>
+                <h3>Mudar Senha</h3>
             </div>
             <div class="form-row col-md-12">
+                <div class="col-md-12">
+                    <div class="alert alert-warning" role="alert">
+                        <ion-icon name="alert-circle-outline"></ion-icon>
+                        <spam>A senha deve ser composta de pelo menos 8 caracteres, ter letras maiúsculas e minúsculas
+                            além de conter caracteres especiais!</spam>
+                    </div>
+                </div>
                 <div class="form-group col-md-12">
-                    <label for="inputNome">Nome</label>
-                    <input type="nome" class="form-control" id="inputNome" placeholder="Nome" value="Cliente 1">
+                    <label for="inputNome">Senha atual</label>
+                    <input type="nome" class="form-control" id="inputNome" placeholder="Senha Atual">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputEmail">Email</label>
-                    <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="c1@gmail.com">
+                    <label for="inputSenha1">Nova senha</label>
+                    <input type="text" class="form-control" id="inputSenha1" placeholder="Nova senha">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputCPF">CPF</label>
-                    <input type="text" class="form-control" id="inputCPF" placeholder="CPF" value="272.498.078-62">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="inputTelefone">Telefone</label>
-                    <input type="text" class="form-control" id="inputTelefone" placeholder="Telefone"
-                        value="(55) 57047-4278">
+                    <label for="inputSenha2">Repita a nova senha</label>
+                    <input type="text" class="form-control" id="inputSenha2" placeholder="Repita a nova senha">
                 </div>
                 <div class="form-group col-md-6 align-items-center">
                     <label for="btnSalvar"><br></label>
-                    <button class="btn btn-outline-primary form-control" id="btnSalvar">Salvar</button>
+                    <a href="perfil.html">
+                        <button class="btn btn-outline-danger form-control" id="btnSalvar">Cancelar</button>
+                    </a>
+                </div>
+                <div class="form-group col-md-6 align-items-center">
+                    <label for="btnSalvar"><br></label>
+                    <a href="perfil.html">
+                        <button class="btn btn-outline-success form-control" id="btnSalvar">Salvar</button>
+                    </a>
                 </div>
             </div>
-
         </div>
 
 
