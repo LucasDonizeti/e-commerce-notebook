@@ -1,4 +1,4 @@
-package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento;
+package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
@@ -12,20 +12,18 @@ import java.io.Serializable;
 /**
  * author LucasDonizeti
  */
-
 @Getter
 @Setter
-@Entity(name = "_documento")
-public class Documento extends EntidadeDominio implements Serializable {
-    @Column(name = "codigo", unique = true, nullable = false)
-    private String codigo;
+@Entity(name = "_cupom")
+public class Cupom extends EntidadeDominio implements Serializable {
+    @Column(name = "valor", nullable = false)
+    private Long valor;
 
-    @Column(name = "tipo_documento", nullable = false, length = 10)
+    @Column(name = "tipo", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
-    private TipoDocumento tipoDocumento;
+    private TipoCupom tipoCupom;
 
-    @OneToOne
-    @JoinColumn(name = "cliente_id")
+    @ManyToOne
     @JsonIgnore
     private Cliente cliente;
 }

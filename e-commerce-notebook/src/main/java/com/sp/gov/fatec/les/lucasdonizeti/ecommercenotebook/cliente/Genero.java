@@ -3,13 +3,13 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente;
 /**
  * author LucasDonizeti
  */
-public enum TipoCliente {
-    FISICA("Fisica"),
-    JURIDICA("Juridica");
+public enum Genero {
+    MASCULINO("Masculino"),
+    FEMININO("Feminino");
 
     private String descricao;
 
-    TipoCliente(String descricao) {
+    Genero(String descricao) {
         this.descricao = descricao;
     }
     public String getDescricao() {

@@ -5,37 +5,38 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Calendar;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
  */
+
 @Access(AccessType.FIELD)
-@AllArgsConstructor
 @Getter
 @MappedSuperclass
 @Setter
-public abstract class EntidadeDominio {
+public class EntidadeDominio implements Serializable {
     @Column(name = "id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     protected Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "data_criacao", nullable = false, updatable = false)
-    protected Calendar dataCriacao;
+    @Basic
+    @Column(name = "hash", nullable = false, unique = true, updatable = false)
+    @Convert(converter = ConverterUUIDString.class)
+    protected UUID hash;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "data_atualizacao", nullable = false, updatable = false)
-    protected Calendar dataAtualizacao;
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    protected LocalDateTime dataCriacao;
 
     @Basic
     @Column(name = "habilitado", nullable = false)
-    protected boolean habilitado;
+    protected boolean habilitado = true;
 
     public EntidadeDominio() {
-        this.dataCriacao = Calendar.getInstance();
-        this.dataAtualizacao = Calendar.getInstance();
-        this.habilitado = true;
+        this.hash = UUID.randomUUID();
+        this.dataCriacao = LocalDateTime.now();
     }
 }

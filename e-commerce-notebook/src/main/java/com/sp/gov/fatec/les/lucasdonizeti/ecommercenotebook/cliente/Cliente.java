@@ -1,14 +1,18 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente;
 
-
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.pessoa.Pessoa;
-import lombok.AllArgsConstructor;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,24 +20,39 @@ import java.util.List;
  * author LucasDonizeti
  */
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@Entity
-public class Cliente extends Pessoa {
-    @ManyToOne
+@Entity(name = "_cliente")
+public class Cliente extends EntidadeDominio implements Serializable {
+    @Column(name = "data_nascimento", nullable = false, updatable = false)
+    private LocalDate dataNascimento;
+
+    @Column(name = "rank", nullable = false)
+    private int rank=0;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Documento> documentos;
+
+    @Column(name = "tipo_cliente", nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
     private TipoCliente tipoCliente;
 
-    @Column(name = "nome", nullable = false)
-    private String nome;
+    @Column(name = "genero", nullable = false, length = 9)
+    @Enumerated(EnumType.STRING)
+    private Genero genero;
 
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cartao> cartaoList=new ArrayList<>();
 
-    @Column(name = "senha", unique = true, nullable = false)
-    private String senha;
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
+    private Telefone telefone;
 
-    @OneToMany
-    List<Endereco> enderecoList=new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Endereco> enderecoList=new ArrayList<>();
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Cupom> cupomList=new ArrayList<>();
+
+    @OneToOne
+    private Usuario usuario;
 }
