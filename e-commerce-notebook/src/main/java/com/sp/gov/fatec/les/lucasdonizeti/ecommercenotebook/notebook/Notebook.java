@@ -1,6 +1,7 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,6 +45,8 @@ public class Notebook extends EntidadeDominio implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<Armazenamento> armazenamentoList = new ArrayList();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Produto produto;
 
 
     @Column(name = "categoria", nullable = false, length = 15)

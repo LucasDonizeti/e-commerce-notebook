@@ -1,6 +1,8 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.controle;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.*;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Precificacao;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +54,19 @@ public class NotebookController {
         armazenamentoList.add(armazenamento);
 
         notebook.setArmazenamentoList(armazenamentoList);
+
+        Produto produto=new Produto();
+        produto.setEstoque(10);
+        produto.setCusto(2000F);
+        produto.setPontuacaoCliente(25);
+
+        Precificacao precificacao=new Precificacao();
+
+        precificacao.setNome("Baixa margem de lucro");
+        precificacao.setMargemDeLucro(0.15F);
+        produto.setPrecificacao(precificacao);
+
+        notebook.setProduto(produto);
 
         return new ResponseEntity<>(notebook, HttpStatus.OK);
     }
