@@ -1,5 +1,6 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
@@ -7,10 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,6 +24,9 @@ public class Compra extends EntidadeDominio implements Serializable {
 
     @OneToOne
     public Frete frete;
+
+    @ManyToOne
+    public Cliente cliente;
 
     @OneToMany
     private List<Pagamento> pagamentos;

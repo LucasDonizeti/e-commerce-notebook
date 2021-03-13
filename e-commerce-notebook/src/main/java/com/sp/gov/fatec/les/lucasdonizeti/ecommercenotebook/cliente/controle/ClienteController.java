@@ -2,24 +2,35 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.controle;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Bandeira;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.TipoDocumento;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.*;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.CidadeDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +45,13 @@ import java.util.List;
 public class ClienteController {
 
     private final ClienteServico clienteServico;
+    private final ProdutoService produtoService;
 
     @Autowired
-    public ClienteController(ClienteServico clienteServico) {
+    public ClienteController(ClienteServico clienteServico, ProdutoService produtoService) {
         this.clienteServico = clienteServico;
+        this.produtoService = produtoService;
     }
-
-
     @GetMapping
     public ResponseEntity<?> teste(){
         Cliente cliente=new Cliente();
@@ -129,9 +140,7 @@ public class ClienteController {
 
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
-
-
-
+    /*
     @PostMapping
     public ResponseEntity<?> testepost(@RequestBody Cliente cliente){
         return new ResponseEntity<>(clienteServico.save(cliente), HttpStatus.OK);
@@ -140,6 +149,90 @@ public class ClienteController {
     @GetMapping("/all")
     public ResponseEntity<?> all(){
         return new ResponseEntity<>(clienteServico.findAll(), HttpStatus.OK);
+    }
+     */
+
+    @GetMapping("/carrinho")
+    public ModelAndView carrinhoDeCompra(){
+        ModelAndView mv=new ModelAndView("/cliente/carrinho.html");
+        mv.addObject("produtos", produtoService.findAll());
+        return mv;
+    }
+
+    @GetMapping("/cadastro")
+    public ModelAndView cadastro(){
+        ModelAndView mv=new ModelAndView("/cliente/cadastro.html");
+        mv.addObject("clienteDTO", new ClienteDTO());
+        return mv;
+    }
+
+    @PostMapping("/cadastro")
+    public ModelAndView cadastroPost(@Valid @ModelAttribute("clienteDTO")ClienteDTO clienteDTO,
+                                     BindingResult erros){
+        if (erros.hasErrors()){
+            ModelAndView mv = new ModelAndView("/cliente/cadastro.html");
+            mv.addObject("clienteDTO", clienteDTO);
+            mv.addObject("erros", erros.getAllErrors());
+            return mv;
+        }
+
+        ModelAndView mv=new ModelAndView("redirect:/usuario/login");
+        mv.addObject("usuarioDTO", clienteDTO.getUsuario());
+        return mv;
+    }
+
+    @GetMapping("/teste")
+    public ResponseEntity<?> testeDTO(){
+        ClienteDTO cliente=new ClienteDTO();
+        List<EnderecoDTO> enderecoDTOList=new ArrayList<>();
+
+        EnderecoDTO enderecoDTO=new EnderecoDTO();
+        enderecoDTO.setNumero("55");
+        enderecoDTO.setBairro("Bairro 1");
+        enderecoDTO.setCep("08940000");
+        enderecoDTO.setTipoResidencia(TipoResidencia.CASA);
+        enderecoDTO.setLongradouro(Longradouro.RUA);
+        CidadeDTO cidadeDTO=new CidadeDTO();
+        cidadeDTO.setNome("Biritiba");
+        cidadeDTO.setEstado(Estado.SAO_PAULO);
+        enderecoDTO.setCidade(cidadeDTO);
+        enderecoDTOList.add(enderecoDTO);
+        cliente.setEnderecos(enderecoDTOList);
+
+        cliente.setNome("cliente 1");
+        cliente.setDataNascimento(LocalDate.now());
+        List<DocumentoDTO> documentoDTOS=new ArrayList<>();
+        DocumentoDTO documentoDTO=new DocumentoDTO();
+        documentoDTO.setTipoDocumento(TipoDocumento.RG);
+        documentoDTO.setCodigo("132456789");
+        documentoDTOS.add(documentoDTO);
+        cliente.setDocumentos(documentoDTOS);
+
+        cliente.setTipoCliente(TipoCliente.FISICA);
+        cliente.setGenero(Genero.MASCULINO);
+        List<CartaoDTO> cartaoDTOS=new ArrayList<>();
+        CartaoDTO cartaoDTO=new CartaoDTO();
+        cartaoDTO.setNome("cartao 1");
+        cartaoDTO.setNumero("5584975692976422");
+        cartaoDTO.setCvv("938");
+        cartaoDTO.setBandeira(Bandeira.MASTERCARD);
+        cartaoDTOS.add(cartaoDTO);
+        cliente.setCartoes(cartaoDTOS);
+
+        TelefoneDTO telefoneDTO=new TelefoneDTO();
+        telefoneDTO.setNumero("987654321");
+        telefoneDTO.setDdd("011");
+        telefoneDTO.setTipoTelefone(TipoTelefone.MOVEL);
+        cliente.setTelefone(telefoneDTO);
+
+        UsuarioDTO usuarioDTO=new UsuarioDTO();
+        usuarioDTO.setTipoUsuario(TipoUsuario.CLIENTE);
+        usuarioDTO.setLogin("teste@gmail.com");
+        usuarioDTO.setSenha("1234aaBB$");
+        usuarioDTO.setNome("usuario teste");
+        cliente.setUsuario(usuarioDTO);
+
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
 }

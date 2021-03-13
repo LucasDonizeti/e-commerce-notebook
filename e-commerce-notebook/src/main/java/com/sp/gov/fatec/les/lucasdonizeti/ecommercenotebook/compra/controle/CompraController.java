@@ -36,7 +36,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/compra")
-public class compraController {
+public class CompraController {
     @GetMapping
     public ResponseEntity<?> teste() {
 
@@ -60,10 +60,10 @@ public class compraController {
 
         compra.setCupoms(cliente.getCupomList());
 
+        compra.setCliente(cliente);
+
         return new ResponseEntity<>(compra, HttpStatus.OK);
     }
-
-
 
     private Cliente genCliente(){
         Cliente cliente=new Cliente();

@@ -6,11 +6,10 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Notebook;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * author LucasDonizeti
@@ -28,12 +27,18 @@ public class Produto extends EntidadeDominio implements Serializable {
     @Column(name = "pontuacao_cliente")
     private int pontuacaoCliente;
 
-    @OneToOne
-    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private  List<Imagem> imagemList=new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
     private Notebook notebook;
 
     @ManyToOne
     private Precificacao precificacao;
+
+    public void addImagem(Imagem i){
+        this.imagemList.add(i);
+    }
 
     public Float getPrecoDeVenda(){
         if (precificacao != null)

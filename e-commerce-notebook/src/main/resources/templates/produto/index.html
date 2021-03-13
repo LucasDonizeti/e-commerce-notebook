@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
-    <link rel="stylesheet" href="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
 </head>
 
 <body>
@@ -30,13 +30,13 @@
             <div class="col-md-2">
                 <div class="row">
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="login.html">
+                        <a th:href="@{/usuario/login}">
                             <ion-icon name="log-in-outline" size="large"></ion-icon>
                             <spam>login</spam>
                         </a>
                     </div>
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="carrinho.html">
+                        <a th:href="@{/cliente/carrinho}">
                             <ion-icon name="cart-outline" size="large"></ion-icon>
                             <span>carrinho</span>
                         </a>
@@ -249,40 +249,75 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 col-sm-6 slick-slide slick-current slick-active" style="margin-bottom: 20px">
+                <div th:each="produto : ${produtos}" class="col-md-4 col-sm-6 slick-slide slick-current slick-active"
+                    style="margin-bottom: 20px">
                     <div class="item align-self-center">
                         <div class="col-md-12">
                             <figure>
-                                <a href="detalhesProduto.html">
-                                    <img class="img-thumbnail"
-                                        src="https://images.avell.com.br/media/catalog/product/cache/1/small_image/350x262/9df78eab33525d08d6e5fb8d27136e95/a/5/a52_7__1.jpg"
-                                        style="width: 100%; height: 225px; object-fit: cover; object-position: center;">
+                                <a th:href="@{/produto/detalhes/} + ${produto.hash}">
+                                    <div th:id="${'carousel' + produto.hash}" class="carousel slide"
+                                        data-ride="carousel">
+                                        <ol class="carousel-indicators">
+                                            <li th:each="imagem, i : ${produto.imagemList}"
+                                                th:data-target="${'#carousel' + produto.hash}"
+                                                th:data-slide-to="${i.index}"
+                                                th:class="((${i.index} == 0) ? 'active' : '')"></li>
+                                        </ol>
+                                        <div class="carousel-inner">
+                                            <div th:each="imagem, i : ${produto.imagemList}"
+                                                th:class="((${i.index} == 0) ? 'carousel-item active' : 'carousel-item')">
+                                                <img class="d-block w-100" th:src="${imagem.link}">
+                                            </div>
+                                        </div>
+                                        <a class="carousel-control-prev" th:href="${'#carousel' + produto.hash}"
+                                            role="button" data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Anterior</span>
+                                        </a>
+                                        <a class="carousel-control-next" th:href="${'#carousel' + produto.hash}"
+                                            role="button" data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Próximo</span>
+                                        </a>
+                                    </div>
                                 </a>
                             </figure>
                         </div>
                         <div class="col-md-12" style="text-align: center;">
-                            <spam style="font-weight: bold;">Avell A52 LIV</spam>
-                            <a href="detalhesProduto.html" style="text-decoration: none;">
+                            <spam th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"
+                                style="font-weight: bold;">Avell A52 LIV</spam>
+                            <a th:href="@{/detalhes/ + produto.hash}" style="text-decoration: none;">
                                 <div class="col-md-12"
                                     style="background-color: #93c157; color: #f8f8ff; text-align: center;">
-                                    <span>R$8.000,00</span>
+                                    <span th:text="${'R$' + produto.precoDeVenda}"></span>
                                 </div>
                             </a>
                         </div>
                         <div class="col-md-12">
                             <ul>
-                                <li>GeForce® GTX 1650 (4GB GDDR6)</li>
-                                <li>Intel® Core™ i7</li>
-                                <li>15.6” 120Hz</li>
-                                <li>16 GB RAM DDR4 </li>
-                                <li>1TB HD + 256GB SSD</li>
-                                <li>Windows 10 Home Single Language</li>
+                                <li th:text="${produto.notebook.gpu.modelo}"></li>
+                                <li th:text="${produto.notebook.cpu.modelo}"></li>
+                                <li
+                                    th:text="${produto.notebook.tela.tamanho + '” ' + produto.notebook.tela.clock + 'Hz'}">
+                                </li>
+                                <li>
+                                    </spam>
+                                    <spam th:if="${#lists.size(produto.notebook.ramList) == 2}"
+                                        th:text="${produto.notebook.ramTotal + 'GB dualchannel - '}"></spam>
+                                    <spam th:each="ram : ${produto.notebook.ramList}" th:text="${ram.memoria + 'GB '}">
+                                    </spam>
+                                </li>
+                                <li>
+                                    <spam th:each="memoria : ${produto.notebook.armazenamentoList}"
+                                        th:text="${memoria.memoria + 'GB ' +  memoria.tipoArmazenamento + '  '}"></spam>
+                                </li>
+                                <li th:text="${produto.notebook.so.getDescricao()}">Windows 10 Home Single Language</li>
                             </ul>
                         </div>
                         <div class="col-md-12">
                             <div class="row justify-content-center ">
                                 <div class="col-xs-6">
-                                    <a class="button" href="carrinho.html">
+                                    <a class="button" th:href="@{/cliente/carrinho}">
                                         <button class="btn btn-outline-info">
                                             <ion-icon name="cart-outline" size="small"></ion-icon>
                                             <strong>Adicionar ao Carrinho</strong>
@@ -301,234 +336,15 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-md-4 col-sm-6 slick-slide slick-current slick-active" style="margin-bottom: 20px">
-                    <div class="row align-self-center">
-                        <div class="col-md-12">
-                            <figure>
-                                <a href="link detalhes">
-                                    <img class="img-thumbnail"
-                                        src="https://acerstore.vteximg.com.br/arquivos/ids/157525-900-900/A514-53-54_SSD_01.jpg?v=637396830724770000"
-                                        style="
-                                        width: 100%; height: 225px; object-fit: cover; object-position: center;">
-                                </a>
-                            </figure>
-                        </div>
-                        <div class="col-md-12" style="text-align: center;">
-                            <spam style="font-weight: bold;">Notebook Acer Aspire 5</spam>
-                            <a href="link detalhes" style="text-decoration: none;">
-                                <div class="col-md-12"
-                                    style="background-color: #93c157; color: #f8f8ff; text-align: center;">
-                                    <span>R$8.000,00</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-12">
-                            <ul>
-                                <li>GeForce MX350</li>
-                                <li>Intel® Core™ i5</li>
-                                <li>14” 60Hz</li>
-                                <li>8 GB RAM DDR4</li>
-                                <li>552GB SSD</li>
-                                <li>Windows 10 Home Single Language</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row justify-content-center">
-                                <div class="col-xs-6">
-                                    <a class="button" href="link add carrinho">
-                                        <button class="btn btn-outline-info">
-                                            <ion-icon name="cart-outline" size="small"></ion-icon>
-                                            <strong>Adicionar ao Carrinho</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                                <div class="col-xs-6">
-                                    <a href="link comprar">
-                                        <button class="btn btn-outline-success">
-                                            <ion-icon name="card-outline" size="small"></ion-icon>
-                                            <strong>Comprar</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-sm-6 slick-slide slick-current slick-active" style="margin-bottom: 20px">
-                    <div class="row align-self-center">
-                        <div class="col-md-12">
-                            <figure>
-                                <a href="link detalhes">
-                                    <img class="img-thumbnail"
-                                        src="https://i.dell.com/is/image/DellContent//content/dam/global-asset-library/Products/Notebooks/Inspiron/14_5490_non-touch/in5490nt_cnb_00055lf110_gy.psd?fmt=pjpg&pscan=auto&scl=1&hei=402&wid=402&qlt=95,0&resMode=sharp2&op_usm=1.75,0.3,2,0&size=402,402"
-                                        style="
-                                        width: 100%; height: 225px; object-fit: cover; object-position: center;">
-                                </a>
-                            </figure>
-                        </div>
-                        <div class="col-md-12" style="text-align: center;">
-                            <spam style="font-weight: bold;">Inspiron 14 5000</spam>
-                            <a href="link detalhes" style="text-decoration: none;">
-                                <div class="col-md-12"
-                                    style="background-color: #93c157; color: #f8f8ff; text-align: center;">
-                                    <span>R$8.000,00</span>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-md-12">
-                            <ul>
-                                <li>GeForce MX230</li>
-                                <li>Intel® Core™ i5</li>
-                                <li>14” 60Hz</li>
-                                <li>8 GB RAM DDR4 </li>
-                                <li>256GB SSD</li>
-                                <li>Ubuntu Linux 18.4</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row justify-content-center">
-                                <div class="col-xs-6">
-                                    <a class="button" href="link add carrinho">
-                                        <button class="btn btn-outline-info">
-                                            <ion-icon name="cart-outline" size="small"></ion-icon>
-                                            <strong>Adicionar ao Carrinho</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                                <div class="col-xs-6">
-                                    <a href="link comprar">
-                                        <button class="btn btn-outline-success">
-                                            <ion-icon name="card-outline" size="small"></ion-icon>
-                                            <strong>Comprar</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-sm-6 slick-slide slick-current slick-active" style="margin-bottom: 20px">
-                    <div class="row align-self-center">
-                        <div class="col-md-12">
-                            <figure>
-                                <a href="link detalhes">
-                                    <img class="img-thumbnail"
-                                        src="https://www.navegamer.com.br/image/cache/catalog/Notes%20Gamer/NAVE%20POLARIS%20120hz-600x600.jpg"
-                                        style="
-                                        width: 100%; height: 225px; object-fit: cover; object-position: center;">
-                                </a>
-                            </figure>
-                        </div>
-                        <div class="col-md-12" style="text-align: center;">
-                            <spam style="font-weight: bold;">NAVE Polaris GK5NP5</spam>
-                            <a href="link detalhes" style="text-decoration: none;">
-                                <div class="col-md-12"
-                                    style="background-color: #93c157; color: #f8f8ff; text-align: center;">
-                                    <span>R$8.000,00</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-12">
-                            <ul>
-                                <li>Geforce GTX 1650</li>
-                                <li>AMD Ryzen™ 5 4600H</li>
-                                <li>15.6” 144Hz</li>
-                                <li>16GB RAM DDR4 </li>
-                                <li>256GB SSD</li>
-                                <li>Windows 10 Home Single Language</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row justify-content-center">
-                                <div class="col-xs-6">
-                                    <a class="button" href="link add carrinho">
-                                        <button class="btn btn-outline-info">
-                                            <ion-icon name="cart-outline" size="small"></ion-icon>
-                                            <strong>Adicionar ao Carrinho</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                                <div class="col-xs-6">
-                                    <a href="link comprar">
-                                        <button class="btn btn-outline-success">
-                                            <ion-icon name="card-outline" size="small"></ion-icon>
-                                            <strong>Comprar</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-sm-6 slick-slide slick-current slick-active" style="margin-bottom: 20px">
-                    <div class="row align-self-center">
-                        <div class="col-md-12">
-                            <figure>
-                                <a href="link detalhes">
-                                    <img class="img-thumbnail"
-                                        src="https://images.samsung.com/is/image/samsung/br-notebook-odyssey-np800g5m-xg2br-np800g5m-xg2br-black-69947211?$684_547_PNG$"
-                                        style="
-                                        width: 100%; height: 225px; object-fit: cover; object-position: center;">
-                                </a>
-                            </figure>
-                        </div>
-                        <div class="col-md-12" style="text-align: center;">
-                            <spam style="font-weight: bold;">Samsumg Odyssey</spam>
-                            <a href="link detalhes" style="text-decoration: none;">
-                                <div class="col-md-12"
-                                    style="background-color: #93c157; color: #f8f8ff; text-align: center;">
-                                    <span>R$8.000,00</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-12">
-                            <ul>
-                                <li>Geforce GTX 1050</li>
-                                <li>Intel® Core™ i7 7700HQ</li>
-                                <li>15.6” 60Hz</li>
-                                <li>8GB RAM DDR4 </li>
-                                <li>256GB SSD + 1TB HD</li>
-                                <li>Windows 10 Home Single Language</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row justify-content-center">
-                                <div class="col-xs-6">
-                                    <a class="button" href="link add carrinho">
-                                        <button class="btn btn-outline-info">
-                                            <ion-icon name="cart-outline" size="small"></ion-icon>
-                                            <strong>Adicionar ao Carrinho</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                                <div class="col-xs-6">
-                                    <a href="link comprar">
-                                        <button class="btn btn-outline-success">
-                                            <ion-icon name="card-outline" size="small"></ion-icon>
-                                            <strong>Comprar</strong>
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
             </div>
         </div>
     </div>
 
 
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
-    <script src="../static/js/plugins/jquery-3.3.1/jquery-3.3.1.slim.min.js"></script>
-    <script src="../static/js/plugins/popper/popper.min.js"></script>
-    <script src="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.js"></script>
+    <script th:src="@{\js\plugins\jquery-3.3.1\jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/js/plugins/popper/popper.min.js}"></script>
+    <script th:src="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.js}"></script>
 </body>
 
 </html>

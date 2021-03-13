@@ -18,56 +18,5 @@ import java.util.List;
 @RestController
 @RequestMapping("/notebook")
 public class NotebookController {
-    @GetMapping
-    public ResponseEntity<?> teste() {
-        Notebook notebook = new Notebook();
-        notebook.setCodigo("81FE0002BR");
-        notebook.setMarca("Lenovo");
-        notebook.setModelo("Ideapad 330");
 
-        notebook.setSo(SO.WINDOWS10HOME);
-
-        Tela tela = new Tela();
-        tela.setTamanho("15,6");
-        tela.setClock("60");
-
-        notebook.setCategoria(Categoria.ENTRADA);
-        CPU cpu = new CPU();
-        cpu.setModelo("i5");
-        notebook.setCpu(cpu);
-        GPU gpu=new GPU();
-        gpu.setModelo("UHD graphics 620");
-        notebook.setGpu(gpu);
-        notebook.setTela(tela);
-
-        List<RAM> ramList=new ArrayList<>();
-        RAM ram =new RAM();
-        ram.setClock("2666");
-        ram.setMemoria(8);
-        ramList.add(ram);
-        notebook.setRamList(ramList);
-
-        List<Armazenamento> armazenamentoList=new ArrayList<>();
-        Armazenamento armazenamento = new Armazenamento();
-        armazenamento.setMemoria(1000);
-        armazenamento.setTipoArmazenamento(TipoArmazenamento.HD);
-        armazenamentoList.add(armazenamento);
-
-        notebook.setArmazenamentoList(armazenamentoList);
-
-        Produto produto=new Produto();
-        produto.setEstoque(10);
-        produto.setCusto(2000F);
-        produto.setPontuacaoCliente(25);
-
-        Precificacao precificacao=new Precificacao();
-
-        precificacao.setNome("Baixa margem de lucro");
-        precificacao.setMargemDeLucro(0.15F);
-        produto.setPrecificacao(precificacao);
-
-        notebook.setProduto(produto);
-
-        return new ResponseEntity<>(notebook, HttpStatus.OK);
-    }
 }
