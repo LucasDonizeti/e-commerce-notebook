@@ -17,6 +17,8 @@ public class SenhaForteValidacao implements ConstraintValidator<SenhaForteValida
 
     @Override
     public boolean isValid(String senha, ConstraintValidatorContext constraintValidatorContext) {
+        if(senha == null)
+            return false;
         if (senha.length()<8){
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("senha possui menos de 8 caracteres!")

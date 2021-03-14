@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * author LucasDonizeti
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class CidadeDTO {
     @NotBlank
-    @Min(value = 5)
+    @Size(min = 5, message = "cidade invalida")
     private String nome;
 
     @NotNull

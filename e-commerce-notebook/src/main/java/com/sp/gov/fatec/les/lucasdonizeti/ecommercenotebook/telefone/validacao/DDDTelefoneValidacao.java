@@ -17,6 +17,8 @@ public class DDDTelefoneValidacao implements ConstraintValidator<DDDTelefoneVali
 
     @Override
     public boolean isValid(String ddd, ConstraintValidatorContext constraintValidatorContext) {
+        if (ddd==null)
+            return false;
 
         if(!Pattern.compile("^[0-9]*$").matcher(ddd).find() || ddd.length() != 3){
             constraintValidatorContext.disableDefaultConstraintViolation();

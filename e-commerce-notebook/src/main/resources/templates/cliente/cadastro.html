@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
     <title>Document</title>
 </head>
+
 <body>
     <div class="container">
         <div class="row align-items-center">
@@ -47,42 +48,89 @@
         </div>
     </div>
     <div class="row align-items-center justify-content-md-center">
-        <form class="form-row col-md-8" th:action="@{/cliente/cadastro}" th:object="${clienteDTO}"
-            method="post">
+        <!--Cliente-->
+        <form class="form-row col-md-8" th:action="@{/cliente/cadastro}" th:object="${clienteDTO}" method="post">
+            <input type="text" id="usuario.tipoUsuario" name="usuario.tipoUsuario" value="CLIENTE" hidden>
             <div class="form-group col-md-12">
-               <!-- <input th:field="*{id}" th:value="*{id}" hidden> --->
                 <label for="inputNome">Nome</label>
-                <input type="text" th:class="${#fields.hasErrors('nome')?'form-control is-invalid':'form-control'}"
-                    id="cli-nome" placeholder="Nome" th:field="*{nome}">
-                <spam class="text-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></spam>
+                <input type="text"
+                    th:class="${#fields.hasErrors('usuario.nome')?'form-control is-invalid':'form-control'}"
+                    id="inputNome" placeholder="Nome" th:field="*{usuario.nome}">
+                <spam class="text-danger" th:if="${#fields.hasErrors('usuario.nome')}" th:errors="*{usuario.nome}">
+                </spam>
             </div>
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-4">
                 <label for="tipoCliente">Tipo cliente</label>
                 <select class="custom-select" id="tipoCliente" th:field="*{tipoCliente}">
                     <option value="">Selecione o tipo do cliente</option>
-                    <option th:each="tipoClienteOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente).values()}"
-                    th:class="${#fields.hasErrors('tipoCliente')?'form-control is-invalid':'form-control'}"
+                    <option
+                        th:each="tipoClienteOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente).values()}"
+                        th:class="${#fields.hasErrors('tipoCliente')?'form-control is-invalid':'form-control'}"
                         th:value="${tipoClienteOpt}" th:text="${tipoClienteOpt.getDescricao()}"></option>
                 </select>
-                <spam class="text-danger" th:if="${#fields.hasErrors('tipoCliente')}"
-                    th:errors="*{tipoCliente}"></spam>
+                <spam class="text-danger" th:if="${#fields.hasErrors('tipoCliente')}" th:errors="*{tipoCliente}"></spam>
             </div>
-            
+            <div class="form-group col-md-4">
+                <label for="genero">Genero</label>
+                <select class="custom-select" id="genero" th:field="*{genero}">
+                    <option value="">Selecione o tipo do cliente</option>
+                    <option
+                        th:each="generoOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero).values()}"
+                        th:class="${#fields.hasErrors('genero')?'form-control is-invalid':'form-control'}"
+                        th:value="${generoOpt}" th:text="${generoOpt.getDescricao()}"></option>
+                </select>
+                <spam class="text-danger" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></spam>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="dataNascimento">Data de Nascimento</label>
+                <input type="date" id="dataNascimento" th:field="*{dataNascimento}"
+                    th:class="${#fields.hasErrors('dataNascimento')?'form-control is-invalid':'form-control'}">
+                <spam class="text-danger" th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}">
+                </spam>
+            </div>
+            <!--Telefone-->
+            <div class="form-group col-md-4">
+                <label for="ddd">DDD</label>
+                <input type="number" id="ddd" th:field="*{telefone.ddd}" placeholder="ex: 011"
+                    th:class="${#fields.hasErrors('telefone.ddd')?'form-control is-invalid':'form-control'}">
+                <spam class="text-danger" th:if="${#fields.hasErrors('telefone.ddd')}" th:errors="*{telefone.ddd}">
+                </spam>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="telefone-numero">Telefone</label>
+                <input type="number" id="telefone-numero" th:field="*{telefone.numero}" placeholder="Telefone"
+                    th:class="${#fields.hasErrors('telefone.numero')?'form-control is-invalid':'form-control'}">
+                <spam class="text-danger" th:if="${#fields.hasErrors('telefone.numero')}"
+                    th:errors="*{telefone.numero}"></spam>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="telefone-tipo">Tipo Telefone</label>
+                <select class="custom-select" id="telefone-tipo" th:field="*{telefone.tipoTelefone}">
+                    <option value="">Selecione o tipo do telefone</option>
+                    <option
+                        th:each="telefoneOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone).values()}"
+                        th:class="${#fields.hasErrors('telefone.tipoTelefone')?'form-control is-invalid':'form-control'}"
+                        th:value="${telefoneOpt}" th:text="${telefoneOpt.getDescricao()}"></option>
+                </select>
+                <spam class="text-danger" th:if="${#fields.hasErrors('telefone.tipoTelefone')}"
+                    th:errors="*{telefone.tipoTelefone}"></spam>
+            </div>
+            <!--Documento-->
             <div class="form-row col-md-12 align-items-center justify-content-md-center" id="forms-documento">
                 <div class="form-group col-md-9">
                     <h3>Documentos</h3>
-                    <spam class="text-danger" th:if="${#fields.hasErrors('documentos')}"
-                            th:errors="*{documentos}"></spam>
-                    <input id="documentoSize" th:value="*{documentos != null?#lists.size(documentos):0}" hidden>
+                    <spam class="text-danger" th:if="${#fields.hasErrors('documentos')}" th:errors="*{documentos}">
+                    </spam>
                 </div>
                 <div class="form-group col-md-3">
                     <button class="btn" id="button-add-form-documento" type="submit" name="add" value="documento">
                         <ion-icon name="add-circle-outline"></ion-icon>
                     </button>
                 </div>
-                <div th:each="documento, i : *{documentos}" class="form-row col-md-12 border align-items-center justify-content-md-center" style="margin-top:10px">
+                <div th:each="documento, i : *{documentos}"
+                    class="form-row col-md-12 border align-items-center justify-content-md-center"
+                    style="margin-top:10px">
                     <div class="form-group col-md-4">
-                        <!-- <input th:field="*{documentos[__${i.index}__].id}" th:value="*{documentos[__${i.index}__].id != null?documentos[__${i.index}__].id:0}" hidden> -->
                         <label>Codigo</label>
                         <input type="number"
                             th:class="${#fields.hasErrors('documentos[__${i.index}__].codigo')?'form-control is-invalid':'form-control'}"
@@ -90,121 +138,218 @@
                         <spam class="text-danger" th:if="${#fields.hasErrors('documentos[__${i.index}__].codigo')}"
                             th:errors="*{documentos[__${i.index}__].codigo}"></spam>
                     </div>
-                
                     <div class="form-group col-md-4">
                         <label>Tipo</label>
-                        <select class="custom-select" id="tipoDocumento" th:field="*{documentos[__${i.index}__].tipoDocumento}">
-                                <option value="">Selecione o tipo do documento</option>
-                                <option th:each="tipoDocumentoOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.TipoDocumento).values()}"
+                        <select class="custom-select" id="tipoDocumento"
+                            th:field="*{documentos[__${i.index}__].tipoDocumento}">
+                            <option value="">Selecione o tipo do documento</option>
+                            <option
+                                th:each="tipoDocumentoOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.TipoDocumento).values()}"
                                 th:class="${#fields.hasErrors('documentos[__${i.index}__].tipoDocumento')?'form-control is-invalid':'form-control'}"
-                                    th:value="${tipoDocumentoOpt}" th:text="${tipoDocumentoOpt.getDescricao()}"></option>
-                            </select>
-                        <spam class="text-danger" th:if="${#fields.hasErrors('documentos[__${i.index}__].tipoDocumento')}"
+                                th:value="${tipoDocumentoOpt}" th:text="${tipoDocumentoOpt.getDescricao()}"></option>
+                        </select>
+                        <spam class="text-danger"
+                            th:if="${#fields.hasErrors('documentos[__${i.index}__].tipoDocumento')}"
                             th:errors="*{documentos[__${i.index}__].tipoDocumento}"></spam>
-                            <spam class="text-danger" th:if="${#fields.hasErrors('documentos[__${i.index}__]')}"
+                        <spam class="text-danger" th:if="${#fields.hasErrors('documentos[__${i.index}__]')}"
                             th:errors="*{documentos[__${i.index}__]}"></spam>
                     </div>
 
                     <div class="form-group col-md-4">
-                        <button class="btn btn-danger" type="submit" name="removeDocumento" 
-                        th:value="${i.index}" >Remover</button>
+                        <button class="btn btn-danger" type="submit" name="removeDocumento"
+                            th:value="${i.index}">Remover</button>
                     </div>
                 </div>
             </div>
-
-            <!---
-            <div class="form-row col-md-12 align-items-center justify-content-md-center" id="forms-endereco" style="margin-top:10px">
+            <!-----Cartao de credito-->
+            <div class="form-row col-md-12 align-items-center justify-content-md-center" id="forms-documento">
                 <div class="form-group col-md-9">
-                    <h3>Endereco</h3>
-                    <input id="enderecoSize" th:value="*{enderecos != null?#lists.size(enderecos):0}" hidden>
-                    <spam class="text-danger" th:if="*{#fields.hasErrors('enderecos')}"
-                            th:errors="*{enderecos}"></spam>
+                    <h3>Cartões de Crédito</h3>
+                    <spam class="text-danger" th:if="${#fields.hasErrors('cartoes')}" th:errors="*{cartoes}"></spam>
                 </div>
                 <div class="form-group col-md-3">
-                    <button class="btn" id="button-add-form-endereco" type="button">
+                    <button class="btn" id="button-add-form-documento" type="submit" name="add" value="cartao">
                         <ion-icon name="add-circle-outline"></ion-icon>
                     </button>
                 </div>
-                <div th:each="endereco, i : *{enderecos}" class="form-row col-md-12 border align-items-center justify-content-md-center">
-                    <div class="form-group col-md-3">
-                        <input th:field="*{enderecos[__${i.index}__].id}" th:value="*{enderecos[__${i.index}__].id != null?enderecos[__${i.index}__].id:0}" hidden>
-                        <label>CEP</label>
-                        <input type="text" id="inputCep"
-                            th:class="*{#fields.hasErrors('enderecos[__${i.index}__].cep')?'form-control is-invalid':'form-control'}"
-                            placeholder="CEP" th:field="*{enderecos[__${i.index}__].cep}">
-                        <spam class="text-danger" th:if="*{#fields.hasErrors('enderecos[__${i.index}__].cep')}"
-                            th:errors="*{enderecos[__${i.index}__].cep}"></spam>
+                <div th:each="cartao, i : *{cartoes}"
+                    class="form-row col-md-12 border align-items-center justify-content-md-center"
+                    style="margin-top:10px">
+                    <div class="form-group col-md-5">
+                        <label>Nome</label>
+                        <input type="text"
+                            th:class="${#fields.hasErrors('cartoes[__${i.index}__].nome')?'form-control is-invalid':'form-control'}"
+                            placeholder="Nome" th:field="*{cartoes[__${i.index}__].nome}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('cartoes[__${i.index}__].nome')}"
+                            th:errors="*{cartoes[__${i.index}__].nome}"></spam>
                     </div>
                     <div class="form-group col-md-5">
-                        <input th:field="*{enderecos[__${i.index}__].cidadeId}" th:value="*{enderecos[__${i.index}__].cidadeId != null?enderecos[__${i.index}__].cidadeId:0}" hidden>
-                        <label>Cidade</label>
-                        <input type="text"
-                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].cidade')?'form-control is-invalid':'form-control'}"
-                            placeholder="Cidade" th:field="*{enderecos[__${i.index}__].cidade}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].cidade')}"
-                            th:errors="*{enderecos[__${i.index}__].cidade}"></spam>
+                        <label>Bandeira</label>
+                        <select class="custom-select" id="bandeira" th:field="*{cartoes[__${i.index}__].bandeira}">
+                            <option value="">Selecione a bandeira do cartão</option>
+                            <option
+                                th:each="bandeiraOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Bandeira).values()}"
+                                th:class="${#fields.hasErrors('cartoes[__${i.index}__].bandeira')?'form-control is-invalid':'form-control'}"
+                                th:value="${bandeiraOpt}"><span th:text="${bandeiraOpt.getDescricao()}"></span></option>
+                        </select>
+                        <spam class="text-danger" th:if="${#fields.hasErrors('cartoes[__${i.index}__].bandeira')}"
+                            th:errors="*{cartoes[__${i.index}__].bandeira}"></spam>
+                        <spam class="text-danger" th:if="${#fields.hasErrors('cartoes[__${i.index}__]')}"
+                            th:errors="*{cartoes[__${i.index}__]}"></spam>
                     </div>
                     <div class="form-group col-md-2">
-                        <input th:field="*{enderecos[__${i.index}__].estadoId}" th:value="*{enderecos[__${i.index}__].estadoId != null?enderecos[__${i.index}__].estadoId:0}" hidden>
-                        <label>Estado</label>
-                        <input type="text"
-                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].estado')?'form-control is-invalid':'form-control'}"
-                            placeholder="Estado" th:field="*{enderecos[__${i.index}__].estado}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].estado')}"
-                            th:errors="*{enderecos[__${i.index}__].estado}"></spam>
+                        <button class="btn btn-danger" type="submit" name="removeCartao"
+                            th:value="${i.index}">Remover</button>
                     </div>
-                    <div class="form-group col-md-2">
-                        <button class="btn btn-danger" type="submit" name="removeEndereco" 
-                        th:value="${i.index}" >Remover</button>
+                    <div class="form-group col-md-3">
+                        <label>CVV</label>
+                        <input type="number"
+                            th:class="${#fields.hasErrors('cartoes[__${i.index}__].cvv')?'form-control is-invalid':'form-control'}"
+                            placeholder="Cvv" th:field="*{cartoes[__${i.index}__].cvv}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('cartoes[__${i.index}__].cvv')}"
+                            th:errors="*{cartoes[__${i.index}__].cvv}"></spam>
+                    </div>
+                    <div class="form-group col-md-9">
+                        <label>Numero</label>
+                        <input type="number"
+                            th:class="${#fields.hasErrors('cartoes[__${i.index}__].numero')?'form-control is-invalid':'form-control'}"
+                            placeholder="Numero" th:field="*{cartoes[__${i.index}__].numero}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('cartoes[__${i.index}__].numero')}"
+                            th:errors="*{cartoes[__${i.index}__].numero}"></spam>
+                    </div>
+                </div>
+            </div>
+            <!--endereco--->
+            <div class="form-row col-md-12 align-items-center justify-content-md-center" id="forms-endereco">
+                <div class="form-group col-md-9">
+                    <h3>Endereco</h3>
+                    <spam class="text-danger" th:if="${#fields.hasErrors('enderecos')}" th:errors="*{enderecos}"></spam>
+                </div>
+                <div class="form-group col-md-3">
+                    <button class="btn" id="button-add-form-endereco" type="submit" name="add" value="endereco">
+                        <ion-icon name="add-circle-outline"></ion-icon>
+                    </button>
+                </div>
+                <div th:each="endereco, i : *{enderecos}"
+                    class="form-row col-md-12 border align-items-center justify-content-md-center"
+                    style="margin-top:10px">
+                    <div class="form-group col-md-4">
+                        <label>Longradouro</label>
+                        <select class="custom-select" id="longradouro"
+                            th:field="*{enderecos[__${i.index}__].longradouro}">
+                            <option value="">Selecione o longradouro</option>
+                            <option
+                                th:each="longradouroOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Longradouro).values()}"
+                                th:class="${#fields.hasErrors('enderecos[__${i.index}__].longradouro')?'form-control is-invalid':'form-control'}"
+                                th:value="${longradouroOpt}"><span th:text="${longradouroOpt.getDescricao()}"></span>
+                            </option>
+                        </select>
+                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].longradouro')}"
+                            th:errors="*{enderecos[__${i.index}__].longradouro}"></spam>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Rua</label>
+                        <input type="text"
+                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].rua')?'form-control is-invalid':'form-control'}"
+                            placeholder="Rua" th:field="*{enderecos[__${i.index}__].rua}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].rua')}"
+                            th:errors="*{enderecos[__${i.index}__].rua}"></spam>
                     </div>
                     <div class="form-group col-md-2">
                         <label>Numero</label>
                         <input type="number"
                             th:class="${#fields.hasErrors('enderecos[__${i.index}__].numero')?'form-control is-invalid':'form-control'}"
-                            placeholder="numero" th:field="*{enderecos[__${i.index}__].numero}">
+                            placeholder="Numero" th:field="*{enderecos[__${i.index}__].numero}">
                         <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].numero')}"
                             th:errors="*{enderecos[__${i.index}__].numero}"></spam>
                     </div>
-                    <div class="form-group col-md-5">
-                        <label>Longradouro</label>
-                        <input type="text"
-                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].longradouro')?'form-control is-invalid':'form-control'}"
-                            placeholder="Longradouro" th:field="*{enderecos[__${i.index}__].longradouro}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].longradouro')}"
-                            th:errors="*{enderecos[__${i.index}__].longradouro}"></spam>
+                    <div class="form-group col-md-4">
+                        <label>CEP</label>
+                        <input type="number"
+                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].cep')?'form-control is-invalid':'form-control'}"
+                            placeholder="cep" th:field="*{enderecos[__${i.index}__].cep}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].cep')}"
+                            th:errors="*{enderecos[__${i.index}__].cep}"></spam>
                     </div>
-                    <div class="form-group col-md-5">
-                        <label>Complemento</label>
+                    <div class="form-group col-md-4">
+                        <label>Bairro</label>
                         <input type="text"
-                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].complemento')?'form-control is-invalid':'form-control'}"
-                            placeholder="Complemento" th:field="*{enderecos[__${i.index}__].complemento}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].complemento')}"
-                            th:errors="*{enderecos[__${i.index}__].complemento}"></spam>
+                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].bairro')?'form-control is-invalid':'form-control'}"
+                            placeholder="bairro" th:field="*{enderecos[__${i.index}__].bairro}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].bairro')}"
+                            th:errors="*{enderecos[__${i.index}__].bairro}"></spam>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Tipo de Residencia</label>
+                        <select class="custom-select" id="tipoResidencia"
+                            th:field="*{enderecos[__${i.index}__].tipoResidencia}">
+                            <option value="">Selecione o tipo de residencia</option>
+                            <option
+                                th:each="tipoResidenciaOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.TipoResidencia).values()}"
+                                th:class="${#fields.hasErrors('enderecos[__${i.index}__].tipoResidencia')?'form-control is-invalid':'form-control'}"
+                                th:value="${tipoResidenciaOpt}"><span
+                                    th:text="${tipoResidenciaOpt.getDescricao()}"></span></option>
+                        </select>
+                        <spam class="text-danger"
+                            th:if="${#fields.hasErrors('enderecos[__${i.index}__].tipoResidencia')}"
+                            th:errors="*{enderecos[__${i.index}__].tipoResidencia}"></spam>
+                    </div>
+                    <div class="form-group col-md-7">
+                        <label>Cidade</label>
+                        <input type="text"
+                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].cidade.nome')?'form-control is-invalid':'form-control'}"
+                            placeholder="cidade" th:field="*{enderecos[__${i.index}__].cidade.nome}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].cidade.nome')}"
+                            th:errors="*{enderecos[__${i.index}__].cidade.nome}"></spam>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Estado</label>
+                        <select class="custom-select" id="estado" th:field="*{enderecos[__${i.index}__].cidade.estado}">
+                            <option value="">Estado</option>
+                            <option
+                                th:each="estadoOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Estado).values()}"
+                                th:class="${#fields.hasErrors('enderecos[__${i.index}__].cidade.estado')?'form-control is-invalid':'form-control'}"
+                                th:value="${estadoOpt}"><span th:text="${estadoOpt.getDescricao()}"></span></option>
+                        </select>
+                        <spam class="text-danger"
+                            th:if="${#fields.hasErrors('enderecos[__${i.index}__].cidade.estado')}"
+                            th:errors="*{enderecos[__${i.index}__].cidade.estado}"></spam>
                     </div>
                     <div class="form-group col-md-2">
-                        <input th:field="*{enderecos[__${i.index}__].tipoEndereco.id}" th:value="*{enderecos[__${i.index}__].tipoEndereco.id != null?enderecos[__${i.index}__].tipoEndereco.id:0}" hidden>
-                        <label>Tipo</label>
-                        <input type="text"
-                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].tipoEndereco.nome')?'form-control is-invalid':'form-control'}"
-                            placeholder="Tipo" th:field="*{enderecos[__${i.index}__].tipoEndereco.nome}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].tipoEndereco.nome')}"
-                            th:errors="*{enderecos[__${i.index}__].tipoEndereco.nome}"></spam>
-                    </div>
-                    <div class="form-group col-md-10">
-                        <label>Descrição</label>
-                        <input type="text"
-                            th:class="${#fields.hasErrors('enderecos[__${i.index}__].tipoEndereco.descricao')?'form-control is-invalid':'form-control'}"
-                            placeholder="Descrição" th:field="*{enderecos[__${i.index}__].tipoEndereco.descricao}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('enderecos[__${i.index}__].tipoEndereco.descricao')}"
-                            th:errors="*{enderecos[__${i.index}__].tipoEndereco.descricao}"></spam>
+                        <button class="btn btn-danger" type="submit" name="removeEndereco"
+                            th:value="${i.index}">Remover</button>
                     </div>
                 </div>
             </div>
---->
-            <div class="form-group offset-md-8 col-md-4 align-bottom" style="text-align: right;">
-                <button class="btn btn-primary" type="submit" id="btn-cadastrar" th:text="${clienteDTO!=null?'Editar':'Cadastrar'}">Cadastrar</button>
+            <!--login-->
+            <div class="form-group col-md-12">
+                <label for="inputNome">Email</label>
+                <input type="text"
+                    th:class="${#fields.hasErrors('usuario.login')?'form-control is-invalid':'form-control'}"
+                    id="inputNome" placeholder="Email" th:field="*{usuario.login}">
+                <spam class="text-danger" th:if="${#fields.hasErrors('usuario.login')}" th:errors="*{usuario.login}">
+                </spam>
             </div>
-            
+            <div class="form-group col-md-6">
+                <label for="inputNome">Senha</label>
+                <input type="text"
+                    th:class="${#fields.hasErrors('usuario.senha')?'form-control is-invalid':'form-control'}"
+                    id="inputNome" placeholder="Email" th:field="*{usuario.senha}">
+                <spam class="text-danger" th:if="${#fields.hasErrors('usuario.senha')}" th:errors="*{usuario.senha}">
+                </spam>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="senhaRepetida">Repita senha</label>
+                <input type="text" name="senhaRepetida" th:class="${senhaDiferenteException!=null?'form-control is-invalid':'form-control'}" th:value="${senhaRepetida}">
+                <spam th:text="${senhaDiferenteException}" class="text-danger"></spam>
+            </div>
+
+
+
+            <div class="form-group offset-md-8 col-md-4 align-bottom" style="text-align: right;">
+                <button class="btn btn-primary" type="submit" id="btn-cadastrar"
+                    th:text="${clienteDTO.usuario!=null?'Editar':'Cadastrar'}">Cadastrar</button>
+            </div>
         </form>
     </div>
 

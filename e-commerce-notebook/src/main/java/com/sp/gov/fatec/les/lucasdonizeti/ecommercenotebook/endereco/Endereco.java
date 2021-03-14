@@ -21,6 +21,8 @@ public class Endereco extends EntidadeDominio implements Serializable {
     @JsonIgnore
     private Cliente cliente;
 
+    @Column(name = "rua", length = 50)
+    private String rua;
     @Column(name = "bairro", length = 50)
     private String bairro;
     @Column(name = "codigo", nullable = false, length = 5)

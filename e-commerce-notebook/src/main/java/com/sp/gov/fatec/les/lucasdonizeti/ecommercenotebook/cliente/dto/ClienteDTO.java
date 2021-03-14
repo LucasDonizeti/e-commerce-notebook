@@ -3,18 +3,17 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.TipoDocumento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.SecondaryTable;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +27,6 @@ public class ClienteDTO {
     @Valid
     private UsuarioDTO usuario;
 
-    @NotBlank(message = "nome do cliente não pode ser vazio")
-    private String nome;
-
     @NotNull
     private TipoCliente tipoCliente;
 
@@ -38,6 +34,7 @@ public class ClienteDTO {
     private Genero genero;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
     @Valid
@@ -45,15 +42,18 @@ public class ClienteDTO {
 
     @Valid
     @NotNull(message = "Insira pelo menos 1 documento!")
-    private List<CartaoDTO> cartoes;
+    @Size(min = 1,  message = "insira pelo menos 1 cartao")
+    private List<CartaoDTO> cartoes=new ArrayList<>();
 
     @Valid
     @NotNull(message = "Insira pelo menos 1 documento!")
+    @Size(min = 1,  message = "insira pelo menos 1 documento")
     private List<DocumentoDTO> documentos=new ArrayList<>();
 
     @Valid
     @NotNull(message = "Insira pelo menos 1 endereço!")
-    private List<EnderecoDTO> enderecos;
+    @Size(min = 1, message = "insira pelo menos 1 endereço")
+    private List<EnderecoDTO> enderecos=new ArrayList<>();
 
     public void addEmptyDocumento(){
         DocumentoDTO documentoDTO=new DocumentoDTO();
@@ -64,4 +64,21 @@ public class ClienteDTO {
         this.documentos.remove(indice);
     }
 
+    public void addEmptyCartao(){
+        CartaoDTO cartaoDTO=new CartaoDTO();
+        this.cartoes.add(cartaoDTO);
+    }
+
+    public void rmCartao(int indice){
+        this.cartoes.remove(indice);
+    }
+
+    public void addEmptyEndereco(){
+        EnderecoDTO enderecoDTO=new EnderecoDTO();
+        this.enderecos.add(enderecoDTO);
+    }
+
+    public void rmEndereco(int i) {
+        this.enderecos.remove(i);
+    }
 }

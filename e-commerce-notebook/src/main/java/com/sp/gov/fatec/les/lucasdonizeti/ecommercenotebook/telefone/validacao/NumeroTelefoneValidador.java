@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 @Constraint(validatedBy = NumeroTelefoneValidacao.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NumeroTelefoneValidador {
-    String message() default "Email invalido";
+    String message() default "Telefone deve conter 9 digitos";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

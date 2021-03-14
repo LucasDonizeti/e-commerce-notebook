@@ -19,7 +19,10 @@ public class NumeroTelefoneValidacao implements ConstraintValidator<NumeroTelefo
 
     @Override
     public boolean isValid(String numero, ConstraintValidatorContext constraintValidatorContext) {
-        System.out.println("numerovalidador: " + numero);
+        if (numero==null)
+            return false;
+
+
         if(!Pattern.compile("^[0-9]*$").matcher(numero).find() || numero.length() != 9){
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(message)

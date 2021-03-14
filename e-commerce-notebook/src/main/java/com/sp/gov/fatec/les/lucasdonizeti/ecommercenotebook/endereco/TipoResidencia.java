@@ -4,7 +4,7 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco;
  * author LucasDonizeti
  */
 public enum TipoResidencia {
-    APARTAMENTO("Movel"), CASA("Fixo");
+    APARTAMENTO("Apartamento"), CASA("Casa");
 
 
     private String descricao;

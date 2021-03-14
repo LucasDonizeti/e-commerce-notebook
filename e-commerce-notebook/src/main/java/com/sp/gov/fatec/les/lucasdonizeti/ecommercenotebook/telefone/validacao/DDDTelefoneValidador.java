@@ -9,10 +9,10 @@ import java.lang.annotation.RetentionPolicy;
  * author LucasDonizeti
  */
 
-@Constraint(validatedBy = NumeroTelefoneValidacao.class)
+@Constraint(validatedBy = DDDTelefoneValidacao.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DDDTelefoneValidador {
-    String message() default "Email invalido";
+    String message() default "DDD deve conter 3 numeros ex:'011'";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

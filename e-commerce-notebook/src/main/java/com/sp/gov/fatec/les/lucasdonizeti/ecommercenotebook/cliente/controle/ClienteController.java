@@ -171,25 +171,55 @@ public class ClienteController {
     public ModelAndView cadastroPost(@Valid @ModelAttribute("clienteDTO")ClienteDTO clienteDTO,
                                      BindingResult erros,
                                      @ModelAttribute("removeDocumento") Optional<String> removeDocumento,
+                                     @ModelAttribute("removeCartao") Optional<String> removeCartao,
+                                     @ModelAttribute("removeEndereco") Optional<String> removeEndereco,
+                                     @ModelAttribute("senhaRepetida")Optional<String> senhaRepetida,
                                      @ModelAttribute("add") Optional<String> add){
+
+        clienteDTO.getUsuario().setTipoUsuario(TipoUsuario.CLIENTE);
 
         if (removeDocumento.isPresent())
             if (!removeDocumento.get().equals("") && removeDocumento.get()!=null)
                 clienteDTO.rmDocumento(Integer.parseInt(removeDocumento.get()));
+        if (removeCartao.isPresent())
+            if (!removeCartao.get().equals("") && removeCartao.get()!=null)
+                clienteDTO.rmCartao(Integer.parseInt(removeCartao.get()));
+        if (removeEndereco.isPresent())
+            if (!removeEndereco.get().equals("") && removeEndereco.get()!=null)
+                clienteDTO.rmEndereco(Integer.parseInt(removeEndereco.get()));
 
-        if (add.isPresent() && add.get().equals("documento"))
-            clienteDTO.addEmptyDocumento();
+        if (add.isPresent())
+            switch (add.get()){
+                case "documento":
+                    clienteDTO.addEmptyDocumento();
+                    break;
+                case "cartao":
+                    clienteDTO.addEmptyCartao();
+                    break;
+                case "endereco":
+                    clienteDTO.addEmptyEndereco();
+                    break;
+            }
+
+        if (!senhaRepetida.get().equals(clienteDTO.getUsuario().getSenha())){
+            ModelAndView mv = new ModelAndView("/cliente/cadastro.html");
+            mv.addObject("clienteDTO", clienteDTO);
+            mv.addObject("senhaDiferenteException", "Senha diferente");
+            mv.addObject("senhaRapetida", senhaRepetida);
+            mv.addObject("erros", erros.getAllErrors());
+            return mv;
+        }
 
         if (erros.hasErrors()){
             ModelAndView mv = new ModelAndView("/cliente/cadastro.html");
             mv.addObject("clienteDTO", clienteDTO);
-            mv.addObject("tipoClienteEnum", TipoCliente.values());
+            mv.addObject("senhaRapetida", senhaRepetida);
             mv.addObject("erros", erros.getAllErrors());
             return mv;
         }
 
         ModelAndView mv=new ModelAndView("redirect:/usuario/login");
-        mv.addObject("usuarioDTO", clienteDTO.getUsuario());
+        mv.addObject("usuarioDto", clienteDTO.getUsuario());
         return mv;
     }
     @GetMapping("/teste")
@@ -210,7 +240,6 @@ public class ClienteController {
         enderecoDTOList.add(enderecoDTO);
         cliente.setEnderecos(enderecoDTOList);
 
-        cliente.setNome("cliente 1");
         cliente.setDataNascimento(LocalDate.now());
         List<DocumentoDTO> documentoDTOS=new ArrayList<>();
         DocumentoDTO documentoDTO=new DocumentoDTO();

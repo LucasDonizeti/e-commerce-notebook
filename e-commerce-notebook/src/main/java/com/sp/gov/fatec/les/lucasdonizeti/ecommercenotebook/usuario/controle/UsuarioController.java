@@ -30,12 +30,12 @@ public class UsuarioController {
     @GetMapping("/login")
     public ModelAndView login() {
         ModelAndView mv=new ModelAndView("/usuario/login.html");
-        mv.addObject("usuarioDTO", new UsuarioDTO());
+        mv.addObject("usuarioDto", new UsuarioDTO());
         return mv;
     }
 
     @PostMapping("/login")
-    public ModelAndView logar(@ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO,
+    public ModelAndView logar(@ModelAttribute("usuarioDto") UsuarioDTO usuarioDTO,
                               BindingResult errors) {
         if (errors.hasErrors()){
             ModelAndView mv = new ModelAndView("/usuario/login.html");

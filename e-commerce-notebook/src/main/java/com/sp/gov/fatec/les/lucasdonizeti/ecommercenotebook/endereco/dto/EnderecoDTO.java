@@ -21,11 +21,16 @@ import javax.validation.constraints.Size;
 @Setter
 public class EnderecoDTO {
     @NotBlank
+    @Size(min=5, message = "bairro invalido")
     private String bairro;
     @NotBlank
+    @Size(min=1)
     private String numero;
     @NotBlank
-    @Size(min = 8, max = 8)
+    @Size(min=5, message = "rua invalida")
+    private String rua;
+    @NotBlank
+    @Size(min = 8, max = 8, message = "Cep invalido")
     private String cep;
 
     @NotNull
@@ -52,6 +57,8 @@ public class EnderecoDTO {
             obj.setTipoResidencia(dto.getTipoResidencia());
         if (dto.getCidade()!=null)
             obj.setCidade(CidadeDTO.dtoToObjeto(dto.getCidade()));
+        if(dto.getRua()!=null)
+            obj.setRua(dto.getRua());
 
         return obj;
     }

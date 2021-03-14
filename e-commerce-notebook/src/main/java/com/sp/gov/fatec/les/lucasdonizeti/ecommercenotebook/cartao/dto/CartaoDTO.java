@@ -16,13 +16,14 @@ import javax.validation.constraints.*;
 public class CartaoDTO {
 
     @NotBlank
-    @Size(min = 26, max = 21)
+    @Size(min = 16, max = 21)
     private String numero;
 
     @NotBlank
-    @Min(value = 5)
+    @Size(min = 5, message = "nome muito curto")
     private String nome;
 
+    @NotBlank
     @Size(min = 3, max = 4)
     private String cvv;
 

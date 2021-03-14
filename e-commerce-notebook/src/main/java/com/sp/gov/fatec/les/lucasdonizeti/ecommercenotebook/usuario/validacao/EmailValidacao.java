@@ -16,6 +16,8 @@ public class EmailValidacao implements ConstraintValidator<EmailValidator, Strin
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
+        if (email==null)
+            return false;
 
         String[] buffer=email.split("@");
 
