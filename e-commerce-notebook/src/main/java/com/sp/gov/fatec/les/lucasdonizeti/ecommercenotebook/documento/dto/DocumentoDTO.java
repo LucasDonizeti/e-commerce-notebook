@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotBlank;
 public class DocumentoDTO {
     @NotBlank
     private String codigo;
-    @NotBlank
+    @NotNull
     private TipoDocumento tipoDocumento;
 
     public static Documento dtoToObjeto(DocumentoDTO dto){

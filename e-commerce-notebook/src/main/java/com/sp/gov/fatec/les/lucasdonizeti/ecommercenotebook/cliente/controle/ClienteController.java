@@ -34,6 +34,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -168,10 +169,21 @@ public class ClienteController {
 
     @PostMapping("/cadastro")
     public ModelAndView cadastroPost(@Valid @ModelAttribute("clienteDTO")ClienteDTO clienteDTO,
-                                     BindingResult erros){
+                                     BindingResult erros,
+                                     @ModelAttribute("removeDocumento") Optional<String> removeDocumento,
+                                     @ModelAttribute("add") Optional<String> add){
+
+        if (removeDocumento.isPresent())
+            if (!removeDocumento.get().equals("") && removeDocumento.get()!=null)
+                clienteDTO.rmDocumento(Integer.parseInt(removeDocumento.get()));
+
+        if (add.isPresent() && add.get().equals("documento"))
+            clienteDTO.addEmptyDocumento();
+
         if (erros.hasErrors()){
             ModelAndView mv = new ModelAndView("/cliente/cadastro.html");
             mv.addObject("clienteDTO", clienteDTO);
+            mv.addObject("tipoClienteEnum", TipoCliente.values());
             mv.addObject("erros", erros.getAllErrors());
             return mv;
         }
@@ -180,7 +192,6 @@ public class ClienteController {
         mv.addObject("usuarioDTO", clienteDTO.getUsuario());
         return mv;
     }
-
     @GetMapping("/teste")
     public ResponseEntity<?> testeDTO(){
         ClienteDTO cliente=new ClienteDTO();
