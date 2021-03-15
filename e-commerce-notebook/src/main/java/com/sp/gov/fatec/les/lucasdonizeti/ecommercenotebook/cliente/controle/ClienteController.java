@@ -176,8 +176,6 @@ public class ClienteController {
                                      @ModelAttribute("senhaRepetida")Optional<String> senhaRepetida,
                                      @ModelAttribute("add") Optional<String> add){
 
-        clienteDTO.getUsuario().setTipoUsuario(TipoUsuario.CLIENTE);
-
         if (removeDocumento.isPresent())
             if (!removeDocumento.get().equals("") && removeDocumento.get()!=null)
                 clienteDTO.rmDocumento(Integer.parseInt(removeDocumento.get()));
@@ -228,13 +226,13 @@ public class ClienteController {
         List<EnderecoDTO> enderecoDTOList=new ArrayList<>();
 
         EnderecoDTO enderecoDTO=new EnderecoDTO();
-        enderecoDTO.setNumero("55");
+        enderecoDTO.setNumero("10");
         enderecoDTO.setBairro("Bairro 1");
         enderecoDTO.setCep("08940000");
         enderecoDTO.setTipoResidencia(TipoResidencia.CASA);
         enderecoDTO.setLongradouro(Longradouro.RUA);
         CidadeDTO cidadeDTO=new CidadeDTO();
-        cidadeDTO.setNome("Biritiba");
+        cidadeDTO.setNome("Mogi das Cruzes");
         cidadeDTO.setEstado(Estado.SAO_PAULO);
         enderecoDTO.setCidade(cidadeDTO);
         enderecoDTOList.add(enderecoDTO);
@@ -257,6 +255,12 @@ public class ClienteController {
         cartaoDTO.setCvv("938");
         cartaoDTO.setBandeira(Bandeira.MASTERCARD);
         cartaoDTOS.add(cartaoDTO);
+        CartaoDTO cartaoDTO2=new CartaoDTO();
+        cartaoDTO2.setNome("cartao 2");
+        cartaoDTO2.setNumero("5584975692976421");
+        cartaoDTO2.setCvv("777");
+        cartaoDTO2.setBandeira(Bandeira.AMARICANEXPRESS);
+        cartaoDTOS.add(cartaoDTO2);
         cliente.setCartoes(cartaoDTOS);
 
         TelefoneDTO telefoneDTO=new TelefoneDTO();

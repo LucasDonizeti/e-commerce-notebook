@@ -1,5 +1,6 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.controle;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
@@ -11,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
 
 /**
  * author LucasDonizeti
@@ -21,10 +21,12 @@ import javax.validation.Valid;
 @RequestMapping("/usuario")
 public class UsuarioController {
     private final UsuarioServico usuarioServico;
+    private final ProdutoService produtoService;
 
     @Autowired
-    public UsuarioController(UsuarioServico usuarioServico) {
+    public UsuarioController(UsuarioServico usuarioServico, ProdutoService produtoService) {
         this.usuarioServico = usuarioServico;
+        this.produtoService = produtoService;
     }
 
     @GetMapping("/login")
@@ -45,7 +47,7 @@ public class UsuarioController {
         }
 
         if (usuarioDTO.getLogin().equals("teste@gmail.com") && usuarioDTO.getSenha().equals("1234aaBB$")) {
-            ModelAndView mv = new ModelAndView("redirect:/produto");
+            ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
 
             Usuario usuario=new Usuario();
             usuario.setNome("usuario teste");
@@ -53,6 +55,7 @@ public class UsuarioController {
             usuario.setLogin(usuarioDTO.getLogin());
             usuario.setSenha(usuarioDTO.getSenha());
             mv.addObject("usuarioLogado", usuario);
+            mv.addObject("produtos", produtoService.findAll());
             return mv;
         } else {
             ModelAndView mv = new ModelAndView("/usuario/login.html");

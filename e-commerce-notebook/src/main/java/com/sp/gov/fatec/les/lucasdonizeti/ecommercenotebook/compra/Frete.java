@@ -23,5 +23,5 @@ public class Frete extends EntidadeDominio implements Serializable {
     public Endereco endereco;
 
     @Column(name = "valor")
-    private Float valor;
+    private Float valor=0f;
 }

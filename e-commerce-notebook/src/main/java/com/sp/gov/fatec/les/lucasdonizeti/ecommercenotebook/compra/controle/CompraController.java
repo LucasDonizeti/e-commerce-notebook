@@ -8,6 +8,8 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Frete;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Pagamento;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
@@ -16,15 +18,19 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.*;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.*;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Precificacao;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,32 +43,63 @@ import java.util.List;
 @RestController
 @RequestMapping("/compra")
 public class CompraController {
-    @GetMapping
-    public ResponseEntity<?> teste() {
+    private final CompraServico compraServico;
+    private final ProdutoService produtoService;
+
+    @Autowired
+    public CompraController(CompraServico compraServico, ProdutoService produtoService) {
+        this.compraServico = compraServico;
+        this.produtoService = produtoService;
+    }
+
+@GetMapping("/realizar-compra")
+public ModelAndView realizarCompra(){
+        ModelAndView mv =new ModelAndView("/compra/realizarCompra.html");
+        Compra compra=new Compra();
+        compra.setCliente(genCliente());
+        compra.setProdutos(produtoService.findAll());
+        mv.addObject("compra", compra);
+        return mv;
+}
+    @GetMapping("/confirmar-compra/teste")
+    public ResponseEntity<?> realizarCompraTeste(){
+        return new ResponseEntity<>(genCompra(), HttpStatus.OK);
+    }
+
+    @GetMapping("/confirmar-compra")
+    public ModelAndView confirmarCompra(){
+        ModelAndView mv =new ModelAndView("compra/confirmarCompra.html");
+        mv.addObject("compra", genCompra());
+        return mv;
+    }
+
+    private Compra genCompra() {
 
         Compra compra=new Compra();
-        List<Produto> produtoList=new ArrayList<>();
-        produtoList.add(genProduto());
-        compra.setProdutos(produtoList);
+        compra.setProdutos(produtoService.findAll());
 
         Frete frete=new Frete();
         Cliente cliente=genCliente();
         frete.setEndereco(cliente.getEnderecoList().get(0));
-        frete.setValor(25F);
+        frete.setValor(15F);
         compra.setFrete(frete);
 
         Pagamento pagament=new Pagamento();
         pagament.setCartao(cliente.getCartaoList().get(0));
-        pagament.setValor(2000F);
+        pagament.setValor(11515-10f);
         List<Pagamento> pagamentoList=new ArrayList<>();
         pagamentoList.add(pagament);
         compra.setPagamentos(pagamentoList);
 
-        compra.setCupoms(cliente.getCupomList());
+        List<Cupom> cupomList=new ArrayList<>();
+        cupomList.add(cliente.getCupomList().get(0));
+        compra.setCupoms(cupomList);
 
         compra.setCliente(cliente);
 
-        return new ResponseEntity<>(compra, HttpStatus.OK);
+        compra.setStatus(Status.EM_PROCESSAMENTO);
+
+        return compra;
     }
 
     private Cliente genCliente(){
@@ -87,9 +124,9 @@ public class CompraController {
         Usuario usuario=new Usuario();
 
         usuario.setTipoUsuario(TipoUsuario.CLIENTE);
-        usuario.setLogin("lr3@gmail.com");
-        usuario.setSenha("lr3");
-        usuario.setNome("Lucas Don");
+        usuario.setLogin("teste@gmail.com");
+        usuario.setSenha("1234aaBB$");
+        usuario.setNome("Cliente teste");
 
         cliente.setUsuario(usuario);
 
@@ -97,24 +134,42 @@ public class CompraController {
         Endereco endereco=new Endereco();
 
         endereco.setCep("08940000");
-        endereco.setBairro("Jardim dos eucaliptos");
+        endereco.setRua("rua 1");
+        endereco.setBairro("Mogilar");
         endereco.setLongradouro(Longradouro.JARDIM);
         endereco.setTipoResidencia(TipoResidencia.CASA);
 
         Cidade cidade=new Cidade();
-        cidade.setNome("Biritiba Mirim");
+        cidade.setNome("Mogi das Cruzes");
 
         cidade.setEstado(Estado.SAO_PAULO);
 
         endereco.setCidade(cidade);
-        endereco.setNumero("55");
+        endereco.setNumero("10");
         enderecoList.add(endereco);
+
+        Endereco endereco1=new Endereco();
+
+        endereco1.setCep("04563254");
+        endereco1.setRua("rua 2");
+        endereco1.setBairro("Centro");
+        endereco1.setLongradouro(Longradouro.JARDIM);
+        endereco1.setTipoResidencia(TipoResidencia.CASA);
+
+        Cidade cidade1=new Cidade();
+        cidade1.setNome("Guaruja");
+
+        cidade1.setEstado(Estado.SAO_PAULO);
+
+        endereco1.setCidade(cidade1);
+        endereco1.setNumero("55");
+        enderecoList.add(endereco1);
 
         cliente.setEnderecoList(enderecoList);
 
         Documento documento2=new Documento();
         documento2.setTipoDocumento(TipoDocumento.RG);
-        documento2.setCodigo("535886263");
+        documento2.setCodigo("5358412362");
         documentoList.add(documento2);
         cliente.setDocumentos(documentoList);
 
@@ -122,12 +177,12 @@ public class CompraController {
 
         Cartao c1=new Cartao();
         c1.setBandeira(Bandeira.AMARICANEXPRESS);
-        c1.setNome("Lucas Donizeti");
+        c1.setNome("Cliente American Express Cartao");
         c1.setNumero("3451 084599 64008");
         c1.setCvv("9285");
         Cartao c2=new Cartao();
         c2.setBandeira(Bandeira.MASTERCARD);
-        c2.setNome("Lucas Siqueira");
+        c2.setNome("Cliente 1 cartao");
         c2.setNumero("5458 0725 9176 7327");
         c2.setCvv("167");
 

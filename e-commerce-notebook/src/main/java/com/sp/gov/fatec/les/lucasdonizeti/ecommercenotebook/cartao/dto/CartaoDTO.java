@@ -16,7 +16,7 @@ import javax.validation.constraints.*;
 public class CartaoDTO {
 
     @NotBlank
-    @Size(min = 16, max = 21)
+    @Size(min = 7, max = 21)
     private String numero;
 
     @NotBlank
