@@ -28,9 +28,6 @@ public class ProdutoService {
         //return produtoDAO.findAll();
     }
 
-
-
-
     private List<Produto> genListProduto(){
         List<Produto> produtoList=new ArrayList<>();
         Notebook notebook = new Notebook();
@@ -178,3 +175,6 @@ public class ProdutoService {
         return produtoList;
     }
 }
+
+
+//como eu to fazendo sozinho ta sem refatoração

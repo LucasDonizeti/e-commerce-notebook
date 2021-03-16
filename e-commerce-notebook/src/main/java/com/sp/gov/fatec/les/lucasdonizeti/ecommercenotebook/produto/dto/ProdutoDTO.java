@@ -23,7 +23,6 @@ public class ProdutoDTO {
     @NotNull
     private Float custo;
     @NotNull
-    @Size(min = 1)
     private int estoque;
     @NotNull
     private int pontuacaoCliente;
