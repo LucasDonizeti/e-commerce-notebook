@@ -23,18 +23,19 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * author LucasDonizeti
@@ -72,6 +73,14 @@ public ModelAndView realizarCompra(){
         mv.addObject("compra", genCompra());
         return mv;
     }
+
+    @GetMapping("/cli/detalheCompra")
+    public ModelAndView detalheCompraCli(){
+        ModelAndView mv =new ModelAndView("compra/cliDetalheCompra.html");
+        mv.addObject("compra", genCompra());
+        return mv;
+    }
+
 
     private Compra genCompra() {
 

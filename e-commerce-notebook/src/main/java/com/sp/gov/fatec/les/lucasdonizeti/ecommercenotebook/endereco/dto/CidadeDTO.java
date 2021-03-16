@@ -33,4 +33,11 @@ public class CidadeDTO {
 
         return obj;
     }
+
+    public static CidadeDTO objetoToDto(Cidade cidade) {
+        CidadeDTO cidadeDTO=new CidadeDTO();
+        cidadeDTO.setNome(cidade.getNome());
+        cidadeDTO.setEstado(cidade.getEstado());
+        return cidadeDTO;
+    }
 }

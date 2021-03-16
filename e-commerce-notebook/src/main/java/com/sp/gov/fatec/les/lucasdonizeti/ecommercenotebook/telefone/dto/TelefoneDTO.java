@@ -38,4 +38,12 @@ public class TelefoneDTO {
 
         return obj;
     }
+
+    public static TelefoneDTO ObjetoToDto(Telefone telefone) {
+        TelefoneDTO telefoneDTO=new TelefoneDTO();
+        telefoneDTO.setTipoTelefone(telefone.getTipoTelefone());
+        telefoneDTO.setDdd(telefone.getDdd());
+        telefoneDTO.setNumero(telefone.getNumero());
+        return telefoneDTO;
+    }
 }

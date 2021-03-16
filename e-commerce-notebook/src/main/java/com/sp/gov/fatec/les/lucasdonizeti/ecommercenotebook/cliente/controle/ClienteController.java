@@ -22,10 +22,12 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefon
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.MudarSenhaDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -160,6 +162,13 @@ public class ClienteController {
         return mv;
     }
 
+    @GetMapping("/cli/editarPerfil")
+    public ModelAndView editarPerfil(){
+        ModelAndView mv=new ModelAndView("/cliente/cadastro.html");
+        mv.addObject("clienteDTO", ClienteDTO.objetoToDto(genCliente()));
+        return mv;
+    }
+
     @GetMapping("/cadastro")
     public ModelAndView cadastro(){
         ModelAndView mv=new ModelAndView("/cliente/cadastro.html");
@@ -215,11 +224,17 @@ public class ClienteController {
             mv.addObject("erros", erros.getAllErrors());
             return mv;
         }
-
-        ModelAndView mv=new ModelAndView("redirect:/usuario/login");
-        mv.addObject("usuarioDto", clienteDTO.getUsuario());
-        return mv;
+        if (clienteDTO.getUsuario().getHash()== null) {
+            ModelAndView mv = new ModelAndView("redirect:/usuario/login");
+            mv.addObject("usuarioDto", clienteDTO.getUsuario());
+            return mv;
+        }else {
+            ModelAndView mv = new ModelAndView("redirect:/cliente/cli/perfil");
+            mv.addObject("usuarioDto", clienteDTO.getUsuario());
+            return mv;
+        }
     }
+
     @GetMapping("/teste")
     public ResponseEntity<?> testeDTO(){
         ClienteDTO cliente=new ClienteDTO();
@@ -277,6 +292,170 @@ public class ClienteController {
         cliente.setUsuario(usuarioDTO);
 
         return new ResponseEntity<>(cliente, HttpStatus.OK);
+    }
+
+    @GetMapping("/cli/perfil")
+    public ModelAndView perfil(){
+        ModelAndView mv =new ModelAndView("/cliente/cliPerfil.html");
+        mv.addObject("cliente", ClienteDTO.objetoToDto(genCliente()));
+        return mv;
+    }
+
+    @GetMapping("/cli/perfil/teste")
+    public ClienteDTO perfilTeste(){
+        return ClienteDTO.objetoToDto(genCliente());
+    }
+
+
+    @GetMapping("/cli/acompanharPedidos")
+    public ModelAndView acompanharPedidos(){
+        return new ModelAndView("/cliente/cliAcompanharPedidos.html");
+    }
+
+    @GetMapping("/cli/mudarSenha")
+    public ModelAndView mudarSenhaCli(){
+        ModelAndView mv =new ModelAndView("cliente/cliMudarSenha.html");
+        MudarSenhaDTO mudarSenhaDTO=new MudarSenhaDTO();
+        mv.addObject("usuario", mudarSenhaDTO);
+        return mv;
+    }
+
+    @PostMapping("/cli/mudarSenha")
+    public ModelAndView postMudarSenhaCli(@Valid @ModelAttribute("usuario") MudarSenhaDTO mudarSenhaDTO,
+                                          BindingResult erros){
+
+        if (!mudarSenhaDTO.getAntiga().equals("1234aaBB$")){
+            ModelAndView mv = new ModelAndView("/cliente/cliMudarSenha.html");
+            mv.addObject("usuario", mudarSenhaDTO);
+            mv.addObject("senhaErradaException", "Senha errada");
+            mv.addObject("erros", erros.getAllErrors());
+            return mv;
+        }
+
+        if (!mudarSenhaDTO.getRepetida().equals(mudarSenhaDTO.getNova())){
+            ModelAndView mv = new ModelAndView("/cliente/cliMudarSenha.html");
+            mv.addObject("usuario", mudarSenhaDTO);
+            mv.addObject("senhaDiferenteException", "Senha diferente");
+            mv.addObject("erros", erros.getAllErrors());
+            return mv;
+        }
+
+        if (erros.hasErrors()){
+            ModelAndView mv = new ModelAndView("/cliente/cliMudarSenha.html");
+            mv.addObject("usuario", mudarSenhaDTO);
+            mv.addObject("erros", erros.getAllErrors());
+            return mv;
+        }
+
+        ModelAndView mv=new ModelAndView("redirect:/cliente/cli/perfil");
+        return mv;
+    }
+
+
+    private Cliente genCliente(){
+        Cliente cliente=new Cliente();
+        cliente.setTipoCliente(TipoCliente.FISICA);
+        cliente.setDataNascimento(LocalDate.of(2000,7,26));
+        cliente.setRank(55);
+        List<Documento> documentoList=new ArrayList<>();
+        Documento documento=new Documento();
+        documento.setTipoDocumento(TipoDocumento.CPF);
+        documento.setCodigo("44536522832");
+        documentoList.add(documento);
+        cliente.setGenero(Genero.MASCULINO);
+        Telefone telefone=new Telefone();
+
+        telefone.setDdd("011");
+        telefone.setNumero("985372928");
+        telefone.setTipoTelefone(TipoTelefone.MOVEL);
+
+        cliente.setTelefone(telefone);
+
+        Usuario usuario=new Usuario();
+
+        usuario.setTipoUsuario(TipoUsuario.CLIENTE);
+        usuario.setLogin("teste@gmail.com");
+        usuario.setSenha("1234aaBB$");
+        usuario.setNome("Cliente teste");
+
+        cliente.setUsuario(usuario);
+
+        List<Endereco> enderecoList=new ArrayList<>();
+        Endereco endereco=new Endereco();
+
+        endereco.setCep("08940000");
+        endereco.setRua("rua 1");
+        endereco.setBairro("Mogilar");
+        endereco.setLongradouro(Longradouro.JARDIM);
+        endereco.setTipoResidencia(TipoResidencia.CASA);
+
+        Cidade cidade=new Cidade();
+        cidade.setNome("Mogi das Cruzes");
+
+        cidade.setEstado(Estado.SAO_PAULO);
+
+        endereco.setCidade(cidade);
+        endereco.setNumero("10");
+        enderecoList.add(endereco);
+
+        Endereco endereco1=new Endereco();
+
+        endereco1.setCep("04563254");
+        endereco1.setRua("rua 2");
+        endereco1.setBairro("Centro");
+        endereco1.setLongradouro(Longradouro.JARDIM);
+        endereco1.setTipoResidencia(TipoResidencia.CASA);
+
+        Cidade cidade1=new Cidade();
+        cidade1.setNome("Guaruja");
+
+        cidade1.setEstado(Estado.SAO_PAULO);
+
+        endereco1.setCidade(cidade1);
+        endereco1.setNumero("55");
+        enderecoList.add(endereco1);
+
+        cliente.setEnderecoList(enderecoList);
+
+        Documento documento2=new Documento();
+        documento2.setTipoDocumento(TipoDocumento.RG);
+        documento2.setCodigo("535886263");
+        documentoList.add(documento2);
+        cliente.setDocumentos(documentoList);
+
+        List<Cartao> cartaoList=new ArrayList<>();
+
+        Cartao c1=new Cartao();
+        c1.setBandeira(Bandeira.AMARICANEXPRESS);
+        c1.setNome("Cliente American Express Cartao");
+        c1.setNumero("345108459964008");
+        c1.setCvv("9285");
+        Cartao c2=new Cartao();
+        c2.setBandeira(Bandeira.MASTERCARD);
+        c2.setNome("Cliente 1 cartao");
+        c2.setNumero("5458072591767327");
+        c2.setCvv("167");
+
+        cartaoList.add(c1);
+        cartaoList.add(c2);
+
+        cliente.setCartaoList(cartaoList);
+
+        List<Cupom> cupomList=new ArrayList<>();
+        Cupom cupom1 = new Cupom();
+        cupom1.setValor(10l);
+        cupom1.setTipoCupom(TipoCupom.TROCA);
+
+        Cupom cupom2 = new Cupom();
+        cupom2.setValor(70l);
+        cupom2.setTipoCupom(TipoCupom.PROMOCIONAL);
+
+        cupomList.add(cupom1);
+        cupomList.add(cupom2);
+
+        cliente.setCupomList(cupomList);
+
+        return cliente;
     }
 
 }

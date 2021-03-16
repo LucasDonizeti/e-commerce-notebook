@@ -1,9 +1,13 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
@@ -39,6 +43,8 @@ public class ClienteDTO {
 
     @Valid
     private TelefoneDTO telefone;
+
+    private int rank;
 
     @Valid
     @NotNull(message = "Insira pelo menos 1 documento!")
@@ -80,5 +86,40 @@ public class ClienteDTO {
 
     public void rmEndereco(int i) {
         this.enderecos.remove(i);
+    }
+
+    public static ClienteDTO objetoToDto(Cliente cliente){
+        ClienteDTO clienteDTO=new ClienteDTO();
+        clienteDTO.setRank(cliente.getRank());
+        clienteDTO.setUsuario(UsuarioDTO.objetoToDto(cliente.getUsuario()));
+        clienteDTO.setDataNascimento(cliente.getDataNascimento());
+        clienteDTO.setGenero(cliente.getGenero());
+        clienteDTO.setTipoCliente(cliente.getTipoCliente());
+        clienteDTO.setTelefone(TelefoneDTO.ObjetoToDto(cliente.getTelefone()));
+
+        List<CartaoDTO> cartoes=new ArrayList<>();
+        for (Cartao cartao : cliente.getCartaoList()){
+            CartaoDTO cartaoDTO=CartaoDTO.objetoToDto(cartao);
+            cartoes.add(cartaoDTO);
+        }
+        clienteDTO.setCartoes(cartoes);
+
+        List<EnderecoDTO> enderecoDTOList=new ArrayList<>();
+        for(Endereco e : cliente.getEnderecoList()){
+            EnderecoDTO enderecoDTO=EnderecoDTO.objetoToDto(e);
+            enderecoDTOList.add(enderecoDTO);
+        }
+        clienteDTO.setEnderecos(enderecoDTOList);
+
+        List<DocumentoDTO> documentoDTOList=new ArrayList<>();
+        for (Documento d: cliente.getDocumentos()){
+            documentoDTOList.add(DocumentoDTO.objetoToDto(d));
+        }
+        clienteDTO.setDocumentos(documentoDTOList);
+
+        return clienteDTO;
+
+
+
     }
 }

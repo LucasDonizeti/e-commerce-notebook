@@ -43,4 +43,13 @@ public class CartaoDTO {
 
         return obj;
     }
+
+    public static CartaoDTO objetoToDto(Cartao cartao) {
+        CartaoDTO cartaoDTO=new CartaoDTO();
+        cartaoDTO.setNome(cartao.getNome());
+        cartaoDTO.setNumero(cartao.getNumero());
+        cartaoDTO.setCvv(cartao.getCvv());
+        cartaoDTO.setBandeira(cartao.getBandeira());
+        return cartaoDTO;
+    }
 }

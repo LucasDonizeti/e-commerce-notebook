@@ -31,4 +31,11 @@ public class DocumentoDTO {
 
         return obj;
     }
+
+    public static DocumentoDTO objetoToDto(Documento d) {
+        DocumentoDTO documentoDTO=new DocumentoDTO();
+        documentoDTO.setTipoDocumento(d.getTipoDocumento());
+        documentoDTO.setCodigo(d.getCodigo());
+        return documentoDTO;
+    }
 }

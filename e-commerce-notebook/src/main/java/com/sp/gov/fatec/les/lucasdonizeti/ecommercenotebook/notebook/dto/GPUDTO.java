@@ -1,0 +1,18 @@
+package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+/**
+ * author LucasDonizeti
+ */
+@Getter
+@Setter
+public class GPUDTO {
+    @NotBlank
+    @Size(max = 50)
+    private String modelo;
+}

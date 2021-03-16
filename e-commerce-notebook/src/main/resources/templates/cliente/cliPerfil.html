@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
     <title>Document</title>
 </head>
 
@@ -32,13 +32,13 @@
             <div class="col-md-2">
                 <div class="row">
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="perfil.html">
+                        <a th:href="@{/cliente/cli/perfil}">
                             <ion-icon name="person-circle-outline" size="large"></ion-icon>
                             <spam>Perfil</spam>
                         </a>
                     </div>
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="carrinho.html">
+                        <a th:href="@{/cliente/carrinho}">
                             <ion-icon name="cart-outline" size="large"></ion-icon>
                             <span>carrinho</span>
                         </a>
@@ -52,25 +52,25 @@
             <div class="row">
                 <div class="list-group col-md-12">
                     <button type="button" class="list-group-item list-group-item-action active">
-                        <a href="perfil.html" style="text-decoration: none; color: white;">
+                        <a th:href="@{/cliente/cli/perfil}" style="text-decoration: none; color: white;">
                             <ion-icon name="person-circle-outline"></ion-icon>
                             <span>Visão Geral</span>
                         </a>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a href="editarPerfil.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/cliente/cli/editarPerfil}" style="text-decoration: none; color: blue;">
                             <ion-icon name="pencil-outline"></ion-icon>
                             Editar Perfil
                         </a>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a href="mudarSenha.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/cliente/cli/mudarSenha}" style="text-decoration: none; color: blue;">
                             <ion-icon name="lock-open-outline"></ion-icon>
                             Mudar Senha
                         </a>
                     </button>
                     <button class="list-group-item list-group-item-action" type="button">
-                        <a href="acompanharPedidos.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/cliente/cli/acompanharPedidos}" style="text-decoration: none; color: blue;">
                             <ion-icon name="bag-handle-outline"></ion-icon>
                             Acompanhar Pedidos
                         </a>
@@ -87,23 +87,27 @@
                     <tbody>
                         <tr>
                             <th class="row">Nome</th>
-                            <td>CLiente 1</td>
+                            <td>Cliente Teste</td>
                         </tr>
                         <tr>
                             <th class="row">Email</th>
-                            <td>c1@gmail.com</td>
+                            <td>teste@gmail.com</td>
                         </tr>
                         <tr>
-                            <th class="row">CPF</th>
-                            <td>272.498.078-62</td>
+                            <th class="row">Tipo</th>
+                            <td>Pessoa Fisica</td>
                         </tr>
                         <tr>
-                            <th class="row">Codigo</th>
-                            <td>13245678</td>
+                            <th class="row">Genero</th>
+                            <td>Masculino</td>
                         </tr>
                         <tr>
                             <th class="row">Telefone</th>
-                            <td>(55) 57047-4278</td>
+                            <td>(011)985372928 - MOVEL</td>
+                        </tr>
+                        <tr>
+                            <th class="row">Nascimento</th>
+                            <td>26/07/2000</td>
                         </tr>
                     </tbody>
                 </table>
@@ -192,6 +196,11 @@
                                         <ion-icon name="card-outline"></ion-icon>
                                         <span style="color:blue;"> Cartão 1</span>
                                     </button>
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCartao2"
+                                        aria-expanded="true" aria-controls="collapseOne">
+                                        <ion-icon name="card-outline"></ion-icon>
+                                        <span style="color:blue;"> Cartão 2</span>
+                                    </button>
                                 </h5>
                             </div>
 
@@ -219,6 +228,98 @@
                                     </table>
                                 </div>
                             </div>
+                            <div id="collapseCartao2" class="collapse" aria-labelledby="headingOne"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th class="row">Numero</th>
+                                                <td>5527 7196 3092 8164</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="row">Nome Impresso</th>
+                                                <td>Cartao 2</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="row">Bandeira</th>
+                                                <td>
+                                                    <img src="https://www.4devs.com.br/imagens/cc/logo_amex.jpg">
+                                                    Mastercard
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Documentos</th>
+                            <th scope="col">
+                                <a href="adicionarCartao.html">
+                                    <ion-icon name="card-outline"></ion-icon>
+                                    Adicionar Documento
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="col-md-12">
+                    <div id="accordion">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseDoc1"
+                                        aria-expanded="true" aria-controls="collapseOne">
+                                        <ion-icon name="card-outline"></ion-icon>
+                                        <span style="color:blue;"> RG</span>
+                                    </button>
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseDoc2"
+                                        aria-expanded="true" aria-controls="collapseOne">
+                                        <ion-icon name="card-outline"></ion-icon>
+                                        <span style="color:blue;"> CPF</span>
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapseDoc1" class="collapse" aria-labelledby="headingOne"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th class="row">Tipo</th>
+                                                <td>RG</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="row">Codigo</th>
+                                                <td>391257699</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="collapseDoc2" class="collapse" aria-labelledby="headingOne"
+                                data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th class="row">Tipo</th>
+                                                <td>CPF</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="row">Codigo</th>
+                                                <td>29683745083</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -229,9 +330,9 @@
 
 
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
-    <script src="../static/js/plugins/jquery-3.3.1/jquery-3.3.1.slim.min.js"></script>
-    <script src="../static/js/plugins/popper/popper.min.js"></script>
-    <script src="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.js"></script>
+    <script th:src="@{\js\plugins\jquery-3.3.1\jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/js/plugins/popper/popper.min.js}"></script>
+    <script th:src="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.js}"></script>
 </body>
 
 </html>

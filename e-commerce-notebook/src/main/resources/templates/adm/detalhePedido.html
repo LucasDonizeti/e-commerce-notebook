@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
     <title>Document</title>
 </head>
 
@@ -37,37 +37,37 @@
             <div class="row">
                 <div class="list-group col-md-12">
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a href="admHome.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/adm/visaoGeral}" style="text-decoration: none; color: blue;">
                             <ion-icon name="person-circle-outline"></ion-icon>
                             <span>Visão Geral</span>
                         </a>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action active">
-                        <a href="admProdutos.html" style="text-decoration: none; color: white;">
+                        <a th:href="@{/adm/produtos}" style="text-decoration: none; color: white;">
                             <ion-icon name="laptop-outline"></ion-icon>
                             Produtos
                         </a>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a href="admClientes.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/adm/clientes}" style="text-decoration: none; color: blue;">
                             <ion-icon name="person-outline"></ion-icon>
                             Clientes
                         </a>
                     </button>
                     <button class="list-group-item list-group-item-action" type="button">
-                        <a href="admCupons.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/adm/cupoms}" style="text-decoration: none; color: blue;">
                             <ion-icon name="ticket-outline"></ion-icon>
                             Cupons
                         </a>
                     </button>
                     <button class="list-group-item list-group-item-action" type="button">
-                        <a href="admPedidos.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/adm/pedidos}" style="text-decoration: none; color: blue;">
                             <ion-icon name="clipboard-outline"></ion-icon>
                             Pedidos
                         </a>
                     </button>
                     <button class="list-group-item list-group-item-action" type="button">
-                        <a href="admAnalytcs.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/adm/dados}" style="text-decoration: none; color: blue;">
                             <ion-icon name="pie-chart-outline"></ion-icon>
                             Dados
                         </a>
@@ -77,86 +77,102 @@
         </div>
         <div class="col-md-9">
             <div class="row col-md-12 justify-content-md-center">
-                <h3>Detalhe Produto</h3>
+                <h3>Detalhe Pedido</h3>
             </div>
-            <table class="table table-dark">
+            <table class="table" style="background-color: aliceblue;">
                 <thead>
                     <tr>
-                        <th scope="col">Cod</th>
-                        <th scope="col">1</th>
-                        <td><span style="color: greenyellow;">Ativo</span></td>
+                        <th class="col">
+                            Nome do Produto
+                        </th>
+                        <th class="col">
+                            Quantidade
+                        </th>
+                        <th class="col">
+                            Preco Unitário
+                        </th>
+                        <th class="col">
+                            Subtotal
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th scope="row" colspan="2">nome</th>
-                        <td>Avell A52 LIV</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Preço unitário</th>
-                        <td>R$8.000,00</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Processador</th>
-                        <td>Intel® Core™ i7</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Placa de vídeo</th>
-                        <td>GeForce® GTX 1650 (4GB GDDR6)</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Tela</th>
-                        <td>15.6” 120Hz</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Memória Principal</th>
-                        <td>16 GB RAM DDR4</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Memória não volátil</th>
-                        <td>1TB HD + 256GB SSD</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Sistema Operacional</th>
-                        <td>Windows 10 Home Single Language</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Unidades em estoque</th>
-                        <td>15</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Unidades em processamento</th>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" colspan="2">Unidades vendidas</th>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <th scope="row"><a href="admAdicionarProduto.html">
-                                <button class="btn btn-outline-warning">Desativar Produto</button>
-                            </a>
+                        <th class="row">
+                            Avell A52 LIV
                         </th>
-                        <td><a href="admEditarProduto.html">
-                                <button class="btn btn-outline-primary">Editar Produto</button>
-                            </a>
+                        <td>
+                            1
                         </td>
-                        <td><a href="admGerenciarEstoque.html">
-                            <button class="btn btn-outline-secondary">Gerenciar Estoque</button>
-                        </a>
-                    </td>
+                        <td>
+                            R$8.000,00
+                        </td>
+                        <td>
+                            R$8.000,00
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="row">
+                            Samsumg Odyssey
+                        </th>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            R$6.000,00
+                        </td>
+                        <td>
+                            R$6.000,00
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="row">
+                            Frete
+                        </th>
+                        <td colspan="2">
+                            Rua a, 15 Mogi das Cruzes/SP
+                        </td>
+                        <td>
+                            R$15,00
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="col" colspan="3" style="width: 85%;">
+                            Valor Total
+                        </th>
+                        <th class="col" style="width: 15%;">
+                            R$14.015,00
+                        </th>
                     </tr>
                 </tbody>
             </table>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" colspan="3">status</th>
+                        <th scope="col">Em Processamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Cartão 1</th>
+                        <td>5527 7196 3092 8164</td>
+                        <td><img src="https://www.4devs.com.br/imagens/cc/logo_master.jpg"></td>
+                        <td>R$14.015,00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="col-md-12">
+                <a href="admAdicionarProduto.html">
+                    <button class="btn btn-outline-primary">Aprovar</button>
+                </a>
+            </div>
         </div>
 
-
-
-
         <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
-        <script src="../static/js/plugins/jquery-3.3.1/jquery-3.3.1.slim.min.js"></script>
-        <script src="../static/js/plugins/popper/popper.min.js"></script>
-        <script src="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.js"></script>
+        <script th:src="@{\js\plugins\jquery-3.3.1\jquery-3.1.1.min.js}"></script>
+        <script th:src="@{/js/plugins/popper/popper.min.js}"></script>
+        <script th:src="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.js}"></script>
 </body>
 
 </html>

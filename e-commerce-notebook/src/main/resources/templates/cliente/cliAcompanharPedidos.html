@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
     <title>Document</title>
 </head>
 
@@ -32,13 +32,13 @@
             <div class="col-md-2">
                 <div class="row">
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="perfil.html">
+                        <a th:href="@{/cliente/cli/perfil}">
                             <ion-icon name="person-circle-outline" size="large"></ion-icon>
                             <spam>Perfil</spam>
                         </a>
                     </div>
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="carrinho.html">
+                        <a th:href="@{/cliente/carrinho}">
                             <ion-icon name="cart-outline" size="large"></ion-icon>
                             <span>carrinho</span>
                         </a>
@@ -52,25 +52,25 @@
             <div class="row">
                 <div class="list-group col-md-12">
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a href="perfil.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/cliente/cli/perfil}" style="text-decoration: none; color: blue;">
                             <ion-icon name="person-circle-outline"></ion-icon>
                             <span>Visão Geral</span>
                         </a>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a href="editarPerfil.html" style="text-decoration: none; color: blue;">
+                        <a th:href="@{/cliente/cli/editarPerfil}" style="text-decoration: none; color: blue;">
                             <ion-icon name="pencil-outline"></ion-icon>
                             Editar Perfil
                         </a>
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action active">
-                        <a href="mudarSenha.html" style="text-decoration: none; color: white;">
+                    <button type="button" class="list-group-item list-group-item-action">
+                        <a th:href="@{/cliente/cli/mudarSenha}" style="text-decoration: none; color: blue;">
                             <ion-icon name="lock-open-outline"></ion-icon>
                             Mudar Senha
                         </a>
                     </button>
-                    <button class="list-group-item list-group-item-action" type="button">
-                        <a href="acompanharPedidos.html" style="text-decoration: none; color: blue;">
+                    <button class="list-group-item list-group-item-action active" type="button">
+                        <a th:href="@{/cliente/cli/acompanharPedidos}" style="text-decoration: none; color: white;">
                             <ion-icon name="bag-handle-outline"></ion-icon>
                             Acompanhar Pedidos
                         </a>
@@ -78,51 +78,36 @@
                 </div>
             </div>
         </div>
-        <div class="row col-md-9 align-items-center justify-content-md-center">
+        <div class="row  col-md-9 align-items-center justify-content-md-center">
             <div class="col-md-12">
-                <h3>Mudar Senha</h3>
+                <h3>Acompanhar pedidos</h3>
             </div>
-            <div class="form-row col-md-12">
-                <div class="col-md-12">
-                    <div class="alert alert-warning" role="alert">
-                        <ion-icon name="alert-circle-outline"></ion-icon>
-                        <spam>A senha deve ser composta de pelo menos 8 caracteres, ter letras maiúsculas e minúsculas
-                            além de conter caracteres especiais!</spam>
-                    </div>
-                </div>
-                <div class="form-group col-md-12">
-                    <label for="inputNome">Senha atual</label>
-                    <input type="nome" class="form-control" id="inputNome" placeholder="Senha Atual">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="inputSenha1">Nova senha</label>
-                    <input type="text" class="form-control" id="inputSenha1" placeholder="Nova senha">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="inputSenha2">Repita a nova senha</label>
-                    <input type="text" class="form-control" id="inputSenha2" placeholder="Repita a nova senha">
-                </div>
-                <div class="form-group col-md-6 align-items-center">
-                    <label for="btnSalvar"><br></label>
-                    <a href="perfil.html">
-                        <button class="btn btn-outline-danger form-control" id="btnSalvar">Cancelar</button>
-                    </a>
-                </div>
-                <div class="form-group col-md-6 align-items-center">
-                    <label for="btnSalvar"><br></label>
-                    <a href="perfil.html">
-                        <button class="btn btn-outline-success form-control" id="btnSalvar">Salvar</button>
-                    </a>
-                </div>
-            </div>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Pedido</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row"><a th:href="@{/compra/cli/detalheCompra}">Pedido 1</a></td>
+                        <td>23/02/2020</td>
+                        <td>Em análise</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
         </div>
 
 
 
         <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
-        <script src="../static/js/plugins/jquery-3.3.1/jquery-3.3.1.slim.min.js"></script>
-        <script src="../static/js/plugins/popper/popper.min.js"></script>
-        <script src="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.js"></script>
+    <script th:src="@{\js\plugins\jquery-3.3.1\jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/js/plugins/popper/popper.min.js}"></script>
+    <script th:src="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.js}"></script>
 </body>
 
 </html>

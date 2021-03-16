@@ -62,4 +62,16 @@ public class EnderecoDTO {
 
         return obj;
     }
+
+    public static EnderecoDTO objetoToDto(Endereco e) {
+        EnderecoDTO enderecoDTO=new EnderecoDTO();
+        enderecoDTO.setLongradouro(e.getLongradouro());
+        enderecoDTO.setBairro(e.getBairro());
+        enderecoDTO.setNumero(e.getNumero());
+        enderecoDTO.setCep(e.getCep());
+        enderecoDTO.setTipoResidencia(e.getTipoResidencia());
+        enderecoDTO.setRua(e.getRua());
+        enderecoDTO.setCidade(CidadeDTO.objetoToDto(e.getCidade()));
+        return enderecoDTO;
+    }
 }

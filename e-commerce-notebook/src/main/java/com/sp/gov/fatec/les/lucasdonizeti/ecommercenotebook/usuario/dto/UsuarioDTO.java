@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -16,6 +17,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class UsuarioDTO {
+    private UUID hash;
+
     @NotBlank(message = "login não pode ser vazio")
     @EmailValidator(message = "Email invalido")
     private String login;
@@ -29,7 +32,7 @@ public class UsuarioDTO {
     @NotNull
     private TipoUsuario tipoUsuario;
 
-    private static Usuario dtoToObjeto(UsuarioDTO dto){
+    public static Usuario dtoToObjeto(UsuarioDTO dto){
         Usuario objeto=new Usuario();
         if (dto.getSenha()!=null)
             objeto.setSenha(dto.getSenha());
@@ -42,4 +45,16 @@ public class UsuarioDTO {
 
         return objeto;
     }
+
+    public static UsuarioDTO objetoToDto(Usuario usuario){
+        UsuarioDTO usuarioDTO=new UsuarioDTO();
+        usuarioDTO.setHash(usuario.getHash());
+        usuarioDTO.setNome(usuario.getNome());
+        usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
+        usuarioDTO.setLogin(usuario.getLogin());
+        usuarioDTO.setSenha(usuario.getSenha());
+
+        return usuarioDTO;
+    }
+
 }

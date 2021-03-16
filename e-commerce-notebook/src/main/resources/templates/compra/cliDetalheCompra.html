@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
     <title>Document</title>
 </head>
 
@@ -32,13 +32,13 @@
             <div class="col-md-2">
                 <div class="row">
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="perfil.html">
+                        <a th:href="@{/cliente/cli/perfil}">
                             <ion-icon name="person-circle-outline" size="large"></ion-icon>
                             <spam>Perfil</spam>
                         </a>
                     </div>
                     <div class="col-md-6" style="text-align: center;">
-                        <a href="carrinho.html">
+                        <a th:href="@{/cliente/carrinho}">
                             <ion-icon name="cart-outline" size="large"></ion-icon>
                             <span>carrinho</span>
                         </a>
@@ -71,7 +71,7 @@
                         <th class="row">
                             Avell A52 LIV
                         </th>
-                        <td class="col">
+                        <td>
                             1
                         </td>
                         <td>
@@ -85,7 +85,7 @@
                         <th class="row">
                             Samsumg Odyssey
                         </th>
-                        <td class="col">
+                        <td>
                             1
                         </td>
                         <td>
@@ -95,76 +95,46 @@
                             R$6.000,00
                         </td>
                     </tr>
-                </tbody>
-            </table>
-            <table class="table">
-                <thead>
                     <tr>
-                        <th class="col">
-
-                        </th>
-                        <th class="col">
-
-                        </th>
-                        <th class="col">
-
-                        </th>
-                        <th class="col">
-                            R$14.00,00
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <table class="table align-items-center">
-                <thead>
-                    <tr>
-                        <th class="col" style="width: 15%;">
+                        <th class="row">
                             Frete
                         </th>
-                        <th class="col" style="width: 70%;">
-                            <div class="row">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text" for="inputGroupEndereco">Endereço de
-                                            entrega</label>
-                                    </div>
-                                    <select class="custom-select" id="inputGroupEndereco">
-                                        <option value="1">Rua a, 15 Mogi das Cruzes/SP</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </th>
-                        <th class="col" style="width: 15%;">
+                        <td colspan="2">
+                            Rua a, 15 Mogi das Cruzes/SP
+                        </td>
+                        <td>
                             R$15,00
-                        </th>
+                        </td>
                     </tr>
-                </thead>
-            </table>
-            <div class="col-md-12">
-                <div class="alert alert-warning" role="alert">
-                    <ion-icon name="alert-circle-outline"></ion-icon>
-                    <spam>Voce Pode Cadastrar outro endereço de entrega <a href="adicionarEndereco.html">aqui</a>!
-                    </spam>
-                </div>
-            </div>
-            <table class="table">
-                <thead>
                     <tr>
-                        <th class="col" style="width: 85%;">
+                        <th class="col" colspan="3" style="width: 85%;">
                             Valor Total
                         </th>
                         <th class="col" style="width: 15%;">
                             R$14.015,00
                         </th>
                     </tr>
-                </thead>
+                </tbody>
             </table>
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col" colspan="3">status</th>
+                    <th scope="col">Em análise</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Cartão 1</th>
+                    <td>5527 7196 3092 8164</td>
+                    <td><img src="https://www.4devs.com.br/imagens/cc/logo_master.jpg"></td>
+                    <td>R$14.015,00</td>
+                  </tr>
+                </tbody>
+              </table>
             <div class="col-md-12">
-                <a href="carrinhoLogado.html">
-                    <button class="btn btn-danger">Cancelar</button>
-                </a>
-                <a href="formaDePagamento.html">
-                    <button class="btn btn-success">Avançar</button>
+                <a th:href="@{/cliente/cli/acompanharPedidos}">
+                    <button class="btn btn-outline-primary">Voltar</button>
                 </a>
             </div>
         </div>
@@ -174,9 +144,9 @@
 
 
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
-    <script src="../static/js/plugins/jquery-3.3.1/jquery-3.3.1.slim.min.js"></script>
-    <script src="../static/js/plugins/popper/popper.min.js"></script>
-    <script src="../static/js/plugins/bootstrap-4.1.3/bootstrap.min.js"></script>
+    <script th:src="@{\js\plugins\jquery-3.3.1\jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/js/plugins/popper/popper.min.js}"></script>
+    <script th:src="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.js}"></script>
 </body>
 
 </html>
