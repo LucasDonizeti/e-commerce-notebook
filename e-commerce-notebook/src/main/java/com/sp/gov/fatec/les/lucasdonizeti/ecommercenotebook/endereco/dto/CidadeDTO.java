@@ -1,11 +1,9 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Cidade;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Estado;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,21 +21,4 @@ public class CidadeDTO {
     @NotNull
     private Estado estado;
 
-    public static Cidade dtoToObjeto(CidadeDTO dto){
-        Cidade obj=new Cidade();
-        if (dto.getNome()!=null)
-            obj.setNome(dto.getNome());
-
-        if (dto.getEstado()!=null)
-            obj.setEstado(dto.getEstado());
-
-        return obj;
-    }
-
-    public static CidadeDTO objetoToDto(Cidade cidade) {
-        CidadeDTO cidadeDTO=new CidadeDTO();
-        cidadeDTO.setNome(cidade.getNome());
-        cidadeDTO.setEstado(cidade.getEstado());
-        return cidadeDTO;
-    }
 }

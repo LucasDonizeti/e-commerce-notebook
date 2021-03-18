@@ -3,7 +3,6 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Estado;
 import lombok.Getter;
 import lombok.Setter;
 

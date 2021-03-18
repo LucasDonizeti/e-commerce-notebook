@@ -39,4 +39,8 @@ public class EntidadeDominio implements Serializable {
         this.hash = UUID.randomUUID();
         this.dataCriacao = LocalDateTime.now();
     }
+
+    public void genHash(){
+        this.hash = UUID.randomUUID();
+    }
 }

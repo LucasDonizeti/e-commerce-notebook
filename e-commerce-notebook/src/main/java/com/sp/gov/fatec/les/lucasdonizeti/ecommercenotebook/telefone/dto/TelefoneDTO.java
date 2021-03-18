@@ -1,14 +1,21 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Armazenamento;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.RAM;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Imagem;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ProdutoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.validacao.DDDTelefoneValidador;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.validacao.NumeroTelefoneValidador;
 import lombok.Getter;
 import lombok.Setter;
+import org.dozer.DozerBeanMapperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -16,6 +23,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class TelefoneDTO {
+    private UUID hash;
     @NotBlank
     @NumeroTelefoneValidador
     private String numero;
@@ -28,22 +36,14 @@ public class TelefoneDTO {
     private TipoTelefone tipoTelefone;
 
     public static Telefone dtoToObjeto(TelefoneDTO dto){
-        Telefone obj=new Telefone();
-        if (dto.getDdd()!=null)
-            obj.setDdd(dto.getDdd());
-        if (dto.getNumero()!=null)
-            obj.setNumero(dto.getNumero());
-        if (dto.getTipoTelefone()!=null)
-            obj.setTipoTelefone(dto.getTipoTelefone());
+        Telefone objeto = DozerBeanMapperBuilder.buildDefault().map(dto, Telefone.class);
+        if (objeto.getHash()==null)
+            objeto.genHash();
 
-        return obj;
+        return objeto;
     }
 
-    public static TelefoneDTO ObjetoToDto(Telefone telefone) {
-        TelefoneDTO telefoneDTO=new TelefoneDTO();
-        telefoneDTO.setTipoTelefone(telefone.getTipoTelefone());
-        telefoneDTO.setDdd(telefone.getDdd());
-        telefoneDTO.setNumero(telefone.getNumero());
-        return telefoneDTO;
+    public static TelefoneDTO objetoToDto(Telefone objeto) {
+        return DozerBeanMapperBuilder.buildDefault().map(objeto, TelefoneDTO.class);
     }
 }

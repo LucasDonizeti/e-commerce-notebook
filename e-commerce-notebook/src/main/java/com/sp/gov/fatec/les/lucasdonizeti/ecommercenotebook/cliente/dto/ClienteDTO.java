@@ -1,18 +1,16 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.dozer.DozerBeanMapperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -21,13 +19,16 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
  */
 @Getter
 @Setter
-public class ClienteDTO {
+public class ClienteDTO{
+    private UUID hash;
+
     @Valid
     private UsuarioDTO usuario;
 
@@ -39,7 +40,7 @@ public class ClienteDTO {
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dataNascimento;
+    private LocalDate dataNascimentoDto;
 
     @Valid
     private TelefoneDTO telefone;
@@ -89,37 +90,18 @@ public class ClienteDTO {
     }
 
     public static ClienteDTO objetoToDto(Cliente cliente){
-        ClienteDTO clienteDTO=new ClienteDTO();
-        clienteDTO.setRank(cliente.getRank());
-        clienteDTO.setUsuario(UsuarioDTO.objetoToDto(cliente.getUsuario()));
-        clienteDTO.setDataNascimento(cliente.getDataNascimento());
-        clienteDTO.setGenero(cliente.getGenero());
-        clienteDTO.setTipoCliente(cliente.getTipoCliente());
-        clienteDTO.setTelefone(TelefoneDTO.ObjetoToDto(cliente.getTelefone()));
-
-        List<CartaoDTO> cartoes=new ArrayList<>();
-        for (Cartao cartao : cliente.getCartaoList()){
-            CartaoDTO cartaoDTO=CartaoDTO.objetoToDto(cartao);
-            cartoes.add(cartaoDTO);
-        }
-        clienteDTO.setCartoes(cartoes);
-
-        List<EnderecoDTO> enderecoDTOList=new ArrayList<>();
-        for(Endereco e : cliente.getEnderecoList()){
-            EnderecoDTO enderecoDTO=EnderecoDTO.objetoToDto(e);
-            enderecoDTOList.add(enderecoDTO);
-        }
-        clienteDTO.setEnderecos(enderecoDTOList);
-
-        List<DocumentoDTO> documentoDTOList=new ArrayList<>();
-        for (Documento d: cliente.getDocumentos()){
-            documentoDTOList.add(DocumentoDTO.objetoToDto(d));
-        }
-        clienteDTO.setDocumentos(documentoDTOList);
-
+        ClienteDTO clienteDTO= DozerBeanMapperBuilder.buildDefault().map(cliente, ClienteDTO.class);
+        clienteDTO.setDataNascimentoDto(cliente.getDataNascimento());
         return clienteDTO;
+    }
 
+    public static Cliente dtoToObjeto(ClienteDTO clienteDTO){
+        Cliente cliente =DozerBeanMapperBuilder.buildDefault().map(clienteDTO, Cliente.class);
+        cliente.setDataNascimento(clienteDTO.getDataNascimentoDto());
 
+        if (cliente.getHash()==null)
+            cliente.genHash();
 
+        return cliente;
     }
 }

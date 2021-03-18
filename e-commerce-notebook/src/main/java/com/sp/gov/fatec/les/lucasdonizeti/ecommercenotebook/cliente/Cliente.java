@@ -42,16 +42,16 @@ public class Cliente extends EntidadeDominio implements Serializable {
     private Genero genero;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Cartao> cartaoList=new ArrayList<>();
+    private List<Cartao> cartoes=new ArrayList<>();
 
     @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     private Telefone telefone;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Endereco> enderecoList=new ArrayList<>();
+    private List<Endereco> enderecos=new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Cupom> cupomList=new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Cupom> cupoms=new ArrayList<>();
 
     @OneToOne
     private Usuario usuario;

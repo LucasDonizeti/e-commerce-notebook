@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class GPUDTO {
+    private UUID hash;
     @NotBlank
     @Size(max = 50)
     private String modelo;

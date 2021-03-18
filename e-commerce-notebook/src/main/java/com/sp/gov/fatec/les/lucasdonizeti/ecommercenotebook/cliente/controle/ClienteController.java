@@ -101,7 +101,7 @@ public class ClienteController {
         endereco.setNumero("55");
         enderecoList.add(endereco);
 
-        cliente.setEnderecoList(enderecoList);
+        cliente.setEnderecos(enderecoList);
 
         Documento documento2=new Documento();
         documento2.setTipoDocumento(TipoDocumento.RG);
@@ -125,21 +125,21 @@ public class ClienteController {
         cartaoList.add(c1);
         cartaoList.add(c2);
 
-        cliente.setCartaoList(cartaoList);
+        cliente.setCartoes(cartaoList);
 
         List<Cupom> cupomList=new ArrayList<>();
         Cupom cupom1 = new Cupom();
-        cupom1.setValor(10l);
+        cupom1.setValor(10f);
         cupom1.setTipoCupom(TipoCupom.TROCA);
 
         Cupom cupom2 = new Cupom();
-        cupom2.setValor(70l);
+        cupom2.setValor(70f);
         cupom2.setTipoCupom(TipoCupom.PROMOCIONAL);
 
         cupomList.add(cupom1);
         cupomList.add(cupom2);
 
-        cliente.setCupomList(cupomList);
+        cliente.setCupoms(cupomList);
 
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
@@ -253,7 +253,7 @@ public class ClienteController {
         enderecoDTOList.add(enderecoDTO);
         cliente.setEnderecos(enderecoDTOList);
 
-        cliente.setDataNascimento(LocalDate.now());
+        cliente.setDataNascimentoDto(LocalDate.now());
         List<DocumentoDTO> documentoDTOS=new ArrayList<>();
         DocumentoDTO documentoDTO=new DocumentoDTO();
         documentoDTO.setTipoDocumento(TipoDocumento.RG);
@@ -415,7 +415,7 @@ public class ClienteController {
         endereco1.setNumero("55");
         enderecoList.add(endereco1);
 
-        cliente.setEnderecoList(enderecoList);
+        cliente.setEnderecos(enderecoList);
 
         Documento documento2=new Documento();
         documento2.setTipoDocumento(TipoDocumento.RG);
@@ -439,21 +439,21 @@ public class ClienteController {
         cartaoList.add(c1);
         cartaoList.add(c2);
 
-        cliente.setCartaoList(cartaoList);
+        cliente.setCartoes(cartaoList);
 
         List<Cupom> cupomList=new ArrayList<>();
         Cupom cupom1 = new Cupom();
-        cupom1.setValor(10l);
+        cupom1.setValor(10f);
         cupom1.setTipoCupom(TipoCupom.TROCA);
 
         Cupom cupom2 = new Cupom();
-        cupom2.setValor(70l);
+        cupom2.setValor(70f);
         cupom2.setTipoCupom(TipoCupom.PROMOCIONAL);
 
         cupomList.add(cupom1);
         cupomList.add(cupom2);
 
-        cliente.setCupomList(cupomList);
+        cliente.setCupoms(cupomList);
 
         return cliente;
     }

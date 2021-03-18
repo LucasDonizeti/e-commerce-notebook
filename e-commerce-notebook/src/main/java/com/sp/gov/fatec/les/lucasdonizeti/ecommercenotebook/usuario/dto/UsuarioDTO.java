@@ -1,11 +1,14 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.validacao.EmailValidator;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.validacao.SenhaForteValidator;
 import lombok.Getter;
 import lombok.Setter;
+import org.dozer.DozerBeanMapperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,28 +36,15 @@ public class UsuarioDTO {
     private TipoUsuario tipoUsuario;
 
     public static Usuario dtoToObjeto(UsuarioDTO dto){
-        Usuario objeto=new Usuario();
-        if (dto.getSenha()!=null)
-            objeto.setSenha(dto.getSenha());
-        if (dto.getNome()!=null)
-            objeto.setNome(dto.getNome());
-        if (dto.getLogin()!=null)
-            objeto.setLogin(dto.getLogin());
-        if (dto.getTipoUsuario()!=null)
-            objeto.setTipoUsuario(dto.getTipoUsuario());
+        Usuario objeto = DozerBeanMapperBuilder.buildDefault().map(dto, Usuario.class);
+        if (objeto.getHash()==null)
+            objeto.genHash();
 
         return objeto;
     }
 
-    public static UsuarioDTO objetoToDto(Usuario usuario){
-        UsuarioDTO usuarioDTO=new UsuarioDTO();
-        usuarioDTO.setHash(usuario.getHash());
-        usuarioDTO.setNome(usuario.getNome());
-        usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
-        usuarioDTO.setLogin(usuario.getLogin());
-        usuarioDTO.setSenha(usuario.getSenha());
-
-        return usuarioDTO;
+    public static UsuarioDTO objetoToDto(Usuario objeto) {
+        return DozerBeanMapperBuilder.buildDefault().map(objeto, UsuarioDTO.class);
     }
 
 }

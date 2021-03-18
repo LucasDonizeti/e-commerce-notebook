@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class TelaDTO {
+    private UUID hash;
     @NotBlank
     @Size(max=4)
     private String tamanho;

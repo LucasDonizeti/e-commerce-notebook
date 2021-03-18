@@ -1,18 +1,18 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Cidade;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Longradouro;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.TipoResidencia;
 import lombok.Getter;
 import lombok.Setter;
+import org.dozer.DozerBeanMapper;
+import org.dozer.DozerBeanMapperBuilder;
 
-import javax.persistence.CascadeType;
-import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -20,6 +20,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class EnderecoDTO {
+    private UUID hash;
+
     @NotBlank
     @Size(min=5, message = "bairro invalido")
     private String bairro;
@@ -44,34 +46,15 @@ public class EnderecoDTO {
     private CidadeDTO cidade;
 
     public static Endereco dtoToObjeto(EnderecoDTO dto){
-        Endereco obj=new Endereco();
-        if (dto.getNumero()!=null)
-            obj.setNumero(dto.getNumero());
-        if (dto.getBairro()!=null)
-            obj.setBairro(dto.getBairro());
-        if (dto.getCep()!=null)
-            obj.setCep(dto.getCep());
-        if (dto.getLongradouro()!=null)
-            obj.setLongradouro(dto.getLongradouro());
-        if (dto.getTipoResidencia()!=null)
-            obj.setTipoResidencia(dto.getTipoResidencia());
-        if (dto.getCidade()!=null)
-            obj.setCidade(CidadeDTO.dtoToObjeto(dto.getCidade()));
-        if(dto.getRua()!=null)
-            obj.setRua(dto.getRua());
+        Endereco endereco = DozerBeanMapperBuilder.buildDefault().map(dto, Endereco.class);
 
-        return obj;
+        if (endereco.getHash() == null)
+            endereco.genHash();
+
+        return endereco;
     }
 
     public static EnderecoDTO objetoToDto(Endereco e) {
-        EnderecoDTO enderecoDTO=new EnderecoDTO();
-        enderecoDTO.setLongradouro(e.getLongradouro());
-        enderecoDTO.setBairro(e.getBairro());
-        enderecoDTO.setNumero(e.getNumero());
-        enderecoDTO.setCep(e.getCep());
-        enderecoDTO.setTipoResidencia(e.getTipoResidencia());
-        enderecoDTO.setRua(e.getRua());
-        enderecoDTO.setCidade(CidadeDTO.objetoToDto(e.getCidade()));
-        return enderecoDTO;
+        return DozerBeanMapperBuilder.buildDefault().map(e, EnderecoDTO.class);
     }
 }

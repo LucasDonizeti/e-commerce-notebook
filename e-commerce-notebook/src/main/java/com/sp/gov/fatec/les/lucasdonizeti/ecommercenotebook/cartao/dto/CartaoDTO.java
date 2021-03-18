@@ -4,8 +4,10 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Bandeira;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
 import lombok.Getter;
 import lombok.Setter;
+import org.dozer.DozerBeanMapperBuilder;
 
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 
 /**
@@ -14,6 +16,7 @@ import javax.validation.constraints.*;
 @Getter
 @Setter
 public class CartaoDTO {
+    private UUID hash;
 
     @NotBlank
     @Size(min = 7, max = 21)
@@ -31,25 +34,13 @@ public class CartaoDTO {
     private Bandeira bandeira;
 
     public static Cartao dtoToObjeto(CartaoDTO dto){
-        Cartao obj = new Cartao();
-        if (dto.getNumero()!=null)
-            obj.setNumero(dto.getNumero());
-        if (dto.getNome()!=null)
-            obj.setNome(dto.getNome());
-        if (dto.getCvv()!=null)
-            obj.setCvv(dto.getCvv());
-        if (dto.getBandeira()!=null)
-            obj.setBandeira(dto.getBandeira());
+        Cartao cartao = DozerBeanMapperBuilder.buildDefault().map(dto, Cartao.class);
+        if (cartao.getHash() == null)
+            cartao.genHash();
 
-        return obj;
+        return cartao;
     }
-
     public static CartaoDTO objetoToDto(Cartao cartao) {
-        CartaoDTO cartaoDTO=new CartaoDTO();
-        cartaoDTO.setNome(cartao.getNome());
-        cartaoDTO.setNumero(cartao.getNumero());
-        cartaoDTO.setCvv(cartao.getCvv());
-        cartaoDTO.setBandeira(cartao.getBandeira());
-        return cartaoDTO;
+        return DozerBeanMapperBuilder.buildDefault().map(cartao, CartaoDTO.class);
     }
 }

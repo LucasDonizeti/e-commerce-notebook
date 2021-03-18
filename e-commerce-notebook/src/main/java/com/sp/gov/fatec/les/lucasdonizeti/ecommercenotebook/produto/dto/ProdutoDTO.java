@@ -1,9 +1,15 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Armazenamento;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Notebook;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.RAM;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.dto.ArmazenamentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.dto.NotebookDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Imagem;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import lombok.Getter;
 import lombok.Setter;
+import org.dozer.DozerBeanMapperBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -27,7 +33,7 @@ public class ProdutoDTO {
     @NotNull
     private int pontuacaoCliente;
     @Size(min = 1, message = "insira pelo menos um imagem")
-    private List<ImagemDTO> imagens=new ArrayList<>();
+    private List<ImagemDTO> imagemList=new ArrayList<>();
     @NotNull @Valid
     private NotebookDTO notebook;
     @NotNull @Valid
@@ -41,15 +47,55 @@ public class ProdutoDTO {
 
 
     public void addImagem(ImagemDTO imagem) {
-        this.imagens.add(imagem);
+        this.imagemList.add(imagem);
     }
 
     public void rmImagem(int indice){
-        this.imagens.remove(indice);
+        this.imagemList.remove(indice);
     }
 
     public void addEmptyImagem(){
         ImagemDTO imagemDTO=new ImagemDTO();
-        this.imagens.add(imagemDTO);
+        this.imagemList.add(imagemDTO);
+    }
+
+    public static Produto dtoToObjeto(ProdutoDTO dto){
+        Produto objeto = DozerBeanMapperBuilder.buildDefault().map(dto, Produto.class);
+
+        if (objeto.getHash() == null)
+            objeto.genHash();
+
+        if (objeto.getHash() == null)
+            objeto.genHash();
+
+        for(Armazenamento a : objeto.getNotebook().getArmazenamentoList())
+            if (a.getHash() == null)
+                a.genHash();
+
+        if (objeto.getNotebook().getCpu().getHash() == null)
+            objeto.getNotebook().getCpu().genHash();
+
+        if (objeto.getNotebook().getGpu().getHash() == null)
+            objeto.getNotebook().getGpu().genHash();
+
+        for(RAM a : objeto.getNotebook().getRamList())
+            if (a.getHash() == null)
+                a.genHash();
+
+        if (objeto.getNotebook().getTela().getHash() == null)
+            objeto.getNotebook().getTela().genHash();
+
+        for(Imagem a : objeto.getImagemList())
+            if (a.getHash() == null)
+                a.genHash();
+
+        if (objeto.getPrecificacao().getHash() == null)
+            objeto.getPrecificacao().getHash();
+
+        return objeto;
+    }
+
+    public static ProdutoDTO objetoToDto(Produto objeto) {
+        return DozerBeanMapperBuilder.buildDefault().map(objeto, ProdutoDTO.class);
     }
 }

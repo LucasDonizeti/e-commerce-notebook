@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 
 /**
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class ArmazenamentoDTO {
+    private UUID hash;
     @NotNull
     private int memoria;
 
