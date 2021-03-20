@@ -83,14 +83,12 @@
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col">Nome</th>
-                    <th scope="col">Ativar/Desativar</th>
                     <th scole="col">Rank</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr th:each="cliente : ${clientes}">
                     <td th:text="${cliente.usuario.nome}"></td>
-                    <td><form th:action="@{/cliente/deletar}" method="POST"><button type="submit" name="id" th:value="${cliente.usuario.hash}"><ion-icon name="trash-outline"></ion-icon></button></form></td>
                     <td th:text="${cliente.rank}"></td>
                   </tr>
                 </tbody>

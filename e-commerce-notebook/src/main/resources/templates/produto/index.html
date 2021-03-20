@@ -254,27 +254,27 @@
                     <div class="item align-self-center">
                         <div class="col-md-12">
                             <figure>
-                                <a th:href="@{/produto/detalhes/} + ${produto.hash}">
-                                    <div th:id="${'carousel' + produto.hash}" class="carousel slide"
+                                <a th:href="@{/produto/detalhes/} + ${produto.id}">
+                                    <div th:id="${'carousel' + produto.id}" class="carousel slide"
                                         data-ride="carousel">
                                         <ol class="carousel-indicators">
                                             <li th:each="imagem, i : ${produto.imagemList}"
-                                                th:data-target="${'#carousel' + produto.hash}"
+                                                th:data-target="${'#carousel' + produto.id}"
                                                 th:data-slide-to="${i.index}"
                                                 th:class="((${i.index} == 0) ? 'active' : '')"></li>
                                         </ol>
                                         <div class="carousel-inner">
                                             <div th:each="imagem, i : ${produto.imagemList}"
                                                 th:class="((${i.index} == 0) ? 'carousel-item active' : 'carousel-item')">
-                                                <img class="d-block w-100" th:src="${imagem.link}">
+                                                <img class="img-thumbnail" th:src="${imagem.link}">
                                             </div>
                                         </div>
-                                        <a class="carousel-control-prev" th:href="${'#carousel' + produto.hash}"
+                                        <a class="carousel-control-prev" th:href="${'#carousel' + produto.id}"
                                             role="button" data-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="sr-only">Anterior</span>
                                         </a>
-                                        <a class="carousel-control-next" th:href="${'#carousel' + produto.hash}"
+                                        <a class="carousel-control-next" th:href="${'#carousel' + produto.id}"
                                             role="button" data-slide="next">
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="sr-only">Próximo</span>
@@ -286,7 +286,7 @@
                         <div class="col-md-12" style="text-align: center;">
                             <spam th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"
                                 style="font-weight: bold;">Avell A52 LIV</spam>
-                            <a th:href="@{/detalhes/ + produto.hash}" style="text-decoration: none;">
+                            <a th:href="@{/detalhes/ + produto.id}" style="text-decoration: none;">
                                 <div class="col-md-12"
                                     style="background-color: #93c157; color: #f8f8ff; text-align: center;">
                                     <span th:text="${'R$' + produto.precoDeVenda}"></span>
@@ -317,12 +317,12 @@
                         <div class="col-md-12">
                             <div class="row justify-content-center ">
                                 <div class="col-xs-6">
-                                    <a class="button" th:href="@{/cliente/carrinho}">
+                                    <form method="post"  class="button" th:action="@{'/cliente/carrinho/' + ${produto.id}}">
                                         <button class="btn btn-outline-info">
                                             <ion-icon name="cart-outline" size="small"></ion-icon>
                                             <strong>Adicionar ao Carrinho</strong>
                                         </button>
-                                    </a>
+                                    </form>
                                 </div>
                                 <div class="col-xs-6">
                                     <a href="link comprar">

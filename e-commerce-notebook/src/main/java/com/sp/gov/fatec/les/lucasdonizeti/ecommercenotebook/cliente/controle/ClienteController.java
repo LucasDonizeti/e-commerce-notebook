@@ -9,6 +9,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
@@ -32,6 +33,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,9 +88,60 @@ public class ClienteController {
 
     //Refatorar
     @GetMapping("/carrinho")
-    public ModelAndView carrinhoDeCompra() {
+    public ModelAndView carrinhoDeCompra(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
-        mv.addObject("produtos", produtoService.findAll());
+        mv.addObject("compra", request.getSession().getAttribute("compra"));
+        return mv;
+    }
+
+    //Refatorar
+    @GetMapping("/carrinho/{hash}")
+    public ModelAndView carrinhoDeCompraLogado(HttpServletRequest request, HttpServletResponse response,
+                                               @PathVariable("hash")UUID hash) {
+        ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
+        mv.addObject("usuarioLogado", clienteServico.findById(hash).get());
+        CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
+        compraDTO.setCliente(ClienteDTO.objetoToDto(clienteServico.findById(hash).get()));
+        request.getSession().setAttribute("compra", compraDTO);
+        mv.addObject("compra", compraDTO);
+        return mv;
+    }
+
+    //Refatorar
+    @PostMapping("/carrinho/qtd/{i}")
+    public ModelAndView carrinhoDeCompraQuantidade(HttpServletRequest request, HttpServletResponse response,
+                                                   @RequestParam("n") String n, @PathVariable("i") String i){
+        ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
+        CompraDTO compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
+        compraDTO.setQuantidade(Integer.parseInt(i), Integer.parseInt(n));
+
+        request.getSession().setAttribute("compra", compraDTO);
+
+        mv.addObject("compra", compraDTO);
+        return mv;
+    }
+
+    @PostMapping("/carrinho/exc/{i}")
+    public ModelAndView carrinhoDeCompraExcluir(HttpServletRequest request, HttpServletResponse response,
+                                                   @PathVariable("i") String i){
+        ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
+        CompraDTO compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
+        compraDTO.excProduto(Integer.parseInt(i));
+        request.getSession().setAttribute("compra", compraDTO);
+        mv.addObject("compra", compraDTO);
+        return mv;
+    }
+
+    //Refatorar
+    @PostMapping("/carrinho/{hash}")
+    public ModelAndView addCarrinho(HttpServletRequest request, HttpServletResponse response, @PathVariable("hash") UUID hash) {
+        ModelAndView mv = new ModelAndView("redirect:/cliente/carrinho");
+        CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
+        System.out.println(compraDTO.getStatus());
+        compraDTO.addProduto(produtoService.findById(hash).get());
+        System.out.println(compraDTO.getProdutos().size());
+        request.getSession().setAttribute("compra", compraDTO);
+        mv.addObject("compra", compraDTO);
         return mv;
     }
 
@@ -108,7 +162,7 @@ public class ClienteController {
 
     //Verificado
     @GetMapping("/cadastro")
-    public ModelAndView cadastro() {
+    public ModelAndView cadastro(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv = new ModelAndView("/cliente/cadastro.html");
         mv.addObject("clienteDTO", new ClienteDTO());
         return mv;
@@ -122,7 +176,9 @@ public class ClienteController {
                                      @ModelAttribute("removeCartao") Optional<String> removeCartao,
                                      @ModelAttribute("removeEndereco") Optional<String> removeEndereco,
                                      @ModelAttribute("senhaRepetida") Optional<String> senhaRepetida,
-                                     @ModelAttribute("add") Optional<String> add) {
+                                     @ModelAttribute("add") Optional<String> add,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) {
 
         if (removeDocumento.isPresent())
             if (!removeDocumento.get().equals("") && removeDocumento.get() != null) {

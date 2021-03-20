@@ -72,13 +72,13 @@
                             <span th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"></span>
                         </th>
                         <td class="col">
-                            <span>1</span>
+                            <span th:text="${produto.estoque}">1</span>
                         </td>
                         <td>
                             <span th:text="${'R$' + produto.precoDeVenda}"></span>
                         </td>
                         <td>
-                            <span th:text="${'R$' + produto.precoDeVenda}"></span>
+                            <span th:text="${'R$' + (produto.precoDeVenda * produto.estoque)}"></span>
                         </td>
                     </tr>
                 </tbody>
@@ -116,7 +116,7 @@
                                     </div>
                                     <select>
                                         <option value="">Selecione o endereço de entrega</option>
-                                        <option th:each="endereco : ${compra.cliente.enderecoList}"
+                                        <option th:each="endereco : ${compra.cliente.enderecos}"
                                             th:text="${endereco.rua + ', ' + endereco.numero + ' - ' + endereco.cep}">
                                         </option>
                                     </select>
@@ -151,7 +151,7 @@
 
             <div class="col-md-12 border" style="margin-bottom: 10px;">
                 <h3>Cartao de credito</h3>
-                <div th:each="cartao : ${compra.cliente.cartaoList}" class="row col-md-12  align-items-center">
+                <div th:each="cartao : ${compra.cliente.cartoes}" class="row col-md-12  align-items-center">
                     <div class="row col-md-6 align-items-center">
                         <div class="col-md-8">
                             <input type="checkbox" th:value="${cartao.numero}">
@@ -183,8 +183,8 @@
                             <input type="radio" id="nenhum" name="cupom" value="none">
                             <label for="nenhum">Nenhum</label>
                         </li>
-                        <li th:each="cupom, i : ${compra.cliente.cupomList}">
-                            <input type="radio" th:id="${'cupom_' + i.index}" name="cupom" th:value="${cupom.hash}">
+                        <li th:each="cupom, i : ${compra.cliente.cupoms}">
+                            <input type="radio" th:id="${'cupom_' + i.index}" name="cupom" th:value="${cupom.id}">
                             <label th:for="${'cupom_' + i.index}"
                                 th:text="${'R$'+cupom.valor + ' ' + cupom.tipoCupom.getDescricao()}"></label>
                         </li>

@@ -5,6 +5,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.persistencia
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,6 +24,10 @@ public class UsuarioServico {
 
     public Usuario save(Usuario usuario){
         return usuarioDAO.save(usuario);
+    }
+
+    public List<Usuario> findAll(){
+        return usuarioDAO.findAll();
     }
 
 }

@@ -39,7 +39,7 @@ public class CompraDTO {
     public ClienteDTO cliente;
 
     @NotNull
-    private Status status;
+    private Status status=Status.REPROVADA;
 
     @NotNull
     @Size(min = 1)
@@ -49,6 +49,15 @@ public class CompraDTO {
     @Size(min = 1)
     private List<CupomDTO> cupoms = new ArrayList<>();
 
+    public void addProduto(Produto produto){
+        produto.setEstoque(1);
+        produtos.add(ProdutoDTO.objetoToDto(produto));
+    }
+
+    public void setQuantidade(int indice, int quantidade){
+        produtos.get(indice).setEstoque(quantidade);
+    }
+
     public static CompraDTO objetoToDto(Compra compra) {
         return DozerBeanMapperBuilder.buildDefault().map(compra, CompraDTO.class);
     }
@@ -56,5 +65,9 @@ public class CompraDTO {
     public static Compra dtoToObjeto(CompraDTO compraDTO) {
         Compra compra = DozerBeanMapperBuilder.buildDefault().map(compraDTO, Compra.class);
         return compra;
+    }
+
+    public void excProduto(int i) {
+        produtos.remove(i);
     }
 }

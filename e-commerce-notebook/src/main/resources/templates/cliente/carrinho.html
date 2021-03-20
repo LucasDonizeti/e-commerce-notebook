@@ -57,12 +57,12 @@
     <div class="row">
         <div class="col-md-9">
             <div class="row justify-content-md-center border border-light">
-                <div th:each="produto : ${produtos}" class="col-md-4 col-sm-6 slick-slide slick-current slick-active"
-                    style="margin-bottom: 20px">
+                <div th:each="produto, i : ${compra.produtos}"
+                    class="col-md-4 col-sm-6 slick-slide slick-current slick-active" style="margin-bottom: 20px">
                     <div class="item align-self-center">
                         <div class="col-md-12">
                             <figure>
-                                <a th:href="@{/produto/detalhes/} + ${produto.hash}">
+                                <a th:href="@{/produto/detalhes/} + ${produto.id}">
                                     <img class="img-thumbnail" th:src="${produto.imagemList[0].link}"
                                         style="width: 100%; height: 225px; object-fit: cover; object-position: center;">
                                 </a>
@@ -71,7 +71,7 @@
                         <div class="col-md-12" style="text-align: center;">
                             <spam th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"
                                 style="font-weight: bold;"></spam>
-                            <a th:href="@{/produto/detalhes/} + ${produto.hash}" style="text-decoration: none;">
+                            <a th:href="@{/produto/detalhes/} + ${produto.id}" style="text-decoration: none;">
                                 <div class="col-md-12"
                                     style="background-color: #93c157; color: #f8f8ff; text-align: center;">
                                     <span th:text="${'R$' + produto.precoDeVenda}"></span>
@@ -79,22 +79,25 @@
                             </a>
                         </div>
                         <div class="col-md-12">
+                            <form th:action="@{'/cliente/carrinho/qtd/' + ${i.index}}" method="post">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-sm">Quantidade</span>
+                                    <span class="input-group-text">Quantidade</span>
                                 </div>
-                                <input type="number" min="1" class="form-control" placeholder="quantidade" value="1">
+                                <input type="number" min="1" class="form-control" placeholder="quantidade"
+                                    th:value="${session.compra.produtos[__${i.index}__].estoque}" id="n" name="n">
                             </div>
+                            <div class="col-md-12">
+                                <button class="btn btn-secondary" type="submit">Alterar</button>
+                            </div>
+                            </form>
                         </div>
                         <div class="col-md-12">
                             <div class="row justify-content-center">
                                 <div class="col-xs-6">
-                                    <a href="link comprar">
-                                        <button class="btn btn-outline-danger">
-                                            <ion-icon name="close-circle-outline" size="small"></ion-icon>
-                                            <strong>Excluir</strong>
-                                        </button>
-                                    </a>
+                                    <form th:action="@{'/cliente/carrinho/exc/' + ${i.index}}" method="post">
+                                            <button class="btn btn-danger" type="submit">Excluir</button>
+                                    </form>
                                 </div>
                                 <div class="col-xs-6">
                                     <a href="link comprar">
@@ -144,9 +147,12 @@
                 </div>
                 <div class="col-md-10">
                     <ul>
-                    <li th:each="produto : ${produtos}" ><span th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo + ' - R$' + produto.precoDeVenda}"></span></li>
+                        <li th:each="produto : ${produtos}"><span
+                                th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo + ' - R$' + produto.precoDeVenda}"></span>
+                        </li>
                     </ul>
-                    <div class="col-md-12" style="background-color: #93c157; color: #f8f8ff; text-align: center; margin-bottom: 20px">
+                    <div class="col-md-12"
+                        style="background-color: #93c157; color: #f8f8ff; text-align: center; margin-bottom: 20px">
                         <span>Total - R$11500.0</span>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Frete;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Pagamento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
@@ -31,6 +32,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -54,12 +57,10 @@ public class CompraController {
     }
 
 @GetMapping("/realizar-compra")
-public ModelAndView realizarCompra(){
+public ModelAndView realizarCompra(HttpServletRequest request, HttpServletResponse response){
         ModelAndView mv =new ModelAndView("/compra/realizarCompra.html");
-        Compra compra=new Compra();
-        compra.setCliente(genCliente());
-        compra.setProdutos(produtoService.findAll());
-        mv.addObject("compra", compra);
+        CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
+        mv.addObject("compra", compraDTO);
         return mv;
 }
     @GetMapping("/confirmar-compra/teste")

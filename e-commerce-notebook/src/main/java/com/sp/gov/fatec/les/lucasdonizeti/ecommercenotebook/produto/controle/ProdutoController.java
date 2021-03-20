@@ -1,5 +1,7 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.controle;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.dto.*;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.service.ArmazenamentoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.service.RAMService;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -48,9 +52,16 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ModelAndView inicial(RedirectAttributes redirectAttributes) {
+    public ModelAndView inicial(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv = new ModelAndView("/produto/index.html");
         mv.addObject("produtos", produtoService.findAll());
+        CompraDTO compraDTO;
+        if (request.getSession().getAttribute("compra") == null)
+            compraDTO = new CompraDTO();
+        else
+            compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
+
+        request.getSession().setAttribute("compra", compraDTO);
         return mv;
     }
 
@@ -60,7 +71,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/detalhes/{hash}")
-    public ModelAndView detalhes(@PathVariable("hash") UUID hash) {
+    public ModelAndView detalhes(@PathVariable("hash") UUID hash, HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv = new ModelAndView("/produto/detalhes.html");
         Optional<Produto> produto = produtoService.findById(hash);
         if (produto.isPresent())
@@ -71,7 +82,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/all")
-    public List<Produto> produtos(){
+    public List<Produto> produtos() {
         return produtoService.findAll();
     }
 
@@ -88,7 +99,7 @@ public class ProdutoController {
     public ModelAndView editar(@PathVariable("hash") UUID hash) {
         ModelAndView mv = new ModelAndView("/produto/cadastro.html");
         mv.addObject("precificacoes", precificacaoService.findAll());
-        Optional<Produto> produtoOptional=produtoService.findById(hash);
+        Optional<Produto> produtoOptional = produtoService.findById(hash);
         if (produtoOptional.isPresent())
             mv.addObject("produto", produtoOptional.get());
         else
@@ -122,7 +133,7 @@ public class ProdutoController {
             if (!removeArmazenamento.get().equals("") && removeArmazenamento.get() != null) {
                 int i = Integer.parseInt(removeArmazenamento.get());
                 ArmazenamentoDTO armazenamentoDTO = produtoDTO.getNotebook().getArmazenamentoList().get(i);
-                if (armazenamentoDTO.getId()!=null)
+                if (armazenamentoDTO.getId() != null)
                     armazenamentoService.delete(ArmazenamentoDTO.dtoToObjeto(armazenamentoDTO));
 
                 produtoDTO.getNotebook().rmArmazenamento(i);
@@ -134,9 +145,9 @@ public class ProdutoController {
             }
         if (removeRam.isPresent())
             if (!removeRam.get().equals("") && removeRam.get() != null) {
-                int i=Integer.parseInt(removeRam.get());
+                int i = Integer.parseInt(removeRam.get());
                 RAMDTO ramdto = produtoDTO.getNotebook().getRamList().get(i);
-                if (ramdto.getId()!=null)
+                if (ramdto.getId() != null)
                     ramService.delete(RAMDTO.dtoToObjeto(ramdto));
                 produtoDTO.getNotebook().rmRam(i);
                 ModelAndView mv = new ModelAndView("/produto/cadastro.html");
@@ -187,13 +198,13 @@ public class ProdutoController {
     }
 
     @GetMapping("/negarHabilitado/{hash}")
-    public ModelAndView desabilitarProduto(@PathVariable("hash") UUID hash){
+    public ModelAndView desabilitarProduto(@PathVariable("hash") UUID hash) {
         produtoService.inverterHabilitado(hash);
         return new ModelAndView("redirect:/adm/produtos");
     }
 
     @GetMapping("/precificacao/cadastro")
-    public ModelAndView cadastroPrecificacao(){
+    public ModelAndView cadastroPrecificacao() {
         ModelAndView mv = new ModelAndView("/produto/precificacao.html");
         mv.addObject("precificacao", new PrecificacaoDTO());
         return mv;
@@ -201,7 +212,7 @@ public class ProdutoController {
 
     @PostMapping("/precificacao/cadastro")
     public ModelAndView cadastroPrecificacaoPost(@Valid @ModelAttribute("precificacao") PrecificacaoDTO precificacaoDTO,
-                                                 BindingResult erros){
+                                                 BindingResult erros) {
         if (erros.hasErrors()) {
             ModelAndView mv = new ModelAndView("/produto/precificacao.html");
             mv.addObject("precificacao", precificacaoDTO);
@@ -213,7 +224,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/precificacao/editar/{hash}")
-    public ModelAndView cadastroPrecificacaoEditar(@PathVariable("hash") UUID hash){
+    public ModelAndView cadastroPrecificacaoEditar(@PathVariable("hash") UUID hash) {
         ModelAndView mv = new ModelAndView("/produto/precificacao.html");
         Optional<Precificacao> precificacaoDTOOptional = precificacaoService.findById(hash);
         if (precificacaoDTOOptional.isPresent())

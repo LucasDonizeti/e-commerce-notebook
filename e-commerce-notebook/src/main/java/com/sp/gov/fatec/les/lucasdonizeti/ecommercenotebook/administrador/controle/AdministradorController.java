@@ -6,6 +6,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
@@ -25,6 +26,8 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,11 +51,16 @@ public class AdministradorController {
 
     private final ProdutoService produtoService;
     private final PrecificacaoService precificacaoService;
+    private final UsuarioServico usuarioServico;
+    private final ClienteServico clienteServico;
 
     @Autowired
-    public AdministradorController(ProdutoService produtoService, PrecificacaoService precificacaoService) {
+    public AdministradorController(ProdutoService produtoService, PrecificacaoService precificacaoService,
+                                   UsuarioServico usuarioServico, ClienteServico clienteServico) {
         this.produtoService = produtoService;
         this.precificacaoService = precificacaoService;
+        this.usuarioServico = usuarioServico;
+        this.clienteServico = clienteServico;
     }
 
     @GetMapping("/visaoGeral")
@@ -64,10 +72,12 @@ public class AdministradorController {
     @GetMapping("/clientes")
     public ModelAndView clientes(){
         ModelAndView mv=new ModelAndView("/adm/clientes.html");
-        List<ClienteDTO> clienteDTOS=new ArrayList<>();
-        clienteDTOS.add(ClienteDTO.objetoToDto(genCliente2()));
-        clienteDTOS.add(ClienteDTO.objetoToDto(genCliente()));
-        mv.addObject("clientes", clienteDTOS);
+        List<Cliente> clientes=clienteServico.findAll();
+        List<ClienteDTO> clienteList=new ArrayList<>();
+        clientes.forEach(u->{
+                clienteList.add(ClienteDTO.objetoToDto(u));
+        });
+        mv.addObject("clientes", clienteList);
         return mv;
     }
 

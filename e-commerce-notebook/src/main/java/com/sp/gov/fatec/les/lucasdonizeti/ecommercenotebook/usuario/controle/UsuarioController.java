@@ -1,5 +1,6 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.controle;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
@@ -12,6 +13,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * author LucasDonizeti
@@ -22,15 +26,17 @@ import org.springframework.web.servlet.ModelAndView;
 public class UsuarioController {
     private final UsuarioServico usuarioServico;
     private final ProdutoService produtoService;
+    private final ClienteServico clienteServico;
 
     @Autowired
-    public UsuarioController(UsuarioServico usuarioServico, ProdutoService produtoService) {
+    public UsuarioController(UsuarioServico usuarioServico, ProdutoService produtoService, ClienteServico clienteServico) {
         this.usuarioServico = usuarioServico;
         this.produtoService = produtoService;
+        this.clienteServico = clienteServico;
     }
 
     @GetMapping("/login")
-    public ModelAndView login() {
+    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv=new ModelAndView("/usuario/login.html");
         mv.addObject("usuarioDto", new UsuarioDTO());
         return mv;
@@ -38,7 +44,7 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ModelAndView logar(@ModelAttribute("usuarioDto") UsuarioDTO usuarioDTO,
-                              BindingResult errors) {
+                              BindingResult errors,HttpServletRequest request, HttpServletResponse response) {
         if (errors.hasErrors()){
             ModelAndView mv = new ModelAndView("/usuario/login.html");
             mv.addObject("usuarioDTO", usuarioDTO);
@@ -47,7 +53,7 @@ public class UsuarioController {
         }
 
         if (usuarioDTO.getLogin().equals("teste@gmail.com") && usuarioDTO.getSenha().equals("1234aaBB$")) {
-            ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
+            ModelAndView mv = new ModelAndView("redirect:/cliente/carrinho/" + clienteServico.findAll().get(0).getId());
 
             Usuario usuario=new Usuario();
             usuario.setNome("usuario teste");
