@@ -22,7 +22,7 @@ import java.util.UUID;
 @Setter
 @DocumentoValidador
 public class DocumentoDTO {
-    private UUID hash;
+    private UUID id;
 
     @NotBlank
     private String codigo;
@@ -35,9 +35,6 @@ public class DocumentoDTO {
 
     public static Documento dtoToObjeto(DocumentoDTO documentoDTO){
         Documento documento = DozerBeanMapperBuilder.buildDefault().map(documentoDTO, Documento.class);
-        if (documento.getHash() == null){
-            documento.genHash();
-        }
         return documento;
     }
 }

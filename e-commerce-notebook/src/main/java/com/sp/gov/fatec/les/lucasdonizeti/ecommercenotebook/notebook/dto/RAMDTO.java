@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class RAMDTO {
-    private UUID hash;
+    private UUID id;
     @NotNull
     private int memoria;
     @NotBlank

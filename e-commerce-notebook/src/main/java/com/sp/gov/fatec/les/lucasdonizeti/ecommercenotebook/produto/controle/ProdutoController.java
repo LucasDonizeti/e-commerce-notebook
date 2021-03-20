@@ -130,7 +130,7 @@ public class ProdutoController {
             mv.addObject("erros", erros.getAllErrors());
             return mv;
         }
-        if (produtoDTO.getHash()== null) {
+        if (produtoDTO.getId()== null) {
             ModelAndView mv = new ModelAndView("redirect:/adm/produtos");
             return mv;
         }else {
@@ -363,7 +363,6 @@ public class ProdutoController {
         produto1.addImagem(imagem5);
         produto1.addImagem(imagem6);
         produto1.addImagem(imagem7);
-        produto1.setHash(UUID.randomUUID());
 
         produto1.setNotebook(avell);
         return produto1;

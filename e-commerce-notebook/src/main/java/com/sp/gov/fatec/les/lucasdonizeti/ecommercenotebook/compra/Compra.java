@@ -6,6 +6,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "_compra")
+@SQLDelete(sql = "update _compra set habilitado = 0 where id = ?")
 public class Compra extends EntidadeDominio implements Serializable {
     @ManyToMany
     public List<Produto> produtos=new ArrayList<>();

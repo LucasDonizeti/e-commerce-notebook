@@ -4,7 +4,7 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone;
  * author LucasDonizeti
  */
 public enum TipoTelefone {
-    MOVEL("Movel"),
+    MOVEL("Móvel"),
     FIXO("Fixo");
 
     private String descricao;

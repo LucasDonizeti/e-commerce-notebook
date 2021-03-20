@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class PrecificacaoDTO {
-    private UUID hash;
+    private UUID id;
     @NotBlank
     private String nome;
     @NotNull

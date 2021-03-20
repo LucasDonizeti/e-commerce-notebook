@@ -134,7 +134,7 @@ public class DtoTests {
         assertEquals(cartaoDTO.getCvv(), cartao.getCvv());
         assertEquals(cartaoDTO.getNumero(), cartao.getNumero());
         assertEquals(cartaoDTO.getBandeira(), cartao.getBandeira());
-        assertEquals(cartaoDTO.getHash(), cartao.getHash());
+        assertEquals(cartaoDTO.getId(), cartao.getId());
     }
 
     @Test
@@ -151,8 +151,6 @@ public class DtoTests {
         assertEquals(cartaoDTO.getCvv(), cartao.getCvv());
         assertEquals(cartaoDTO.getNumero(), cartao.getNumero());
         assertEquals(cartaoDTO.getBandeira(), cartao.getBandeira());
-        assertNotEquals(cartaoDTO.getHash(), cartao.getHash());
-        assertNotNull(cartao.getHash());
     }
 
     //Cliente
@@ -164,7 +162,6 @@ public class DtoTests {
 
         assertEquals(clienteDTO.getCartoes().get(0).getNumero(), clienteDTO.getCartoes().get(0).getNumero());
         assertEquals(clienteDTO.getDataNascimentoDto(), cliente.getDataNascimento());
-        assertEquals(cliente.getHash(), clienteDTO.getHash());
     }
 
     @Test
@@ -175,7 +172,6 @@ public class DtoTests {
 
         assertEquals(clienteDTO.getCartoes().get(0).getNumero(), clienteDTO.getCartoes().get(0).getNumero());
         assertEquals(clienteDTO.getDataNascimentoDto(), cliente.getDataNascimento());
-        assertNotNull(cliente.getHash());
     }
 
     private Cliente genCliente() {
@@ -294,7 +290,6 @@ public class DtoTests {
         CompraDTO compraDTO=CompraDTO.objetoToDto(compra);
 
         assertEquals(compra.getFrete().getValor(), compraDTO.getFrete().getValor());
-        assertEquals(compraDTO.getHash(), compra.getHash());
     }
     @Test
     public void CompraDtoToCompra() {
@@ -302,7 +297,6 @@ public class DtoTests {
 
         Compra compra=CompraDTO.dtoToObjeto(compraDTO);
 
-        assertEquals(compraDTO.getHash(), compra.getHash());
     }
 
     private Compra genCompra() {
@@ -500,12 +494,10 @@ public class DtoTests {
         cupom.setTipoCupom(TipoCupom.PROMOCIONAL);
         cupom.setValor(50f);
         CupomDTO cupomDTO=CupomDTO.objetoToDto(cupom);
-        cupomDTO.setHash(null);
 
         Cupom cupom1=CupomDTO.dtoToObjeto(cupomDTO);
 
         assertEquals(cupomDTO.getCodigo(), cupom1.getCodigo());
-        assertNotNull(cupom1.getHash());
     }
 
     //Notebook
@@ -515,7 +507,6 @@ public class DtoTests {
 
         NotebookDTO notebookDTO=NotebookDTO.objetoToDto(notebook);
 
-        assertEquals(notebookDTO.getGpu().getHash(), notebook.getGpu().getHash());
     }
     @Test
     public void NotebookDtoToNotebook(){
@@ -523,7 +514,6 @@ public class DtoTests {
 
         Notebook notebook=NotebookDTO.dtoToObjeto(notebookDTO);
 
-        assertEquals(notebookDTO.getGpu().getHash(), notebook.getGpu().getHash());
     }
 
     //Produto

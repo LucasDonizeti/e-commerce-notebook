@@ -27,7 +27,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CompraDTO {
-    private UUID hash;
+    private UUID id;
 
     @Size(min = 1)
     public List<ProdutoDTO> produtos = new ArrayList<>();
@@ -55,15 +55,6 @@ public class CompraDTO {
 
     public static Compra dtoToObjeto(CompraDTO compraDTO) {
         Compra compra = DozerBeanMapperBuilder.buildDefault().map(compraDTO, Compra.class);
-        if (compra.getHash() == null)
-            compra.genHash();
-
-        for (Pagamento p : compra.getPagamentos())
-            if (p.getHash() == null)
-                p.genHash();
-
-        if (compra.getFrete() == null)
-            compra.getFrete().genHash();
         return compra;
     }
 }

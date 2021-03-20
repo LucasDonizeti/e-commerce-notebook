@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class TelaDTO {
-    private UUID hash;
+    private UUID id;
     @NotBlank
     @Size(max=4)
     private String tamanho;

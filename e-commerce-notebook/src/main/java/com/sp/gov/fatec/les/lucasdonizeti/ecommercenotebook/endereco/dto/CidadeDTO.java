@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class CidadeDTO {
+    private UUID id;
     @NotBlank
     @Size(min = 5, message = "cidade invalida")
     private String nome;

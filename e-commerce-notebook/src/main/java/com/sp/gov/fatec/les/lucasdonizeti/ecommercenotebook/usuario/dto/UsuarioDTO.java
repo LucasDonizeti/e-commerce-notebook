@@ -1,7 +1,6 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
+
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.validacao.EmailValidator;
@@ -20,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class UsuarioDTO {
-    private UUID hash;
+    private UUID id;
 
     @NotBlank(message = "login não pode ser vazio")
     @EmailValidator(message = "Email invalido")
@@ -37,9 +36,6 @@ public class UsuarioDTO {
 
     public static Usuario dtoToObjeto(UsuarioDTO dto){
         Usuario objeto = DozerBeanMapperBuilder.buildDefault().map(dto, Usuario.class);
-        if (objeto.getHash()==null)
-            objeto.genHash();
-
         return objeto;
     }
 

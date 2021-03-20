@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CupomDTO {
-    private UUID hash;
+    private UUID id;
     @NotNull
     private Float valor;
     @NotEmpty
@@ -34,9 +34,6 @@ public class CupomDTO {
 
     public static Cupom dtoToObjeto(CupomDTO cupomDTO){
         Cupom cupom = DozerBeanMapperBuilder.buildDefault().map(cupomDTO, Cupom.class);
-        if (cupom.getHash() == null){
-            cupom.genHash();
-        }
         return cupom;
     }
 }

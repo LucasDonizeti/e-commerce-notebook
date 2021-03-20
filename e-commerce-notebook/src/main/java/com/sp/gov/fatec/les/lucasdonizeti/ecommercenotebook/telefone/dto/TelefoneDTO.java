@@ -23,7 +23,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class TelefoneDTO {
-    private UUID hash;
+    private UUID id;
     @NotBlank
     @NumeroTelefoneValidador
     private String numero;
@@ -37,9 +37,6 @@ public class TelefoneDTO {
 
     public static Telefone dtoToObjeto(TelefoneDTO dto){
         Telefone objeto = DozerBeanMapperBuilder.buildDefault().map(dto, Telefone.class);
-        if (objeto.getHash()==null)
-            objeto.genHash();
-
         return objeto;
     }
 

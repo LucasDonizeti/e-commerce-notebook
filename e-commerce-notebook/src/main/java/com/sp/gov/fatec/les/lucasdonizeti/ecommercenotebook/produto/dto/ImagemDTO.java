@@ -11,6 +11,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ImagemDTO {
-    private UUID hash;
+    private UUID id;
     private String link;
 }

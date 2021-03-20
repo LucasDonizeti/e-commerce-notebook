@@ -16,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CartaoDTO {
-    private UUID hash;
+    private UUID id;
 
     @NotBlank
     @Size(min = 7, max = 21)
@@ -35,9 +35,6 @@ public class CartaoDTO {
 
     public static Cartao dtoToObjeto(CartaoDTO dto){
         Cartao cartao = DozerBeanMapperBuilder.buildDefault().map(dto, Cartao.class);
-        if (cartao.getHash() == null)
-            cartao.genHash();
-
         return cartao;
     }
     public static CartaoDTO objetoToDto(Cartao cartao) {

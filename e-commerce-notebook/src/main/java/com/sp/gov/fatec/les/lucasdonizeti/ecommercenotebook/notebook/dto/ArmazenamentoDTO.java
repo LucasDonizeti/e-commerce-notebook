@@ -15,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ArmazenamentoDTO {
-    private UUID hash;
+    private UUID id;
     @NotNull
     private int memoria;
 

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class FreteDTO {
+    private UUID id;
     @NotNull
     public EnderecoDTO endereco;
 

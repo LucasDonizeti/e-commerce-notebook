@@ -5,6 +5,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDomin
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Notebook;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "_produto")
+@SQLDelete(sql = "update _produto set habilitado = 0 where id = ?")
 public class Produto extends EntidadeDominio implements Serializable {
     @Column(name = "custo")
     private Float custo;

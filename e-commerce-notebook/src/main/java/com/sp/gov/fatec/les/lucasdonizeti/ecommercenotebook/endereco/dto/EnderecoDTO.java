@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class EnderecoDTO {
-    private UUID hash;
+    private UUID id;
 
     @NotBlank
     @Size(min=5, message = "bairro invalido")
@@ -47,10 +47,6 @@ public class EnderecoDTO {
 
     public static Endereco dtoToObjeto(EnderecoDTO dto){
         Endereco endereco = DozerBeanMapperBuilder.buildDefault().map(dto, Endereco.class);
-
-        if (endereco.getHash() == null)
-            endereco.genHash();
-
         return endereco;
     }
 

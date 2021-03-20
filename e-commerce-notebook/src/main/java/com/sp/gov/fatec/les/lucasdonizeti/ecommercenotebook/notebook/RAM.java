@@ -5,6 +5,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDomin
 import lombok.Getter;
 import lombok.Setter;
 import org.aspectj.weaver.ast.Not;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity(name = "_ram")
+@SQLDelete(sql = "update _ram set habilitado = 0 where id = ?")
 public class RAM extends EntidadeDominio implements Serializable {
     @Column(name = "memoria")
     private int memoria;

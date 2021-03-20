@@ -1,10 +1,13 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto;
 
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.dto.TelefoneDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
@@ -26,8 +29,8 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class ClienteDTO{
-    private UUID hash;
+public class ClienteDTO {
+    private UUID id;
 
     @Valid
     private UsuarioDTO usuario;
@@ -49,39 +52,39 @@ public class ClienteDTO{
 
     @Valid
     @NotNull(message = "Insira pelo menos 1 documento!")
-    @Size(min = 1,  message = "insira pelo menos 1 cartao")
-    private List<CartaoDTO> cartoes=new ArrayList<>();
+    @Size(min = 1, message = "insira pelo menos 1 cartao")
+    private List<CartaoDTO> cartoes = new ArrayList<>();
 
     @Valid
     @NotNull(message = "Insira pelo menos 1 documento!")
-    @Size(min = 1,  message = "insira pelo menos 1 documento")
-    private List<DocumentoDTO> documentos=new ArrayList<>();
+    @Size(min = 1, message = "insira pelo menos 1 documento")
+    private List<DocumentoDTO> documentos = new ArrayList<>();
 
     @Valid
     @NotNull(message = "Insira pelo menos 1 endereço!")
     @Size(min = 1, message = "insira pelo menos 1 endereço")
-    private List<EnderecoDTO> enderecos=new ArrayList<>();
+    private List<EnderecoDTO> enderecos = new ArrayList<>();
 
-    public void addEmptyDocumento(){
-        DocumentoDTO documentoDTO=new DocumentoDTO();
+    public void addEmptyDocumento() {
+        DocumentoDTO documentoDTO = new DocumentoDTO();
         this.documentos.add(documentoDTO);
     }
 
-    public void rmDocumento(int indice){
+    public void rmDocumento(int indice) {
         this.documentos.remove(indice);
     }
 
-    public void addEmptyCartao(){
-        CartaoDTO cartaoDTO=new CartaoDTO();
+    public void addEmptyCartao() {
+        CartaoDTO cartaoDTO = new CartaoDTO();
         this.cartoes.add(cartaoDTO);
     }
 
-    public void rmCartao(int indice){
+    public void rmCartao(int indice) {
         this.cartoes.remove(indice);
     }
 
-    public void addEmptyEndereco(){
-        EnderecoDTO enderecoDTO=new EnderecoDTO();
+    public void addEmptyEndereco() {
+        EnderecoDTO enderecoDTO = new EnderecoDTO();
         this.enderecos.add(enderecoDTO);
     }
 
@@ -89,19 +92,15 @@ public class ClienteDTO{
         this.enderecos.remove(i);
     }
 
-    public static ClienteDTO objetoToDto(Cliente cliente){
-        ClienteDTO clienteDTO= DozerBeanMapperBuilder.buildDefault().map(cliente, ClienteDTO.class);
+    public static ClienteDTO objetoToDto(Cliente cliente) {
+        ClienteDTO clienteDTO = DozerBeanMapperBuilder.buildDefault().map(cliente, ClienteDTO.class);
         clienteDTO.setDataNascimentoDto(cliente.getDataNascimento());
         return clienteDTO;
     }
 
-    public static Cliente dtoToObjeto(ClienteDTO clienteDTO){
-        Cliente cliente =DozerBeanMapperBuilder.buildDefault().map(clienteDTO, Cliente.class);
+    public static Cliente dtoToObjeto(ClienteDTO clienteDTO) {
+        Cliente cliente = DozerBeanMapperBuilder.buildDefault().map(clienteDTO, Cliente.class);
         cliente.setDataNascimento(clienteDTO.getDataNascimentoDto());
-
-        if (cliente.getHash()==null)
-            cliente.genHash();
-
         return cliente;
     }
 }

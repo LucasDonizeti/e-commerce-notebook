@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class GPUDTO {
-    private UUID hash;
+    private UUID id;
     @NotBlank
     @Size(max = 50)
     private String modelo;

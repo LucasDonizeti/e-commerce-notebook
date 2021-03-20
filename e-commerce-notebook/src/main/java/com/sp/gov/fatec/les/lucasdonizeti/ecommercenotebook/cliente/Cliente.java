@@ -9,6 +9,8 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,6 +25,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "_cliente")
+@SQLDelete(sql = "update _cliente set habilitado = 0 where id = ?")
 public class Cliente extends EntidadeDominio implements Serializable {
     @Column(name = "data_nascimento", nullable = false, updatable = false)
     private LocalDate dataNascimento;

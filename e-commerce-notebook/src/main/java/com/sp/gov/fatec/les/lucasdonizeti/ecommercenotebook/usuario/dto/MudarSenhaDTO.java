@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class MudarSenhaDTO {
+    private UUID id;
 
     @NotBlank(message = "senha não pode ser vazio")
     private String antiga;

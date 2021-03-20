@@ -22,7 +22,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class NotebookDTO {
-    private UUID hash;
+    private UUID id;
 
     @NotBlank
     private String codigo;
@@ -70,27 +70,6 @@ public class NotebookDTO {
 
     public static Notebook dtoToObjeto(NotebookDTO dto){
         Notebook objeto = DozerBeanMapperBuilder.buildDefault().map(dto, Notebook.class);
-
-        if (objeto.getHash() == null)
-            objeto.genHash();
-
-        for(Armazenamento a : objeto.getArmazenamentoList())
-            if (a.getHash() == null)
-                a.genHash();
-
-        if (objeto.getCpu().getHash() == null)
-            objeto.getCpu().genHash();
-
-        if (objeto.getGpu().getHash() == null)
-            objeto.getGpu().genHash();
-
-        for(RAM a : objeto.getRamList())
-            if (a.getHash() == null)
-                a.genHash();
-
-        if (objeto.getTela().getHash() == null)
-            objeto.getTela().genHash();
-
         return objeto;
     }
 

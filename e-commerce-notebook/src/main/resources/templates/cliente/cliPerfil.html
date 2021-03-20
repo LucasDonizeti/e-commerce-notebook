@@ -32,7 +32,7 @@
             <div class="col-md-2">
                 <div class="row">
                     <div class="col-md-6" style="text-align: center;">
-                        <a th:href="@{/cliente/cli/perfil}">
+                        <a th:href="@{'/cliente/cli/perfil/' + ${cliente.id}}">
                             <ion-icon name="person-circle-outline" size="large"></ion-icon>
                             <spam>Perfil</spam>
                         </a>
@@ -52,25 +52,25 @@
             <div class="row">
                 <div class="list-group col-md-12">
                     <button type="button" class="list-group-item list-group-item-action active">
-                        <a th:href="@{/cliente/cli/perfil}" style="text-decoration: none; color: white;">
+                        <a th:href="@{'/cliente/cli/perfil/' + ${cliente.id}}" style="text-decoration: none; color: white;">
                             <ion-icon name="person-circle-outline"></ion-icon>
                             <span>Visão Geral</span>
                         </a>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a th:href="@{/cliente/cli/editarPerfil}" style="text-decoration: none; color: blue;">
+                        <a th:href="@{'/cliente/cli/editarPerfil/' + ${cliente.id}}" style="text-decoration: none; color: blue;">
                             <ion-icon name="pencil-outline"></ion-icon>
                             Editar Perfil
                         </a>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action">
-                        <a th:href="@{/cliente/cli/mudarSenha}" style="text-decoration: none; color: blue;">
+                        <a th:href="@{'/cliente/cli/mudarSenha/' + ${cliente.id}}" style="text-decoration: none; color: blue;">
                             <ion-icon name="lock-open-outline"></ion-icon>
                             Mudar Senha
                         </a>
                     </button>
                     <button class="list-group-item list-group-item-action" type="button">
-                        <a th:href="@{/cliente/cli/acompanharPedidos}" style="text-decoration: none; color: blue;">
+                        <a th:href="@{'/cliente/cli/acompanharPedidos/' + ${cliente.id}}" style="text-decoration: none; color: blue;">
                             <ion-icon name="bag-handle-outline"></ion-icon>
                             Acompanhar Pedidos
                         </a>
@@ -87,27 +87,27 @@
                     <tbody>
                         <tr>
                             <th class="row">Nome</th>
-                            <td>Cliente Teste</td>
+                            <td th:text="${cliente.usuario.nome}"></td>
                         </tr>
                         <tr>
                             <th class="row">Email</th>
-                            <td>teste@gmail.com</td>
+                            <td th:text="${cliente.usuario.login}"></td>
                         </tr>
                         <tr>
                             <th class="row">Tipo</th>
-                            <td>Pessoa Fisica</td>
+                            <td th:text="${cliente.tipoCliente.getDescricao()}"></td>
                         </tr>
                         <tr>
                             <th class="row">Genero</th>
-                            <td>Masculino</td>
+                            <td th:text="${cliente.genero.getDescricao()}"></td>
                         </tr>
                         <tr>
                             <th class="row">Telefone</th>
-                            <td>(011)985372928 - MOVEL</td>
+                            <td th:text="${'(' + cliente.telefone.ddd + ') ' + cliente.telefone.numero + ' - ' + cliente.telefone.tipoTelefone.getDescricao()}"></td>
                         </tr>
                         <tr>
                             <th class="row">Nascimento</th>
-                            <td>26/07/2000</td>
+                            <td th:text="${#temporals.format(cliente.dataNascimentoDto, 'dd/MM/yyyy')}">26/07/2000</td>
                         </tr>
                     </tbody>
                 </table>
@@ -129,42 +129,47 @@
                         <div class="card">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseEndereco1"
+                                    <button th:each="endereco, i : ${cliente.enderecos}" class="btn btn-link" data-toggle="collapse" th:data-target="${'#collapseEndereco' + i.index}"
                                         aria-expanded="true" aria-controls="collapseOne">
                                         <ion-icon name="home-outline"></ion-icon>
-                                        <span style="color:blue;"> Endereco 1</span>
+                                        <span th:text="${endereco.rua + ', ' + endereco.numero}" style="color:blue;"></span>
                                     </button>
                                 </h5>
                             </div>
 
-                            <div id="collapseEndereco1" class="collapse" aria-labelledby="headingOne"
+                            <div th:each="endereco, i : ${cliente.enderecos}" th:id="${'collapseEndereco' + i.index}" class="collapse" aria-labelledby="headingOne"
                                 data-parent="#accordion">
                                 <div class="card-body">
                                     <table class="table">
                                         <tbody>
                                             <tr>
                                                 <th class="row">CEP</th>
-                                                <td>08710-000</td>
+                                                <td th:text="${cliente.enderecos[__${i.index}__].cep}"></td>
                                             </tr>
                                             <tr>
                                                 <th class="row">Cidade</th>
-                                                <td>Mogi das Cruzes</td>
+                                                <td th:text="${cliente.enderecos[__${i.index}__].cidade.nome}"></td>
                                             </tr>
                                             <tr>
                                                 <th class="row">Estado</th>
-                                                <td>São Paulo</td>
+                                                <td th:text="${cliente.enderecos[__${i.index}__].cidade.estado.getDescricao()}"></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <th class="row">Rua</th>
+                                                <td th:text="${ cliente.enderecos[__${i.index}__].rua + ', ' + cliente.enderecos[__${i.index}__].numero}"></td>
                                             </tr>
                                             <tr>
-                                                <th class="row">Numero</th>
-                                                <td>10</td>
+                                                <th class="row">Bairro</th>
+                                                <td th:text="${cliente.enderecos[__${i.index}__].bairro}"></td>
                                             </tr>
                                             <tr>
                                                 <th class="row">Longradouro</th>
-                                                <td>Rua A</td>
+                                                <td th:text="${cliente.enderecos[__${i.index}__].longradouro.getDescricao()}"></td>
                                             </tr>
                                             <tr>
                                                 <th class="row">Complemento</th>
-                                                <td>-</td>
+                                                <td th:text="${cliente.enderecos[__${i.index}__].tipoResidencia.getDescricao()}"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -191,61 +196,32 @@
                         <div class="card">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCartao1"
+                                    <button th:each="cartao, i : ${cliente.cartoes}" class="btn btn-link" data-toggle="collapse" th:data-target="${'#collapseCartao' + i.index}"
                                         aria-expanded="true" aria-controls="collapseOne">
                                         <ion-icon name="card-outline"></ion-icon>
-                                        <span style="color:blue;"> Cartão 1</span>
-                                    </button>
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCartao2"
-                                        aria-expanded="true" aria-controls="collapseOne">
-                                        <ion-icon name="card-outline"></ion-icon>
-                                        <span style="color:blue;"> Cartão 2</span>
+                                        <span th:text="${cartao.nome}" style="color:blue;"> Cartão 1</span>
                                     </button>
                                 </h5>
                             </div>
 
-                            <div id="collapseCartao1" class="collapse" aria-labelledby="headingOne"
+                            <div th:each="cartao, i : ${cliente.cartoes}" th:id="${'collapseCartao' + i.index}" class="collapse" aria-labelledby="headingOne"
                                 data-parent="#accordion">
                                 <div class="card-body">
                                     <table class="table">
                                         <tbody>
                                             <tr>
                                                 <th class="row">Numero</th>
-                                                <td>5527 7196 3092 8164</td>
+                                                <td th:text="${cliente.cartoes[__${i.index}__].numero}"></td>
                                             </tr>
                                             <tr>
                                                 <th class="row">Nome Impresso</th>
-                                                <td>Cartao 1</td>
+                                                <td th:text="${cliente.cartoes[__${i.index}__].nome}"></td>
                                             </tr>
                                             <tr>
                                                 <th class="row">Bandeira</th>
                                                 <td>
-                                                    <img src="https://www.4devs.com.br/imagens/cc/logo_master.jpg">
-                                                    Mastercard
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div id="collapseCartao2" class="collapse" aria-labelledby="headingOne"
-                                data-parent="#accordion">
-                                <div class="card-body">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <th class="row">Numero</th>
-                                                <td>5527 7196 3092 8164</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="row">Nome Impresso</th>
-                                                <td>Cartao 2</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="row">Bandeira</th>
-                                                <td>
-                                                    <img src="https://www.4devs.com.br/imagens/cc/logo_amex.jpg">
-                                                    Mastercard
+                                                    <img th:src="${cliente.cartoes[__${i.index}__].bandeira.getImagem()}">
+                                                    <span th:text="${cliente.cartoes[__${i.index}__].bandeira.getDescricao()}"></span>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -273,48 +249,26 @@
                         <div class="card">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseDoc1"
+                                    <button th:each="documento, i : ${cliente.documentos}" class="btn btn-link" data-toggle="collapse" th:data-target="${'#collapseDoc' + i.index}"
                                         aria-expanded="true" aria-controls="collapseOne">
                                         <ion-icon name="card-outline"></ion-icon>
-                                        <span style="color:blue;"> RG</span>
-                                    </button>
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseDoc2"
-                                        aria-expanded="true" aria-controls="collapseOne">
-                                        <ion-icon name="card-outline"></ion-icon>
-                                        <span style="color:blue;"> CPF</span>
+                                        <span th:text="${documento.tipoDocumento.getDescricao()}" style="color:blue;"></span>
                                     </button>
                                 </h5>
                             </div>
 
-                            <div id="collapseDoc1" class="collapse" aria-labelledby="headingOne"
+                            <div th:each="documento, i : ${cliente.documentos}" th:id="${'collapseDoc' + i.index}" class="collapse" aria-labelledby="headingOne"
                                 data-parent="#accordion">
                                 <div class="card-body">
                                     <table class="table">
                                         <tbody>
                                             <tr>
                                                 <th class="row">Tipo</th>
-                                                <td>RG</td>
+                                                <td th:text="${cliente.documentos[__${i.index}__].tipoDocumento.getDescricao()}"></td>
                                             </tr>
                                             <tr>
                                                 <th class="row">Codigo</th>
-                                                <td>391257699</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div id="collapseDoc2" class="collapse" aria-labelledby="headingOne"
-                                data-parent="#accordion">
-                                <div class="card-body">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <th class="row">Tipo</th>
-                                                <td>CPF</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="row">Codigo</th>
-                                                <td>29683745083</td>
+                                                <td th:text="${cliente.documentos[__${i.index}__].codigo}"></td>
                                             </tr>
                                         </tbody>
                                     </table>

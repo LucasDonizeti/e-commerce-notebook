@@ -3,6 +3,7 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,15 +19,12 @@ import java.util.UUID;
 @MappedSuperclass
 @Setter
 public class EntidadeDominio implements Serializable {
-    @Column(name = "id", nullable = false, unique = true)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    protected Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Type(type="uuid-char")
+    @Column(name = "id", updatable = false, unique = true, nullable = false)
+    private UUID id;
 
-    @Basic
-    @Column(name = "hash", nullable = false, unique = true, updatable = false)
-    @Convert(converter = ConverterUUIDString.class)
-    protected UUID hash;
 
     @Column(name = "data_criacao", nullable = false, updatable = false)
     protected LocalDateTime dataCriacao;
@@ -36,11 +34,7 @@ public class EntidadeDominio implements Serializable {
     protected boolean habilitado = true;
 
     public EntidadeDominio() {
-        this.hash = UUID.randomUUID();
+        this.id=UUID.randomUUID();
         this.dataCriacao = LocalDateTime.now();
-    }
-
-    public void genHash(){
-        this.hash = UUID.randomUUID();
     }
 }

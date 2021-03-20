@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class PagamentoDTO {
-    private UUID hash;
+    private UUID id;
     @NotNull
     private Float valor;
 

@@ -4,6 +4,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDomin
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ManyToAny;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "_usuario")
+@SQLDelete(sql = "update _usuario set habilitado = 0 where id = ?")
 public class Usuario extends EntidadeDominio implements Serializable {
 
     @Column(name = "login", nullable = false, length = 50)

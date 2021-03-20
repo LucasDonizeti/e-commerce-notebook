@@ -25,7 +25,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ProdutoDTO {
-    private UUID hash;
+    private UUID id;
     @NotNull
     private Float custo;
     @NotNull
@@ -61,37 +61,6 @@ public class ProdutoDTO {
 
     public static Produto dtoToObjeto(ProdutoDTO dto){
         Produto objeto = DozerBeanMapperBuilder.buildDefault().map(dto, Produto.class);
-
-        if (objeto.getHash() == null)
-            objeto.genHash();
-
-        if (objeto.getHash() == null)
-            objeto.genHash();
-
-        for(Armazenamento a : objeto.getNotebook().getArmazenamentoList())
-            if (a.getHash() == null)
-                a.genHash();
-
-        if (objeto.getNotebook().getCpu().getHash() == null)
-            objeto.getNotebook().getCpu().genHash();
-
-        if (objeto.getNotebook().getGpu().getHash() == null)
-            objeto.getNotebook().getGpu().genHash();
-
-        for(RAM a : objeto.getNotebook().getRamList())
-            if (a.getHash() == null)
-                a.genHash();
-
-        if (objeto.getNotebook().getTela().getHash() == null)
-            objeto.getNotebook().getTela().genHash();
-
-        for(Imagem a : objeto.getImagemList())
-            if (a.getHash() == null)
-                a.genHash();
-
-        if (objeto.getPrecificacao().getHash() == null)
-            objeto.getPrecificacao().getHash();
-
         return objeto;
     }
 
