@@ -15,14 +15,19 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Categoria;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.SO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.TipoArmazenamento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.dto.*;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ImagemDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.PrecificacaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ProdutoDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.PrecificacaoService;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -39,6 +45,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/adm")
 public class AdministradorController {
+
+    private final ProdutoService produtoService;
+    private final PrecificacaoService precificacaoService;
+
+    @Autowired
+    public AdministradorController(ProdutoService produtoService, PrecificacaoService precificacaoService) {
+        this.produtoService = produtoService;
+        this.precificacaoService = precificacaoService;
+    }
 
     @GetMapping("/visaoGeral")
     public ModelAndView home(){
@@ -56,15 +71,24 @@ public class AdministradorController {
         return mv;
     }
 
+    //verificado
     @GetMapping("/produtos")
     public ModelAndView produtos(){
         ModelAndView mv=new ModelAndView("/adm/produtos.html");
+        mv.addObject("produtos", produtoService.findAll());
+        mv.addObject("precificacoes", precificacaoService.findAll());
         return mv;
     }
 
-    @GetMapping("/detalheProduto")
-    public ModelAndView detalheProduto(){
+    //
+    @GetMapping("/detalheProduto/{hash}")
+    public ModelAndView detalheProduto(@PathVariable("hash") UUID hash){
         ModelAndView mv=new ModelAndView("/adm/detalheProduto.html");
+        Optional<Produto> produto = produtoService.findById(hash);
+        if (produto.isPresent())
+            mv.addObject("produto", produto.get());
+        else
+            System.out.println("Erro");
         return mv;
     }
 

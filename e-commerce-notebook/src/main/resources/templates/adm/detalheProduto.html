@@ -84,60 +84,82 @@
                     <tr>
                         <th scope="col">Cod</th>
                         <th scope="col">1</th>
-                        <td><span style="color: greenyellow;">Ativo</span></td>
+                        <td><span th:class="${produto.habilitado==true?'text-success':'text-danger'}" th:text="${produto.habilitado==true?'Ativo':'Inativo'}">Ativo</span></td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th scope="row" colspan="2">nome</th>
-                        <td>Avell A52 LIV</td>
+                        <th scope="row" colspan="2">Codigo</th>
+                        <td th:text="${produto.notebook.codigo}"></td>
                     </tr>
                     <tr>
-                        <th scope="row" colspan="2">Preço unitário</th>
-                        <td>R$8.000,00</td>
+                        <th scope="row" colspan="2">nome</th>
+                        <td th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" colspan="2">Categoria</th>
+                        <td th:text="${produto.notebook.categoria}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" colspan="2">Custo</th>
+                        <td th:text="${'R$' + #numbers.formatDecimal(produto.custo,3, 2,'COMMA')}"></td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Processador</th>
-                        <td>Intel® Core™ i7</td>
+                        <td th:text="${produto.notebook.cpu.modelo}">Intel® Core™ i7</td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Placa de vídeo</th>
-                        <td>GeForce® GTX 1650 (4GB GDDR6)</td>
+                        <td th:text="${produto.notebook.gpu.modelo}">GeForce® GTX 1650 (4GB GDDR6)</td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Tela</th>
-                        <td>15.6” 120Hz</td>
+                        <td th:text="${produto.notebook.tela.tamanho + '” ' + produto.notebook.tela.clock + 'Hz'}">15.6” 120Hz</td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Memória Principal</th>
-                        <td>16 GB RAM DDR4</td>
+                        <td><spam th:each="memoria : ${produto.notebook.ramList}"
+                            th:text="${memoria.memoria + 'GB ' +  memoria.clock + 'GHz  '}"></spam></td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Memória não volátil</th>
-                        <td>1TB HD + 256GB SSD</td>
+                        <td><spam th:each="memoria : ${produto.notebook.armazenamentoList}"
+                            th:text="${memoria.memoria + 'GB ' +  memoria.tipoArmazenamento + '  '}"></spam></td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Sistema Operacional</th>
-                        <td>Windows 10 Home Single Language</td>
+                        <td th:text="${produto.notebook.so.getDescricao()}">Windows 10 Home Single Language</td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Unidades em estoque</th>
-                        <td>15</td>
+                        <td th:text="${produto.estoque}">15</td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Unidades em processamento</th>
-                        <td>2</td>
+                        <td>implementar</td>
                     </tr>
                     <tr>
                         <th scope="row" colspan="2">Unidades vendidas</th>
-                        <td>3</td>
+                        <td>implementar</td>
                     </tr>
                     <tr>
-                        <th scope="row"><a href="admAdicionarProduto.html">
-                                <button class="btn btn-outline-warning">Desativar Produto</button>
+                        <th scope="row" colspan="2">Grupo de Precificação</th>
+                        <td th:text="${produto.precificacao.nome}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" colspan="2">Margem de Lucro</th>
+                        <td th:text="${produto.precificacao.margemDeLucro}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" colspan="2">Preco de Venda</th>
+                        <td th:text="${'R$' + #numbers.formatDecimal(produto.precoDeVenda,3, 2,'COMMA')}"></td>
+                    </tr>
+                    <tr>
+                        <th><a th:href="@{'/produto/negarHabilitado/' + ${produto.id}}">
+                                <button th:text="${produto.habilitado?'Desativar':'Ativar'}"  class="btn btn-outline-warning">Desativar Produto</button>
                             </a>
                         </th>
-                        <td><a th:href="@{/adm/detalheProduto/editar}">
+                        <td><a th:href="@{'/produto/editar/' + ${produto.id}}">
                                 <button class="btn btn-outline-primary">Editar Produto</button>
                             </a>
                         </td>

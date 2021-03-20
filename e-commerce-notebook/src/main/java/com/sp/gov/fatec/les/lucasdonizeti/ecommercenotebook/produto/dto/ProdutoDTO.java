@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.dozer.DozerBeanMapperBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ProdutoDTO {
     private List<ImagemDTO> imagemList=new ArrayList<>();
     @NotNull @Valid
     private NotebookDTO notebook;
-    @NotNull @Valid
+    @NotNull
     private PrecificacaoDTO precificacao;
 
     public Float getPrecoDeVenda(){

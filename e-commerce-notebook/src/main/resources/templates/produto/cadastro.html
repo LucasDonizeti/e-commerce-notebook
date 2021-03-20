@@ -54,11 +54,11 @@
                 <h3>Cadastro Produto</h3>
                 <br>
             </div>
-            <input type="text" th:field="*{hash}" hidden>
+            <input type="text" th:field="*{id}" hidden>
             <div class="form-group col-md-4">
                 <label>Custo</label>
                 <input type="number" th:class="${#fields.hasErrors('custo')?'form-control is-invalid':'form-control'}"
-                    placeholder="custo" th:field="*{custo}">
+                    placeholder="custo" step="0.01" th:field="*{custo}">
                 <spam class="text-danger" th:if="${#fields.hasErrors('custo')}" th:errors="*{custo}">
                 </spam>
             </div>
@@ -82,7 +82,7 @@
             <div class="form-row col-md-12 align-items-center justify-content-md-center" id="forms-documento">
                 <div class="form-group col-md-9">
                     <h3>Imagens</h3>
-                    <spam class="text-danger" th:if="${#fields.hasErrors('imagens')}" th:errors="*{imagens}">
+                    <spam class="text-danger" th:if="${#fields.hasErrors('imagemList')}" th:errors="*{imagemList}">
                     </spam>
                 </div>
                 <div class="form-group col-md-3">
@@ -90,16 +90,17 @@
                         <ion-icon name="add-circle-outline"></ion-icon>
                     </button>
                 </div>
-                <div th:each="imagem, i : *{imagens}"
+                <div th:each="imagem, i : *{imagemList}"
                     class="form-row col-md-12 border align-items-center justify-content-md-center"
                     style="margin-top:10px">
+                    <input type="text" th:field="*{imagemList[__${i.index}__].id}" hidden>
                     <div class="form-group col-md-4">
                         <label>Link</label>
                         <input type="text"
-                            th:class="${#fields.hasErrors('imagens[__${i.index}__].link')?'form-control is-invalid':'form-control'}"
-                            placeholder="Link" th:field="*{imagens[__${i.index}__].link}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('imagens[__${i.index}__].link')}"
-                            th:errors="*{imagens[__${i.index}__].link}"></spam>
+                            th:class="${#fields.hasErrors('imagemList[__${i.index}__].link')?'form-control is-invalid':'form-control'}"
+                            placeholder="Link" th:field="*{imagemList[__${i.index}__].link}">
+                        <spam class="text-danger" th:if="${#fields.hasErrors('imagemList[__${i.index}__].link')}"
+                            th:errors="*{imagemList[__${i.index}__].link}"></spam>
                     </div>
                     <div class="form-group col-md-4">
                         <button class="btn btn-danger" type="submit" name="removeImagem"
@@ -110,7 +111,7 @@
 
             <div class="col-md-12">
                 <h3>Notebook</h3>
-                <br>
+                <input type="text" th:field="*{notebook.id}" hidden>
             </div>
             <div class="form-group col-md-12">
                 <label>Codigo:</label>
@@ -142,6 +143,7 @@
 
             <div class="form-group col-md-4">
                 <label>CPU:</label>
+                <input type="text" th:field="*{notebook.cpu.id}" hidden>
                 <input type="text"
                     th:class="${#fields.hasErrors('notebook.cpu.modelo')?'form-control is-invalid':'form-control'}"
                     placeholder="CPU" th:field="*{notebook.cpu.modelo}">
@@ -151,6 +153,7 @@
             </div>
             <div class="form-group col-md-4">
                 <label>GPU:</label>
+                <input type="text" th:field="*{notebook.gpu.id}" hidden>
                 <input type="text"
                     th:class="${#fields.hasErrors('notebook.gpu.modelo')?'form-control is-invalid':'form-control'}"
                     placeholder="GPU" th:field="*{notebook.gpu.modelo}">
@@ -176,6 +179,7 @@
 
             <div class="form-group col-md-4">
                 <label>Tamanho tela:</label>
+                <input type="text" th:field="*{notebook.tela.id}" hidden>
                 <input type="text"
                     th:class="${#fields.hasErrors('notebook.tela.tamanho')?'form-control is-invalid':'form-control'}"
                     placeholder="tamanho" th:field="*{notebook.tela.tamanho}">
@@ -222,6 +226,7 @@
                 <div th:each="ram, i : *{notebook.ramList}"
                     class="form-row col-md-12 border align-items-center justify-content-md-center"
                     style="margin-top:10px">
+                    <input type="text" th:field="*{notebook.ramList[__${i.index}__].id}" hidden>
                     <div class="form-group col-md-5">
                         <label>Memória</label>
                         <input type="number"
@@ -259,6 +264,7 @@
                 <div th:each="armazenamento, i : *{notebook.armazenamentoList}"
                     class="form-row col-md-12 border align-items-center justify-content-md-center"
                     style="margin-top:10px">
+                    <input type="text" th:field="*{notebook.armazenamentoList[__${i.index}__].id}" hidden>
                     <div class="form-group col-md-5">
                         <label>Memória em GB</label>
                         <input type="number"
@@ -290,24 +296,26 @@
                 </div>
             </div>
 
-            <div class="form-group col-md-4">
-                <label>Grupo de Precificacao</label>
-                <input type="text" th:class="${#fields.hasErrors('precificacao.nome')?'form-control is-invalid':'form-control'}"
-                    placeholder="Nome" th:field="*{precificacao.nome}">
-                <spam class="text-danger" th:if="${#fields.hasErrors('precificacao.nome')}" th:errors="*{precificacao.nome}">
-                </spam>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Margem de lucro</label>
-                <input type="number" step="0.001" th:class="${#fields.hasErrors('precificacao.margemDeLucro')?'form-control is-invalid':'form-control'}"
-                    placeholder="precificacao.margemDeLucro" th:field="*{precificacao.margemDeLucro}">
-                <spam class="text-danger" th:if="${#fields.hasErrors('precificacao.margemDeLucro')}" th:errors="*{precificacao.margemDeLucro}">
-                </spam>
+            <div class="form-group col-md-8">
+                <label>Grupo de Precificação</label>
+                <select class="custom-select"
+                    th:field="*{precificacao.id}">
+                    <option value=>Selecione o grupo de precificação</option>
+                    <option
+                        th:each="precificacao : ${precificacoes}"
+                        th:class="${#fields.hasErrors('precificacao')?'form-control is-invalid':'form-control'}"
+                        th:value="${precificacao.id}" th:text="${precificacao.nome}"></option>
+                </select>
+                <spam class="text-danger"
+                    th:if="${#fields.hasErrors('precificacao')}"
+                    th:errors="*{precificacao}"></spam>
+                    <spam class="text-danger"
+                    th:text="${precificacaoErro}"></spam>
             </div>
 
             <div class="form-group offset-md-8 col-md-4 align-bottom" style="text-align: right;">
                 <button class="btn btn-primary" type="submit" id="btn-cadastrar"
-                    th:text="${produto.hash!=null?'Editar':'Cadastrar'}"></button>
+                    th:text="${produto.id!=null?'Editar':'Cadastrar'}">Cadastrar</button>
             </div>
 
         </form>

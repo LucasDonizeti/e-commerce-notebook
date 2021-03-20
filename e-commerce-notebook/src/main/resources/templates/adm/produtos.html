@@ -88,43 +88,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td><a th:href="@{/adm/detalheProduto}">Avell A52 LIV</a></td>
-                        <td><span style="color: greenyellow;">Ativo</span></td>
-                        <td><a th:href="@{/adm/detalheProduto}">
-                                <ion-icon name="pencil-outline"></ion-icon>
-                            </a></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td><a href="admDetalheProduto.html">Notebook Acer Aspire 5</a></td>
-                        <td><span style="color: greenyellow;">Ativo</span></td>
-                        <td><a href="admEditarProduto.html">
-                                <ion-icon name="pencil-outline"></ion-icon>
-                            </a></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td><a href="admDetalheProduto.html">Inspiron 14 5000</a></td>
-                        <td><span style="color: red;">Inativo</span></td>
-                        <td><a href="admEditarProduto.html">
-                                <ion-icon name="pencil-outline"></ion-icon>
-                            </a></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td><a href="admDetalheProduto.html">NAVE Polaris GK5NP5</a></td>
-                        <td><span style="color: greenyellow;">Ativo</span></td>
-                        <td><a href="admEditarProduto.html">
-                                <ion-icon name="pencil-outline"></ion-icon>
-                            </a></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">5</th>
-                        <td><a href="admDetalheProduto.html">Notebook Acer Aspire 5</a></td>
-                        <td><span style="color: greenyellow;">Ativo</span></td>
-                        <td><a href="admEditarProduto.html">
+                    <tr th:each="produto : ${produtos}">
+                        <th scope="row" th:text="${produto.notebook.codigo}"></th>
+                        <td><a th:href="@{'/adm/detalheProduto/' + ${produto.id}}" th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"></a></td>
+                        <td><span th:class="${produto.habilitado==true?'text-success':'text-danger'}" th:text="${produto.habilitado==true?'Ativo':'Inativo'}">Ativo</span></td>
+                        <td><a th:href="@{'/produto/editar/' + ${produto.id}}">
                                 <ion-icon name="pencil-outline"></ion-icon>
                             </a></td>
                     </tr>
@@ -133,6 +101,34 @@
             <div class="col-md-12">
                 <a th:href="@{/produto/cadastro}">
                     <button class="btn btn-outline-primary">Adicionar Produto</button>
+                </a>
+            </div>
+
+            <div class="row col-md-12 justify-content-md-center">
+                <h3>Grupos de Precificacao</h3>
+            </div>
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Margem de Lucro</th>
+                        <th scope="col" colspan="2">Editar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="precificacao : ${precificacoes}">
+                        <th th:text="${precificacao.nome}"></th>
+                        <td th:text="${precificacao.margemDeLucro}"></td>
+                        <td><a th:href="@{'/produto/precificacao/editar/' + ${precificacao.id}}">
+                                <ion-icon name="pencil-outline"></ion-icon>
+                            </a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="col-md-12">
+                <a th:href="@{/produto/precificacao/cadastro}">
+                    <button class="btn btn-outline-primary">Adicionar Grupo de Preficicação</button>
                 </a>
             </div>
         </div>

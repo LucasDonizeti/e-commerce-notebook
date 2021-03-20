@@ -20,7 +20,7 @@ import java.util.List;
 @Entity(name = "_notebook")
 @SQLDelete(sql = "update _notebook set habilitado = 0 where id = ?")
 public class Notebook extends EntidadeDominio implements Serializable {
-    @Column(name = "codigo", length = 10)
+    @Column(name = "codigo", length = 30)
     private String codigo;
 
     @Column(name = "marca", length = 50)
