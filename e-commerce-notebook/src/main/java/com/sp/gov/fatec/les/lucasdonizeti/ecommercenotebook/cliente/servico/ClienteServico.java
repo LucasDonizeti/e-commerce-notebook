@@ -5,6 +5,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.persistencia
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class ClienteServico {
     }
 
     public Cliente save(Cliente cliente) {
+        cliente.getUsuario().setSenha(BCrypt.hashpw(cliente.getUsuario().getSenha(), BCrypt.gensalt()));
         cliente.setUsuario(usuarioServico.save(cliente.getUsuario()));
         return clienteDAO.save(cliente);
     }
@@ -42,5 +44,9 @@ public class ClienteServico {
 
     public Optional<Cliente> findById(UUID id) {
         return clienteDAO.findById(id);
+    }
+
+    public Optional<Cliente> findByUsuarioId(UUID usuario){
+        return clienteDAO.findByUsuarioId(usuario);
     }
 }

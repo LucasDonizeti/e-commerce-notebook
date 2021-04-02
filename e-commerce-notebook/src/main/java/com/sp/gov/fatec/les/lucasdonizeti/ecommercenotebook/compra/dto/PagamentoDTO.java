@@ -15,6 +15,8 @@ import java.util.UUID;
 @Setter
 public class PagamentoDTO {
     private UUID id;
+
+    private Boolean habilitado=false;
     @NotNull
     private Float valor;
 

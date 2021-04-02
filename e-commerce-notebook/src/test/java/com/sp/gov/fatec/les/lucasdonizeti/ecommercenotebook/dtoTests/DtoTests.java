@@ -282,52 +282,6 @@ public class DtoTests {
         return cliente;
     }
 
-    //Compra
-    @Test
-    public void CompraToDto() {
-        Compra compra=genCompra();
-
-        CompraDTO compraDTO=CompraDTO.objetoToDto(compra);
-
-        assertEquals(compra.getFrete().getValor(), compraDTO.getFrete().getValor());
-    }
-    @Test
-    public void CompraDtoToCompra() {
-        CompraDTO compraDTO=CompraDTO.objetoToDto(genCompra());
-
-        Compra compra=CompraDTO.dtoToObjeto(compraDTO);
-
-    }
-
-    private Compra genCompra() {
-
-        Compra compra=new Compra();
-        compra.setProdutos(genProdutos());
-
-        Frete frete=new Frete();
-        Cliente cliente=genCliente();
-        frete.setEndereco(cliente.getEnderecos().get(0));
-        frete.setValor(15F);
-        compra.setFrete(frete);
-
-        Pagamento pagament=new Pagamento();
-        pagament.setCartao(cliente.getCartoes().get(0));
-        pagament.setValor(11515-10f);
-        List<Pagamento> pagamentoList=new ArrayList<>();
-        pagamentoList.add(pagament);
-        compra.setPagamentos(pagamentoList);
-
-        List<Cupom> cupomList=new ArrayList<>();
-        cupomList.add(cliente.getCupoms().get(0));
-        compra.setCupoms(cupomList);
-
-        compra.setCliente(cliente);
-
-        compra.setStatus(Status.EM_PROCESSAMENTO);
-
-        return compra;
-    }
-
     private List<Produto> genProdutos() {
             List<Produto> produtoList=new ArrayList<>();
             Notebook notebook = new Notebook();

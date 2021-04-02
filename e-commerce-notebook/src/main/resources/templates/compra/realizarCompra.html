@@ -49,6 +49,11 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-md-8">
+            <form th:action="@{/compra/realizar-compra}" method="POST" th:object="${compra}">
+                <input type="text" th:field="*{cliente.id}" hidden>
+                <input type="text" th:field="*{status}" hidden>
+                <input type="text" th:field="*{id}" hidden>
+
             <table class="table" style="background-color: aliceblue;">
                 <thead>
                     <tr>
@@ -67,18 +72,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="produto : ${compra.produtos}">
+                    <tr th:each="item, i : ${compra.itens}">
+                        <input type="text" th:field="*{itens[__${i.index}__].id}" hidden>
+                        <input type="text" th:field="*{itens[__${i.index}__].produto.id}" hidden>
+                        <input type="text" th:field="*{itens[__${i.index}__].status}" hidden>
+                        <input type="text" th:field="*{itens[__${i.index}__].quantidade}" hidden>
                         <th class="row">
-                            <span th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"></span>
+                            <span th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}"></span>
                         </th>
                         <td class="col">
-                            <span th:text="${produto.estoque}">1</span>
+                            <span th:text="${item.quantidade}">1</span>
                         </td>
                         <td>
-                            <span th:text="${'R$' + produto.precoDeVenda}"></span>
+                            <span th:text="${'R$' + item.produto.precoDeVenda}"></span>
                         </td>
                         <td>
-                            <span th:text="${'R$' + (produto.precoDeVenda * produto.estoque)}"></span>
+                            <span th:text="${'R$' + item.produto.subtotal}"></span>
                         </td>
                     </tr>
                 </tbody>
@@ -96,7 +105,7 @@
 
                         </th>
                         <th class="col">
-                            R$11500.0
+                            <span th:text="${compra.total}"></span>
                         </th>
                     </tr>
                 </thead>
@@ -104,27 +113,28 @@
             <table class="table align-items-center">
                 <thead>
                     <tr>
-                        <th class="col" style="width: 15%;">
+                        <th class="col" style="width: 20%;">
                             Frete
                         </th>
-                        <th class="col" style="width: 70%;">
+                        <th class="col" style="width: 60%;">
                             <div class="row">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="inputGroupEndereco">Endereço de
                                             entrega</label>
                                     </div>
-                                    <select>
-                                        <option value="">Selecione o endereço de entrega</option>
+                                    <select th:field="*{frete.endereco.id}">
+                                        <option th:if="${compra.frete.endereco.id==null}" value="">Selecione o endereço de entrega</option>
                                         <option th:each="endereco : ${compra.cliente.enderecos}"
+                                        th:value="${endereco.id}"
                                             th:text="${endereco.rua + ', ' + endereco.numero + ' - ' + endereco.cep}">
                                         </option>
                                     </select>
                                 </div>
                             </div>
                         </th>
-                        <th class="col" style="width: 15%;">
-                            R$15,00
+                        <th class="col" style="width: 20%;">
+                            <span th:text="${compra.frete.valor!=null?compra.frete.valor:''}"></span>
                         </th>
                     </tr>
                 </thead>
@@ -143,7 +153,7 @@
                             Valor Total
                         </th>
                         <th class="col" style="width: 15%;">
-                            R$11515.0
+                            <span th:text="${compra.valorDeCompra}"></span>
                         </th>
                     </tr>
                 </thead>
@@ -151,22 +161,18 @@
 
             <div class="col-md-12 border" style="margin-bottom: 10px;">
                 <h3>Cartao de credito</h3>
-                <div th:each="cartao : ${compra.cliente.cartoes}" class="row col-md-12  align-items-center">
+                <div th:each="cartao, i : ${compra.cliente.cartoes}" class="row col-md-12  align-items-center">
                     <div class="row col-md-6 align-items-center">
                         <div class="col-md-8">
-                            <input type="checkbox" th:value="${cartao.numero}">
-                            <label th:text="${cartao.nome}">Scales</label>
-                        </div>
-                        <div class="col-md-2"
-                            th:text="${' ' +cartao.numero[0] + cartao.numero[1] + cartao.numero[2]+ cartao.numero[3]}">
-                            8164
-                        </div>
-                        <div class="col-md-2">
-                            <img th:src="${cartao.bandeira.imagem}">
+                            <input type="text" th:field="*{pagamentos[__${i.index}__].id}" hidden>
+                            <input type="text" th:field="*{pagamentos[__${i.index}__].cartao.id}" hidden>
+                            <input type="checkbox" th:field="*{pagamentos[__${i.index}__].habilitado}">
+                            <label th:text="${cartao.nome}"></label>
+                            <img th:src="*{pagamentos[__${i.index}__].cartao.bandeira.imagem}">
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <input type="number" class="form-control" name="password" placeholder="valor" required />
+                        <input type="number" class="form-control" th:field="*{pagamentos[__${i.index}__].valor}"  placeholder="valor"/>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -180,12 +186,17 @@
                 <div class="row col-md-12  align-items-center">
                     <ul>
                         <li>
-                            <input type="radio" id="nenhum" name="cupom" value="none">
+                            <input type="radio" id="nenhum" th:field="*{cupomPromocional}" value=null>
                             <label for="nenhum">Nenhum</label>
                         </li>
-                        <li th:each="cupom, i : ${compra.cliente.cupoms}">
-                            <input type="radio" th:id="${'cupom_' + i.index}" name="cupom" th:value="${cupom.id}">
-                            <label th:for="${'cupom_' + i.index}"
+                        <li th:each="cupom, i : ${compra.cliente.cupoms}" th:if="cupom.tipoCupom == ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.tipoCupom.PROMOCIONAL)}">
+                            <input type="radio" th:id="${'cupom_' + i.index}" th:field="*{cupomPromocional}" th:value="${cupom.id}">
+                            <label th:for="${'cupom' + i.index}"
+                                th:text="${'R$'+cupom.valor + ' ' + cupom.tipoCupom.getDescricao()}"></label>
+                        </li>
+                        <li th:each="cupom, i : ${compra.cliente.cupoms}" th:if="cupom.tipoCupom == ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.tipoCupom.TROCA)}">
+                            <input type="checkbox" th:id="${'cupom_' + i.index}" th:field="*{cupomsDeTroca}" th:value="${cupom.id}">
+                            <label th:for="${'cupom' + i.index}"
                                 th:text="${'R$'+cupom.valor + ' ' + cupom.tipoCupom.getDescricao()}"></label>
                         </li>
                     </ul>
@@ -193,12 +204,11 @@
             </div>
             <div class="col-md-12">
                 <a th:href="@{/cliente/carrinho}">
-                    <button class="btn btn-danger">Cancelar</button>
+                    <button type="button" class="btn btn-danger">Cancelar</button>
                 </a>
-                <a th:href="@{/compra/confirmar-compra}">
-                    <button class="btn btn-success">Avançar</button>
-                </a>
+                    <button type="submit" class="btn btn-success">Avançar</button>
             </div>
+        </form>
         </div>
     </div>
     </div>

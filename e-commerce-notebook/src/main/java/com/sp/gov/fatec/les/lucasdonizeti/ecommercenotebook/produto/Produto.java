@@ -1,6 +1,7 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Item;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Notebook;
 import lombok.Getter;
@@ -37,6 +38,9 @@ public class Produto extends EntidadeDominio implements Serializable {
 
     @ManyToOne
     private Precificacao precificacao;
+
+    @OneToMany
+    private List<Item> items;
 
     public void addImagem(Imagem i){
         this.imagemList.add(i);

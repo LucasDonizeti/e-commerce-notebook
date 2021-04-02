@@ -1,5 +1,6 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
@@ -22,29 +23,33 @@ import java.util.List;
 @Entity(name = "_compra")
 @SQLDelete(sql = "update _compra set habilitado = 0 where id = ?")
 public class Compra extends EntidadeDominio implements Serializable {
-    @ManyToMany
-    public List<Produto> produtos=new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Item> itens=new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     public Frete frete;
 
     @ManyToOne
+    @JsonIgnore
     public Cliente cliente;
 
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos=new ArrayList<>();
 
     @OneToMany
-    private List<Cupom> cupoms=new ArrayList<>();
+    private List<Cupom> cupomsDeTroca=new ArrayList<>();
+
+    @OneToOne
+    private Cupom cupomPromocional;
 
     public Float getValorDeCompra(){
         float valorDeCompraFinal=0;
-        for (Produto p : produtos){
-            valorDeCompraFinal+=p.getPrecoDeVenda();
+        for (Item i : itens){
+            valorDeCompraFinal+=i.getProduto().getPrecoDeVenda();
         }
         valorDeCompraFinal+=frete.getValor();
 
@@ -57,9 +62,14 @@ public class Compra extends EntidadeDominio implements Serializable {
             totalPago+=p.getValor();
 
 
-        for (Cupom c:cupoms)
+        for (Cupom c:cupomsDeTroca)
             totalPago+=c.getValor();
+
+        if (cupomPromocional!=null)
+            totalPago+=cupomPromocional.getValor();
 
         return totalPago;
     }
+
+
 }

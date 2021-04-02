@@ -64,11 +64,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="produto : ${compra.produtos}">
+                    <tr th:each="item : ${compra.itens}">
                         <td class="" style="width: 80%;"
-                            th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}">
+                            th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}">
                         </td>
-                        <td class="" style="width: 20%;" th:text="${'R$' + produto.precoDeVenda}">
+                        <td class="" style="width: 20%;" th:text="${'R$' + item.produto.precoDeVenda}">
                         </td>
                     </tr>
                     <tr>
@@ -92,12 +92,18 @@
                         <td class="" style="width: 20%;" th:text="${'R$' + pagamento.valor}">
                         </td>
                     </tr>
-                    <tr>
+                    <tr th:each="cupom : ${compra.cupomsDeTroca}">
                         <td class="" style="width: 80%;"
-                            th:text="${compra.cupoms[0].tipoCupom}">
+                            th:text="${cupom.codigo}">
                         </td>
-                        <td class="" style="width: 20%;" th:text="${'R$' + compra.cupoms[0].valor}">
+                        <td class="" style="width: 20%;" th:text="${'R$' + cupom.valor}">
                         </td>
+                    </tr>
+                    <tr th:if="${compra.cupomPromocional!=null}">
+                        <td class="" style="width: 80%;"
+                            th:text="${compra.cupomPromocional.codigo}">
+                        </td>
+                        <td class="" style="width: 20%;" th:text="${'R$' + compra.cupomPromocional.valor}">
                     </tr>
                 </tbody>
             </table>
@@ -107,7 +113,7 @@
                 <a th:href="@{/cliente/carrinho}">
                     <button class="btn btn-danger">Cancelar</button>
                 </a>
-                <a th:href="@{/compra/realizar-compra}">
+                <a th:href="@{'/compra/realizar-compra/' + compra.id}">
                     <button class="btn btn-warning">Voltar</button>
                 </a>
                 <a th:href="@{/cliente/cli/acompanharPedidos}">

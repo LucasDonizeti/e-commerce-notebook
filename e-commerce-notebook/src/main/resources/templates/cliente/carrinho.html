@@ -31,10 +31,17 @@
             </div>
             <div class="col-md-2">
                 <div class="row">
-                    <div class="col-md-6" style="text-align: center;">
+                    <div sec:authorize="!isAuthenticated()" class="col-md-6" style="text-align: center;">
                         <a th:href="@{/usuario/login}">
                             <ion-icon name="log-in-outline" size="large"></ion-icon>
                             <spam>login</spam>
+                        </a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="col-md-6" style="text-align: center;">
+                        <a th:href="@{/logout}">
+                            <ion-icon name="log-in-outline" size="large"></ion-icon>
+                            <spam>logout</spam>
+                            <span sec:authentication="name"></span>
                         </a>
                     </div>
                     <div class="col-md-6" style="text-align: center;">
@@ -57,24 +64,24 @@
     <div class="row">
         <div class="col-md-9">
             <div class="row justify-content-md-center border border-light">
-                <div th:each="produto, i : ${compra.produtos}"
+                <div th:if="${compra.itens!=null}" th:each="item, i : ${compra.itens}"
                     class="col-md-4 col-sm-6 slick-slide slick-current slick-active" style="margin-bottom: 20px">
                     <div class="item align-self-center">
                         <div class="col-md-12">
                             <figure>
-                                <a th:href="@{/produto/detalhes/} + ${produto.id}">
-                                    <img class="img-thumbnail" th:src="${produto.imagemList[0].link}"
+                                <a th:href="@{/produto/detalhes/} + ${item.produto.id}">
+                                    <img class="img-thumbnail" th:src="${item.produto.imagemList[0].link}"
                                         style="width: 100%; height: 225px; object-fit: cover; object-position: center;">
                                 </a>
                             </figure>
                         </div>
                         <div class="col-md-12" style="text-align: center;">
-                            <spam th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo}"
+                            <spam th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}"
                                 style="font-weight: bold;"></spam>
-                            <a th:href="@{/produto/detalhes/} + ${produto.id}" style="text-decoration: none;">
+                            <a th:href="@{/produto/detalhes/} + ${item.produto.id}" style="text-decoration: none;">
                                 <div class="col-md-12"
                                     style="background-color: #93c157; color: #f8f8ff; text-align: center;">
-                                    <span th:text="${'R$' + produto.precoDeVenda}"></span>
+                                    <span th:text="${'R$' + item.produto.precoDeVenda}"></span>
                                 </div>
                             </a>
                         </div>
@@ -85,7 +92,7 @@
                                     <span class="input-group-text">Quantidade</span>
                                 </div>
                                 <input type="number" min="1" class="form-control" placeholder="quantidade"
-                                    th:value="${session.compra.produtos[__${i.index}__].estoque}" id="n" name="n">
+                                    th:value="${session.compra.itens[__${i.index}__].quantidade}" id="n" name="n">
                             </div>
                             <div class="col-md-12">
                                 <button class="btn btn-secondary" type="submit">Alterar</button>
@@ -114,7 +121,7 @@
 
             </div>
         </div>
-        <div class="col-md-3" th:if="${usuarioLogado==null}">
+        <div class="col-md-3" sec:authorize="!isAuthenticated()">
             <div class="row justify-content-md-center">
                 <div class="col-md-12">
                     <div class="alert alert-warning" role="alert">
@@ -137,7 +144,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3" th:if="${usuarioLogado!=null}">
+        <div class="col-md-3" sec:authorize="isAuthenticated()">
             <div class="row justify-content-md-center">
                 <div class="col-md-12">
                     <div class="alert alert-primary" role="alert">
@@ -147,8 +154,8 @@
                 </div>
                 <div class="col-md-10">
                     <ul>
-                        <li th:each="produto : ${produtos}"><span
-                                th:text="${produto.notebook.marca + ' ' + produto.notebook.modelo + ' - R$' + produto.precoDeVenda}"></span>
+                        <li th:each="item : ${itens}"><span
+                                th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo + ' - R$' + item.produto.precoDeVenda}"></span>
                         </li>
                     </ul>
                     <div class="col-md-12"
