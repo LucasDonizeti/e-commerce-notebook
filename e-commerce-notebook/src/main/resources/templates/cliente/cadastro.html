@@ -31,10 +31,16 @@
             </div>
             <div class="col-md-2">
                 <div class="row">
-                    <div class="col-md-6" style="text-align: center;">
-                        <a href="#">
+                    <div sec:authorize="!isAuthenticated()" class="col-md-6" style="text-align: center;">
+                        <a th:href="@{/usuario/login}">
                             <ion-icon name="log-in-outline" size="large"></ion-icon>
                             <spam>login</spam>
+                        </a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="col-md-6" style="text-align: center;">
+                        <a th:href="@{/logout}">
+                            <ion-icon name="log-in-outline" size="large"></ion-icon>
+                            <spam>logout</spam>
                         </a>
                     </div>
                     <div class="col-md-6" style="text-align: center;">
@@ -328,7 +334,7 @@
                 </div>
             </div>
             <!--login-->
-            <div th:if="${clienteDTO.usuario==null}">
+            <div th:if="${clienteDTO.usuario.id==null}">
             <div class="form-group col-md-12">
                 <input type="text" th:field="*{usuario.id}" hidden>
                 <label for="inputNome">Email</label>
@@ -353,7 +359,7 @@
             </div>
         </div>
 
-        <div th:if="${clienteDTO.usuario!=null}">
+        <div th:if="${clienteDTO.usuario.id!=null}">
                 <input type="text" th:field="*{usuario.id}" hidden>
                 <input type="text" th:field="*{usuario.login}" hidden>
                 <input type="text" th:field="*{usuario.senha}" hidden>
@@ -361,7 +367,7 @@
 
             <div class="form-group offset-md-8 col-md-4 align-bottom" style="text-align: right;">
                 <button class="btn btn-primary" type="submit" id="btn-cadastrar"
-                    th:text="${clienteDTO.usuario!=null?'Editar':'Cadastrar'}">Cadastrar</button>
+                    th:text="${clienteDTO.usuario.id!=null?'Editar':'Cadastrar'}">Cadastrar</button>
             </div>
         </form>
     </div>

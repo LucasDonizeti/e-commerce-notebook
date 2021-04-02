@@ -38,46 +38,19 @@ public class UsuarioController {
     @GetMapping("/login")
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv=new ModelAndView("/usuario/login.html");
-        mv.addObject("usuarioDto", new UsuarioDTO());
         return mv;
     }
 
-    @PostMapping("/login")
-    public ModelAndView logar(@ModelAttribute("usuarioDto") UsuarioDTO usuarioDTO,
-                              BindingResult errors,HttpServletRequest request, HttpServletResponse response) {
-        if (errors.hasErrors()){
-            ModelAndView mv = new ModelAndView("/usuario/login.html");
-            mv.addObject("usuarioDTO", usuarioDTO);
-            mv.addObject("erros", errors.getAllErrors());
-            return mv;
-        }
-
-        if (usuarioDTO.getLogin().equals("teste@gmail.com") && usuarioDTO.getSenha().equals("1234aaBB$")) {
-            ModelAndView mv = new ModelAndView("redirect:/cliente/carrinho/" + clienteServico.findAll().get(0).getId());
-
-            Usuario usuario=new Usuario();
-            usuario.setNome("usuario teste");
-            usuario.setTipoUsuario(TipoUsuario.CLIENTE);
-            usuario.setLogin(usuarioDTO.getLogin());
-            usuario.setSenha(usuarioDTO.getSenha());
-            mv.addObject("usuarioLogado", usuario);
-            mv.addObject("produtos", produtoService.findAll());
-            return mv;
-        } else {
-            ModelAndView mv = new ModelAndView("/usuario/login.html");
-            mv.addObject("usuarioDTO", usuarioDTO);
-            mv.addObject("exception", "Login ou senha errada!");
-            return mv;
-        }
-
+    @GetMapping("/login-erro")
+    public ModelAndView loginErro(HttpServletRequest request, HttpServletResponse response) {
+        ModelAndView mv=new ModelAndView("/usuario/login.html");
+        mv.addObject("erro", "Email ou senha incorretos!");
+        return mv;
     }
 
-    @GetMapping("/teste")
-    public ResponseEntity<?> teste() {
-        Usuario usuario = new Usuario();
-        usuario.setTipoUsuario(TipoUsuario.CLIENTE);
-        usuario.setLogin("login");
-        usuario.setSenha("senha");
-        return new ResponseEntity<>(usuario, HttpStatus.OK);
+    @GetMapping("/acesso-negado")
+    public ModelAndView acessoNegado() {
+        ModelAndView mv=new ModelAndView("/acesso-negado.html");
+        return mv;
     }
 }

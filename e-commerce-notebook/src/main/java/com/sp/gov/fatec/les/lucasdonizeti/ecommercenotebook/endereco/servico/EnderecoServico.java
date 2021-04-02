@@ -5,6 +5,9 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.persistenci
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 /**
  * author LucasDonizeti
  */
@@ -19,5 +22,9 @@ public class EnderecoServico {
 
     public void remove(Endereco endereco){
         enderecoDAO.delete(endereco);
+    }
+
+    public Optional<Endereco> findById(UUID id){
+        return enderecoDAO.findById(id);
     }
 }

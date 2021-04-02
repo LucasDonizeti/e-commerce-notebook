@@ -52,17 +52,15 @@
             <div class="wrapper">
                 <h2 class="form-signin-heading">Login</h2>
                 <br>
-                <span class="text-danger" th:if="${exception != null}" th:text="${exception}"></span>
-                <form class="form-signin text-center" th:action="@{/usuario/login}" th:object="${usuarioDto}" method="POST">
+                <form class="form-signin text-center" th:action="@{/usuario/login}" method="POST">
+                    <span th:text="${erro}" class="text-danger"></span>
                     <label for="inputLogin">Login</label>
-                    <input type="text" th:class="${#fields.hasErrors('login')?'form-control is-invalid':'form-control'}"
-                        id="usu-login" placeholder="Login" th:field="*{login}">
-                    <spam class="text-danger" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></spam>
+                    <input type="text" name="email" is="email"
+                    th:class="${erro!=null?'form-control is-invalid':'form-control'}">
                     <br>
                     <label for="inputSenha">Senha</label>
-                    <input type="text" th:class="${#fields.hasErrors('senha')?'form-control is-invalid':'form-control'}"
-                        id="usu-senha" placeholder="Senha" th:field="*{senha}">
-                    <spam class="text-danger" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></spam>
+                    <input type="password" name="senha" is="senha"
+                    th:class="${erro!=null?'form-control is-invalid':'form-control'}">
                     <br>
                         <button class="btn btn-lg btn-primary" type="submit">Login</button>
                     <a th:href="@{/cliente/cadastro}">

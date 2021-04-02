@@ -61,48 +61,27 @@
                         <th class="col">
                             Preco Unitário
                         </th>
-                        <th class="col">
-                            Subtotal
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th class="row">
-                            Avell A52 LIV
+                    <tr th:each="item : ${compra.itens}">
+                        <th class="row" th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}">
                         </th>
-                        <td>
-                            1
+                        <td th:text="${item.quantidade}">
+                            
                         </td>
-                        <td>
-                            R$8.000,00
-                        </td>
-                        <td>
-                            R$8.000,00
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="row">
-                            Samsumg Odyssey
-                        </th>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            R$6.000,00
-                        </td>
-                        <td>
-                            R$6.000,00
+                        <td th:text="${item.produto.precoDeVenda}">
+                            
                         </td>
                     </tr>
                     <tr>
                         <th class="row">
                             Frete
                         </th>
-                        <td colspan="2">
+                        <td colspan="2" th:text="${compra.frete.endereco.rua + ', ' + compra.frete.endereco.numero + ' ' + compra.frete.endereco.cidade.nome + '/' + compra.frete.endereco.cidade.estado.descricao + ' ' + compra.frete.endereco.cep}">
                             Rua a, 15 Mogi das Cruzes/SP
                         </td>
-                        <td>
+                        <td th:text="${compra.frete.valor}">
                             R$15,00
                         </td>
                     </tr>
@@ -110,7 +89,7 @@
                         <th class="col" colspan="3" style="width: 85%;">
                             Valor Total
                         </th>
-                        <th class="col" style="width: 15%;">
+                        <th class="col" style="width: 15%;" th:text="${compra.valorDeCompra}">
                             R$14.015,00
                         </th>
                     </tr>
@@ -120,15 +99,15 @@
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col" colspan="3">status</th>
-                    <th scope="col">Em análise</th>
+                    <th scope="col" th:text="${compra.status.descricao}">Em análise</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">Cartão 1</th>
-                    <td>5527 7196 3092 8164</td>
-                    <td><img src="https://www.4devs.com.br/imagens/cc/logo_master.jpg"></td>
-                    <td>R$14.015,00</td>
+                  <tr th:each="pagamento : ${compra.pagamentos}">
+                    <th scope="row" th:text="${pagamento.cartao.nome}">Cartão 1</th>
+                    <td th:text="${pagamento.cartao.numero}">5527 7196 3092 8164</td>
+                    <td><img th:src="${pagamento.cartao.bandeira.imagem}"></td>
+                    <td th:text="${pagamento.valor}">R$14.015,00</td>
                   </tr>
                 </tbody>
               </table>

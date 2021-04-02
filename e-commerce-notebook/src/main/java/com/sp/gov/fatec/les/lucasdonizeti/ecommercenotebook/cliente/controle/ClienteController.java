@@ -1,34 +1,28 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.controle;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Bandeira;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.servico.CartaoSarvice;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.TipoDocumento;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.ItemDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.servico.DocumentoService;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.*;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.servico.EnderecoServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ProdutoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.TipoTelefone;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.MudarSenhaDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,17 +50,19 @@ public class ClienteController {
     private final UsuarioServico usuarioServico;
     private final CartaoSarvice cartaoSarvice;
     private final EnderecoServico enderecoServico;
+    private final CompraServico compraServico;
 
     @Autowired
     public ClienteController(ClienteServico clienteServico, ProdutoService produtoService,
                              DocumentoService documentoService, UsuarioServico usuarioServico,
-                             CartaoSarvice cartaoSarvice, EnderecoServico enderecoServico) {
+                             CartaoSarvice cartaoSarvice, EnderecoServico enderecoServico, CompraServico compraServico) {
         this.clienteServico = clienteServico;
         this.produtoService = produtoService;
         this.documentoService = documentoService;
         this.usuarioServico = usuarioServico;
         this.cartaoSarvice = cartaoSarvice;
         this.enderecoServico = enderecoServico;
+        this.compraServico = compraServico;
     }
 
     @GetMapping("/all")
@@ -97,11 +92,11 @@ public class ClienteController {
     //Refatorar
     @GetMapping("/carrinho/{hash}")
     public ModelAndView carrinhoDeCompraLogado(HttpServletRequest request, HttpServletResponse response,
-                                               @PathVariable("hash")UUID hash) {
+                                               @PathVariable("hash")UUID hash, @AuthenticationPrincipal Usuario usuario) {
         ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
-        mv.addObject("usuarioLogado", clienteServico.findById(hash).get());
+        mv.addObject("usuarioLogado", clienteServico.findByUsuarioId(usuario.getId()).get());
         CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
-        compraDTO.setCliente(ClienteDTO.objetoToDto(clienteServico.findById(hash).get()));
+        compraDTO.setCliente(ClienteDTO.objetoToDto(clienteServico.findByUsuarioId(usuario.getId()).get()));
         request.getSession().setAttribute("compra", compraDTO);
         mv.addObject("compra", compraDTO);
         return mv;
@@ -137,15 +132,17 @@ public class ClienteController {
     public ModelAndView addCarrinho(HttpServletRequest request, HttpServletResponse response, @PathVariable("hash") UUID hash) {
         ModelAndView mv = new ModelAndView("redirect:/cliente/carrinho");
         CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
-        System.out.println(compraDTO.getStatus());
-        compraDTO.addProduto(produtoService.findById(hash).get());
-        System.out.println(compraDTO.getProdutos().size());
+        ItemDTO item=new ItemDTO();
+        item.setProduto(ProdutoDTO.objetoToDto(produtoService.findById(hash).get()));
+        item.setStatus(Status.REPROVADA);
+        compraDTO.addProduto(item);
         request.getSession().setAttribute("compra", compraDTO);
         mv.addObject("compra", compraDTO);
         return mv;
     }
 
     //Varificado
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
     @GetMapping("/cli/editarPerfil/{hash}")
     public ModelAndView editarPerfil(@PathVariable("hash") UUID hash) {
         ModelAndView mv = new ModelAndView("/cliente/cadastro.html");
@@ -274,9 +271,20 @@ public class ClienteController {
         return mv;
     }
 
-    @GetMapping("/cli/acompanharPedidos/{hash}")
-    public ModelAndView acompanharPedidos(@PathVariable("hash") UUID hash) {
-        return new ModelAndView("/cliente/cliAcompanharPedidos.html");
+
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
+    @GetMapping("/cli/acompanharPedidos")
+    public ModelAndView acompanharPedidos(@AuthenticationPrincipal Usuario usuario) {
+        ModelAndView mv= new ModelAndView("/cliente/cliAcompanharPedidos.html");
+        Cliente cliente=clienteServico.findByUsuarioId(usuario.getId()).get();
+        mv.addObject("cliente", ClienteDTO.objetoToDto(cliente));
+        List<CompraDTO> compraDTOList=new ArrayList<>();
+        compraServico.findCompraByClienteId(cliente.getId()).forEach(c->{
+            if (c.isHabilitado())
+                compraDTOList.add(CompraDTO.objetoToDto(c));
+        });
+        mv.addObject("pedidos", compraDTOList);
+        return mv;
     }
 
     //Verificado

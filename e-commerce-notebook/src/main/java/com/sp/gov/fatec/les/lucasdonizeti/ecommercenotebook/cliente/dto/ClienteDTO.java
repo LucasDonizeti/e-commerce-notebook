@@ -5,6 +5,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Genero;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.TipoCliente;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
@@ -64,6 +65,8 @@ public class ClienteDTO {
     @NotNull(message = "Insira pelo menos 1 endereço!")
     @Size(min = 1, message = "insira pelo menos 1 endereço")
     private List<EnderecoDTO> enderecos = new ArrayList<>();
+
+    private List<CupomDTO> cupoms=new ArrayList<>();
 
     public void addEmptyDocumento() {
         DocumentoDTO documentoDTO = new DocumentoDTO();

@@ -70,7 +70,7 @@
                         </a>
                     </button>
                     <button class="list-group-item list-group-item-action active" type="button">
-                        <a th:href="@{'/cliente/cli/acompanharPedidos/' + ${cliente.id}}" style="text-decoration: none; color: white;">
+                        <a th:href="@{/cliente/cli/acompanharPedidos/}" style="text-decoration: none; color: white;">
                             <ion-icon name="bag-handle-outline"></ion-icon>
                             Acompanhar Pedidos
                         </a>
@@ -87,14 +87,16 @@
                     <tr>
                         <th scope="col">Pedido</th>
                         <th scope="col">Data</th>
+                        <th scope="col">Valor</th>
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td scope="row"><a th:href="@{/compra/cli/detalheCompra}">Pedido 1</a></td>
-                        <td>23/02/2020</td>
-                        <td>Em análise</td>
+                    <tr th:each="pedido : ${pedidos}">
+                        <td scope="row"><a th:href="@{'/compra/cli/detalheCompra/' + ${pedido.id}}"><span th:text="${pedido.id}"></span></a></td>
+                        <td th:text="${pedido.data}"></td>
+                        <td th:text="${'R$' + pedido.valorDeCompra}"></td>
+                        <td th:text="${pedido.status.descricao}"></td>
                     </tr>
                 </tbody>
             </table>

@@ -12,4 +12,5 @@ import java.util.UUID;
  */
 @Repository
 public interface ClienteDAO extends JpaRepository<Cliente, UUID> {
+    Optional<Cliente> findByUsuarioId(UUID id);
 }

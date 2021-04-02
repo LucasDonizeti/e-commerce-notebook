@@ -5,6 +5,9 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.persistencia.
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 /**
  * author LucasDonizeti
  */
@@ -19,5 +22,9 @@ public class CartaoSarvice {
 
     public void delete(Cartao cartao){
         cartaoDAO.delete(cartao);
+    }
+
+    public Optional<Cartao> findById(UUID id){
+        return cartaoDAO.findById(id);
     }
 }

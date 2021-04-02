@@ -1,6 +1,7 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
@@ -58,4 +59,7 @@ public class Cliente extends EntidadeDominio implements Serializable {
 
     @OneToOne
     private Usuario usuario;
+
+    @OneToMany
+    private List<Compra> compras=new ArrayList<>();
 }
