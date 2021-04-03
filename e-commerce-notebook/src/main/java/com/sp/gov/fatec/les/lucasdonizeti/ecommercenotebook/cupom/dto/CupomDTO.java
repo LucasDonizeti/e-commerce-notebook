@@ -18,6 +18,7 @@ import java.util.UUID;
 @Setter
 public class CupomDTO {
     private UUID id;
+    private Boolean habilitado;
     @NotNull
     private Float valor;
     @NotEmpty
@@ -26,7 +27,6 @@ public class CupomDTO {
     @NotNull
     private TipoCupom tipoCupom;
 
-    private Cliente cliente;
 
     public static CupomDTO objetoToDto(Cupom cupom){
         return DozerBeanMapperBuilder.buildDefault().map(cupom, CupomDTO.class);

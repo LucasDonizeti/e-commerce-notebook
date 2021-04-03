@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.dozer.DozerBeanMapperBuilder;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +35,8 @@ public class CompraDTO {
     @Size(min = 1)
     public List<ItemDTO> itens = new ArrayList<>();
 
+    @NotNull
+    @Valid
     public FreteDTO frete;
 
     @NotNull
@@ -48,7 +51,9 @@ public class CompraDTO {
     @NotNull
     private List<CupomDTO> cupomsDeTroca = new ArrayList<>();
 
-    private CupomDTO cupomPromocional;
+
+    private CupomDTO cupomPromocional=new CupomDTO();
+
 
 
 
@@ -80,7 +85,7 @@ public class CompraDTO {
         for (CupomDTO c:cupomsDeTroca)
             totalPago+=c.getValor();
 
-        if (cupomPromocional!=null)
+        if (cupomPromocional.getValor()!=null)
             totalPago+=cupomPromocional.getValor();
 
         return totalPago;

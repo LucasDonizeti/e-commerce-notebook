@@ -70,37 +70,41 @@
     <div class="col-md-3" th:fragment="menu-cli">
         <div class="row">
             <div class="list-group col-md-12">
-                <button type="button" th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/perfil'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
+                <button type="button"
+                    th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/perfil'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
                     <a th:href="@{/cliente/cli/perfil}"
                         th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/perfil'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
                         <ion-icon name="person-circle-outline"></ion-icon>
                         <span>Visão Geral</span>
                     </a>
                 </button>
-                <button type="button" th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/editarPerfil'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
+                <button type="button"
+                    th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/editarPerfil'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
                     <a th:href="@{/cliente/cli/editarPerfil}"
-                    th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/editarPerfil'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                        th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/editarPerfil'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
                         <ion-icon name="pencil-outline"></ion-icon>
                         Editar Perfil
                     </a>
                 </button>
-                <button type="button" th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/mudarSenha'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
+                <button type="button"
+                    th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/mudarSenha'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
                     <a th:href="@{/cliente/cli/mudarSenha}"
-                    th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/mudarSenha'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                        th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/mudarSenha'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
                         <ion-icon name="lock-open-outline"></ion-icon>
                         Mudar Senha
                     </a>
                 </button>
-                <button th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/acompanharPedidos'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}" type="button">
+                <button
+                    th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/acompanharPedidos'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
+                    type="button">
                     <a th:href="@{/cliente/cli/acompanharPedidos}"
-                    th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/acompanharPedidos'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                        th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/acompanharPedidos'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
                         <ion-icon name="bag-handle-outline"></ion-icon>
                         Acompanhar Pedidos
                     </a>
                 </button>
-                <button th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/acompanharPedidos'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}" type="button">
-                    <a th:href="@{/logout}"
-                    th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/acompanharPedidos'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                <button class="list-group-item list-group-item-action" type="button">
+                    <a th:href="@{/logout}" style="text-decoration: none; color: blue;">
                         <ion-icon name="exit-outline"></ion-icon>
                         Logout
                     </a>
@@ -110,106 +114,150 @@
     </div>
 
     <!-- <div th:replace="fragments/fragments :: menu-adm"></div> -->
-        <div class="row" th:fragment="menu-adm">
-            <div class="list-group col-md-12">
-                <button type="button" th:class="${#httpServletRequest.getRequestURI() == '/adm/visaoGeral'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
-                    <a th:href="@{/adm/visaoGeral}" th:style="${#httpServletRequest.getRequestURI() == '/adm/visaoGeral'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
-                        <ion-icon name="person-circle-outline"></ion-icon>
-                        <span>Visão Geral</span>
-                    </a>
-                </button>
-                <button type="button" th:class="${#httpServletRequest.getRequestURI() == '/adm/produtos'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
-                    <a th:href="@{/adm/produtos}" th:style="${#httpServletRequest.getRequestURI() == '/adm/produtos'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
-                        <ion-icon name="laptop-outline"></ion-icon>
-                        Produtos
-                    </a>
-                </button>
-                <button type="button" th:class="${#httpServletRequest.getRequestURI() == '/adm/clientes'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
-                    <a th:href="@{/adm/clientes}" th:style="${#httpServletRequest.getRequestURI() == '/adm/clientes'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
-                        <ion-icon name="person-outline"></ion-icon>
-                        Clientes
-                    </a>
-                </button>
-                <button th:class="${#httpServletRequest.getRequestURI() == '/adm/cupoms'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}" type="button">
-                    <a th:href="@{/adm/cupoms}" th:style="${#httpServletRequest.getRequestURI() == '/adm/cupoms'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
-                        <ion-icon name="ticket-outline"></ion-icon>
-                        Cupons
-                    </a>
-                </button>
-                <button th:class="${#httpServletRequest.getRequestURI() == '/adm/pedidos'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}" type="button">
-                    <a th:href="@{/adm/pedidos}" th:style="${#httpServletRequest.getRequestURI() == '/adm/pedidos'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
-                        <ion-icon name="clipboard-outline"></ion-icon>
-                        Pedidos
-                    </a>
-                </button>
-                <button th:class="${#httpServletRequest.getRequestURI() == '/adm/dados'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}" type="button">
-                    <a th:href="@{/adm/dados}" th:style="${#httpServletRequest.getRequestURI() == '/adm/dados'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
-                        <ion-icon name="pie-chart-outline"></ion-icon>
-                        Dados
-                    </a>
-                </button>
-            </div>
+    <div class="row" th:fragment="menu-adm">
+        <div class="list-group col-md-12">
+            <button type="button"
+                th:class="${#httpServletRequest.getRequestURI() == '/adm/visaoGeral'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
+                <a th:href="@{/adm/visaoGeral}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/adm/visaoGeral'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                    <span>Visão Geral</span>
+                </a>
+            </button>
+            <button type="button"
+                th:class="${#httpServletRequest.getRequestURI() == '/adm/produtos'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
+                <a th:href="@{/adm/produtos}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/adm/produtos'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                    <ion-icon name="laptop-outline"></ion-icon>
+                    Produtos
+                </a>
+            </button>
+            <button type="button"
+                th:class="${#httpServletRequest.getRequestURI() == '/adm/clientes'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}">
+                <a th:href="@{/adm/clientes}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/adm/clientes'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                    <ion-icon name="person-outline"></ion-icon>
+                    Clientes
+                </a>
+            </button>
+            <button
+                th:class="${#httpServletRequest.getRequestURI() == '/adm/cupoms'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
+                type="button">
+                <a th:href="@{/adm/cupoms}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/adm/cupoms'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                    <ion-icon name="ticket-outline"></ion-icon>
+                    Cupons
+                </a>
+            </button>
+            <button
+                th:class="${#httpServletRequest.getRequestURI() == '/adm/pedidos'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
+                type="button">
+                <a th:href="@{/adm/pedidos}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/adm/pedidos'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                    <ion-icon name="clipboard-outline"></ion-icon>
+                    Pedidos
+                </a>
+            </button>
+            <button
+                th:class="${#httpServletRequest.getRequestURI() == '/adm/dados'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
+                type="button">
+                <a th:href="@{/adm/dados}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/adm/dados'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                    <ion-icon name="pie-chart-outline"></ion-icon>
+                    Dados
+                </a>
+            </button>
         </div>
-<!-- <div th:replace="fragments/fragments :: compra-detail"></div> -->
-<!-- requer objeto compra:Compra -->
-        <div class="row" th:fragment="compra-detail">
-            <table class="table" style="background-color: aliceblue;">
-                <thead>
-                    <tr>
-                        <th class="col">
-                            Nome do Produto
-                        </th>
-                        <th class="col">
-                            Quantidade
-                        </th>
-                        <th class="col">
-                            Preco Unitário
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="item : ${compra.itens}">
-                        <th class="row" th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}">
-                        </th>
-                        <td th:text="${item.quantidade}">
+    </div>
+    <!-- <div th:replace="fragments/fragments :: compra-detail"></div> -->
+    <!-- requer objeto compra:Compra -->
+    <div class="row" th:fragment="compra-detail">
+        <table class="table">
+            <thead>
+                <tr class="table-primary">
+                    <th class="col">
+                        Nome do Produto
+                    </th>
+                    <th class="col">
+                        Quantidade
+                    </th>
+                    <th class="col">
+                        Preco Unitário
+                    </th>
+                    <td colspan="1">
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${compra.itens}">
+                    <th class="row" th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}">
+                    </th>
+                    <td th:text="${item.quantidade}">
 
-                        </td>
-                        <td th:text="${item.produto.precoDeVenda}">
+                    </td>
+                    <td th:text="${item.produto.precoDeVenda}">
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="row">
-                        </th>
-                        <td colspan="2"
-                            th:text="${compra.frete.endereco.rua + ', ' + compra.frete.endereco.numero + ' ' + compra.frete.endereco.cidade.nome + '/' + compra.frete.endereco.cidade.estado.descricao + ' ' + compra.frete.endereco.cep}">
-                        </td>
-                        <td th:text="${compra.frete.valor}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col" colspan="3" style="width: 85%;">
-                        </th>
-                        <th class="col" style="width: 15%;" th:text="${compra.valorDeCompra}">
-                        </th>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col" colspan="3"></th>
-                        <th scope="col" th:style="${'color: ' + compra.status.color}" th:text="${compra.status.descricao}"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="pagamento : ${compra.pagamentos}">
-                        <th scope="row" th:text="${pagamento.cartao.nome}"></th>
-                        <td th:text="${pagamento.cartao.numero}"></td>
-                        <td><img th:src="${pagamento.cartao.bandeira.imagem}"></td>
-                        <td th:text="${pagamento.valor}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    </td>
+                    <td>
+                        <div sec:authorize="hasRole('ROLE_CLI')" th:if="${compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).ENTREGUE}">
+                            <a th:href="@{'/compra/cli/detalheCompra/' + ${compra.id} + '/nextStage/produto/' + ${item.id} }">
+                                <button class="btn btn-danger">
+                                    Solicitar troca!
+                                </button>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="table-primary">
+                    <th class="row">
+                        Endereco
+                    </th>
+                    <th>
+                        CEP
+                    </th>
+                    <th>
+                        Valor
+                    </th>
+                    <td colspan="1">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="row"
+                        th:text="${compra.frete.endereco.rua + ', ' + compra.frete.endereco.numero + ' ' + compra.frete.endereco.cidade.nome + '/' + compra.frete.endereco.cidade.estado.descricao}">
+                    </td>
+                    <td th:text="${compra.frete.endereco.cep}">
+                    </td>
+                    <td th:text="${compra.frete.valor}">
+                    </td>
+                    <td colspan="1">
+
+                    </td>
+
+                </tr>
+                <tr class="table-info">
+                    <th class="col" colspan="2">
+                    </th>
+                    <th class="col" th:text="${compra.valorDeCompra}">
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" colspan="3">Status:</th>
+                    <th scope="col" th:style="${'color: ' + compra.status.color}" th:text="${compra.status.descricao}">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pagamento : ${compra.pagamentos}">
+                    <th scope="row" th:text="${pagamento.cartao.nome}"></th>
+                    <td th:text="${pagamento.cartao.numero}"></td>
+                    <td><img th:src="${pagamento.cartao.bandeira.imagem}"></td>
+                    <td th:text="${pagamento.valor}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>

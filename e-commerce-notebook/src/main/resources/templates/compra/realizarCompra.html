@@ -149,22 +149,18 @@
                 <h3>Cupom</h3>
                 <div class="row col-md-12  align-items-center">
                     <ul>
-                        <li>
-                            <input type="radio" id="nenhum" th:field="*{cupomPromocional}" value=null>
-                            <label for="nenhum">Nenhum</label>
-                        </li>
-                        <li th:each="cupom, i : ${compra.cliente.cupoms}" th:if="cupom.tipoCupom == ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.tipoCupom.PROMOCIONAL)}">
-                            <input type="radio" th:id="${'cupom_' + i.index}" th:field="*{cupomPromocional}" th:value="${cupom.id}">
-                            <label th:for="${'cupom' + i.index}"
-                                th:text="${'R$'+cupom.valor + ' ' + cupom.tipoCupom.getDescricao()}"></label>
-                        </li>
-                        <li th:each="cupom, i : ${compra.cliente.cupoms}" th:if="cupom.tipoCupom == ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.tipoCupom.TROCA)}">
-                            <input type="checkbox" th:id="${'cupom_' + i.index}" th:field="*{cupomsDeTroca}" th:value="${cupom.id}">
-                            <label th:for="${'cupom' + i.index}"
-                                th:text="${'R$'+cupom.valor + ' ' + cupom.tipoCupom.getDescricao()}"></label>
+                        <li th:each="cupom, i : ${compra.cupomsDeTroca}">
+                            <input type="text" th:field="*{cupomsDeTroca[__${i.index}__].id}" hidden>
+                            <input type="checkbox" th:value="${cupom.habilitado}" th:field="*{cupomsDeTroca[__${i.index}__].habilitado}">
+                            <label th:text="${cupom.codigo +' R$'+cupom.valor}"></label>
                         </li>
                     </ul>
                 </div>
+                <select class="custom-select" th:field="*{cupomPromocional.id}">
+                    <option th:if="${compra.cupomPromocional.id==null}" value="">Selecione um cupom</option>
+                    <option th:each="cupom : ${compra.cliente.cupoms}" th:value="${cupom.id}" th:text="${cupom.codigo}"
+                     th:if="${cupom.tipoCupom == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom).PROMOCIONAL}"></option>
+                </select>
             </div>
             <div class="col-md-12">
                 <a th:href="@{/cliente/carrinho}">

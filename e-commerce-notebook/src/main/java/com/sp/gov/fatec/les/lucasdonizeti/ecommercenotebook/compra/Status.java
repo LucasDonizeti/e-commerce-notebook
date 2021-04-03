@@ -10,8 +10,9 @@ public enum Status {
     EM_TRANSITO("Em trânsito", "Orange"),//ao ser selecionada para ser entregue por um administrador
     ENTREGUE("Entregue", "Blue"),//após a compra ter sido entregue por um administrador
     EM_TROCA("Em troca", "Yellow"),//ao cliente pedir a troca do produto
-    TROCA_AUTORIZADA("Troca Autorizada", "Blue"),//ao administrador autorizar a troca do produto
-    TROCA_NAO_AUTORIZADA("Troca Não Autorizada", "Orange");//ao administrador nao autorizar a troca do produto
+    TROCA_AUTORIZADA("Troca Autorizada", "Green"),//ao administrador autorizar a troca do produto
+    TROCA_NAO_AUTORIZADA("Troca Não Autorizada", "Orange"),//ao administrador nao autorizar a troca do produto
+    TROCA_CONCLUIDA("Troca Concluida", "Blue");//ao administrador confirmar a troca do produto
 
     private String descricao;
     private String color;

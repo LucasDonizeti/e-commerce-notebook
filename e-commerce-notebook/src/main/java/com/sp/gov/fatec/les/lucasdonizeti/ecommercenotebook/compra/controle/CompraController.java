@@ -10,6 +10,8 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.FreteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.PagamentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.servico.EnderecoServico;
@@ -67,12 +69,12 @@ public class CompraController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
-        Optional<Usuario> usuarioOptional=usuarioServico.findByLogin(login);
+        Optional<Usuario> usuarioOptional = usuarioServico.findByLogin(login);
         if (usuarioOptional.isPresent()) {
             compraDTO.setCliente(ClienteDTO.objetoToDto(clienteServico.findByUsuarioId(usuarioOptional.get().getId()).get()));
 
-            compraDTO.getCliente().getCartoes().forEach(c->{
-                PagamentoDTO pagamentoDTO=new PagamentoDTO();
+            compraDTO.getCliente().getCartoes().forEach(c -> {
+                PagamentoDTO pagamentoDTO = new PagamentoDTO();
                 pagamentoDTO.setCartao(c);
                 pagamentoDTO.setValor(0f);
                 compraDTO.getPagamentos().add(pagamentoDTO);
@@ -91,15 +93,20 @@ public class CompraController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
-        Optional<Usuario> usuarioOptional=usuarioServico.findByLogin(login);
+        Optional<Usuario> usuarioOptional = usuarioServico.findByLogin(login);
         if (usuarioOptional.isPresent()) {
             compraDTO.setCliente(ClienteDTO.objetoToDto(clienteServico.findByUsuarioId(usuarioOptional.get().getId()).get()));
 
-            compraDTO.getCliente().getCartoes().forEach(c->{
-                PagamentoDTO pagamentoDTO=new PagamentoDTO();
+            compraDTO.getCliente().getCartoes().forEach(c -> {
+                PagamentoDTO pagamentoDTO = new PagamentoDTO();
                 pagamentoDTO.setCartao(c);
                 pagamentoDTO.setValor(0f);
                 compraDTO.getPagamentos().add(pagamentoDTO);
+            });
+            compraDTO.getCliente().getCupoms().forEach(c -> {
+                if (c.getTipoCupom() == TipoCupom.TROCA) {
+                    compraDTO.getCupomsDeTroca().add(c);
+                }
             });
         }
 
@@ -112,35 +119,37 @@ public class CompraController {
     public ModelAndView realizarCompraPost(@Valid @ModelAttribute("compra") CompraDTO compraDTO,
                                            BindingResult erro) {
 
-        System.out.println(compraDTO.getFrete().getEndereco().getId());
-            if (compraDTO.getFrete().getEndereco().getId()!=null){
-                FreteDTO freteDTO=new FreteDTO();
-                Optional<Endereco> endereco=enderecoServico.findById(compraDTO.getFrete().getEndereco().getId());
-                if (endereco.isPresent()) {
-                    freteDTO.setEndereco(EnderecoDTO.objetoToDto(endereco.get()));
-                    freteDTO.setValor(15f);
-                    compraDTO.setFrete(freteDTO);
-                }
+        if (compraDTO.getFrete().getEndereco().getId() != null) {
+            FreteDTO freteDTO = new FreteDTO();
+            Optional<Endereco> endereco = enderecoServico.findById(compraDTO.getFrete().getEndereco().getId());
+            if (endereco.isPresent()) {
+                freteDTO.setEndereco(EnderecoDTO.objetoToDto(endereco.get()));
+                freteDTO.setValor(15f);
+                compraDTO.setFrete(freteDTO);
             }
+        }
 
-        System.out.println(compraDTO.getFrete().getEndereco().getRua());
-        System.out.println(compraDTO.getFrete().getValor());
-        System.out.println(compraDTO.getItens().get(0).getId());
-        System.out.println(compraDTO.getItens().get(0).getQuantidade());
-        System.out.println(compraDTO.getItens().get(0).getStatus().getDescricao());
-        System.out.println(compraDTO.getItens().get(0).getProduto().getId());
-
-        compraDTO=CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
-
-        System.out.println(compraDTO.getValorDeCompra());
-        System.out.println(compraDTO.getTotalPago());
         if (erro.hasErrors()) {
             ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");
             mv.addObject("compra", compraDTO);
             mv.addObject("erros", erro);
             return mv;
         }
-        if (compraDTO.getValorDeCompra().intValue() != compraDTO.getTotalPago().intValue()){
+        if (compraDTO.getCupomPromocional().getId() == null)
+            compraDTO.setCupomPromocional(null);
+        if (compraDTO.getFrete().getEndereco().getId()==null)
+            compraDTO.getFrete().setEndereco(null);
+
+        compraDTO = CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
+        try {
+            if (compraDTO.getValorDeCompra().intValue() != compraDTO.getTotalPago().intValue()) {
+                ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");
+                mv.addObject("compra", compraDTO);
+                mv.addObject("erros", erro);
+                mv.addObject("PagamentoRejeitadoException", "Pagamento não pode ser efetuado dessa forma");
+                return mv;
+            }
+        } catch (Exception e) {
             ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");
             mv.addObject("compra", compraDTO);
             mv.addObject("erros", erro);
@@ -169,6 +178,17 @@ public class CompraController {
         ModelAndView mv = new ModelAndView("compra/cliDetalheCompra.html");
         Optional<Compra> compraOptional = compraServico.findById(hash);
         mv.addObject("compra", CompraDTO.objetoToDto(compraOptional.get()));
+        return mv;
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
+    @GetMapping("/cli/detalheCompra/{hash}/nextStage")
+    public ModelAndView detalhePedidoNextStage(@PathVariable("hash") UUID hash) {
+        ModelAndView mv = new ModelAndView("compra/cliDetalheCompra.html");
+        Compra compra = compraServico.findById(hash).get();
+        compraServico.setStatus(compra, compraServico.nextCli(compra.getStatus()));
+
+        mv.addObject("compra", CompraDTO.objetoToDto(compraServico.findById(hash).get()));
         return mv;
     }
 

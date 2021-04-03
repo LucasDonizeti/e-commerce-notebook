@@ -2,10 +2,9 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.persistencia.ClienteDAO;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,16 +19,18 @@ import java.util.UUID;
 public class ClienteServico {
     private final ClienteDAO clienteDAO;
     private final UsuarioServico usuarioServico;
+    private final CupomServico cupomServico;
 
 
     @Autowired
-    public ClienteServico(ClienteDAO clienteDAO, UsuarioServico usuarioServico) {
+    public ClienteServico(ClienteDAO clienteDAO, UsuarioServico usuarioServico, CupomServico cupomServico) {
         this.clienteDAO = clienteDAO;
         this.usuarioServico = usuarioServico;
+        this.cupomServico = cupomServico;
     }
 
     public Cliente save(Cliente cliente) {
-        cliente.getUsuario().setSenha(BCrypt.hashpw(cliente.getUsuario().getSenha(), BCrypt.gensalt()));
+        //cliente.getUsuario().setSenha(BCrypt.hashpw(cliente.getUsuario().getSenha(), BCrypt.gensalt()));
         cliente.setUsuario(usuarioServico.save(cliente.getUsuario()));
         return clienteDAO.save(cliente);
     }
@@ -43,10 +44,22 @@ public class ClienteServico {
     }
 
     public Optional<Cliente> findById(UUID id) {
-        return clienteDAO.findById(id);
+        Optional<Cliente> cliente = clienteDAO.findById(id);
+        if (cliente.isPresent())
+            cliente.get().setCupoms(cupomServico.findByClienteId(cliente.get().getId()));
+
+        return cliente;
     }
 
     public Optional<Cliente> findByUsuarioId(UUID usuario){
-        return clienteDAO.findByUsuarioId(usuario);
+        Optional<Cliente> cliente = clienteDAO.findByUsuarioId(usuario);
+        if (cliente.isPresent())
+            cliente.get().setCupoms(cupomServico.findByClienteId(cliente.get().getId()));
+
+        return cliente;
+    }
+
+    public Optional<Cliente> findByCompraID(UUID id){
+        return clienteDAO.findByComprasId(id);
     }
 }

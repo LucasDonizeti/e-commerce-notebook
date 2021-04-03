@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Setter
 @Entity(name = "_frete")
 public class Frete extends EntidadeDominio implements Serializable {
-    @ManyToOne
+    @ManyToOne(optional = true)
     public Endereco endereco;
 
     @Column(name = "valor")

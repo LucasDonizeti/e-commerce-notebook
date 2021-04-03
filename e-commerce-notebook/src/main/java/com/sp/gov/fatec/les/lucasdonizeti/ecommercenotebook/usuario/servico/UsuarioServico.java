@@ -35,10 +35,5 @@ public class UsuarioServico {
         return usuarioDAO.findByLogin(login);
     }
 
-    public static void main(String[] args) {
-        String crip= new BCryptPasswordEncoder().encode("1234aaBB$$");
-        System.out.println(crip);
-        System.out.println(BCrypt.checkpw("1234aaBB$$", crip));
-    }
 }
 

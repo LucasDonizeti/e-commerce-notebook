@@ -5,6 +5,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.servico.Carta
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.ItemDTO;
@@ -353,5 +354,7 @@ public class ClienteController {
         ModelAndView mv = new ModelAndView("redirect:/cliente/cli/perfil");
         return mv;
     }
+
+
 }
 

@@ -1,12 +1,14 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.servico.CartaoSarvice;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.persistencia.CompraDAO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +26,15 @@ public class CompraServico {
     private final ProdutoService produtoService;
     private final ClienteServico clienteServico;
     private final CartaoSarvice cartaoSarvice;
+    private final CupomServico cupomServico;
 
     @Autowired
-    public CompraServico(CompraDAO compraDAO, ProdutoService produtoService, ClienteServico clienteServico, CartaoSarvice cartaoSarvice) {
+    public CompraServico(CompraDAO compraDAO, ProdutoService produtoService, ClienteServico clienteServico, CartaoSarvice cartaoSarvice, CupomServico cupomServico) {
         this.compraDAO = compraDAO;
         this.produtoService = produtoService;
         this.clienteServico = clienteServico;
         this.cartaoSarvice = cartaoSarvice;
+        this.cupomServico = cupomServico;
     }
 
     public Optional<Compra> findById(UUID hash) {
@@ -89,6 +93,8 @@ public class CompraServico {
                 return Status.EM_TRANSITO;
             case EM_TRANSITO:
                 return Status.ENTREGUE;
+            case TROCA_AUTORIZADA:
+                return Status.TROCA_CONCLUIDA;
             default:
                 return status;
         }
@@ -114,6 +120,18 @@ public class CompraServico {
         if (status == Status.REPROVADA)
             return Status.APROVADA;
         return status;
+    }
+
+    public void concluirTroca(Compra compra){
+        compra=findById(compra.getId()).get();
+        Cliente cliente=clienteServico.findById(compra.getCliente().getId()).get();
+        Cupom cupom=new Cupom();
+        cupom.setTipoCupom(TipoCupom.TROCA);
+        cupom.setCodigo("TROCA");
+        cupom.setValor(compra.getTotalPago());
+
+        cupom.setCliente(cliente);
+        cupomServico.save(cupom);
     }
 
 

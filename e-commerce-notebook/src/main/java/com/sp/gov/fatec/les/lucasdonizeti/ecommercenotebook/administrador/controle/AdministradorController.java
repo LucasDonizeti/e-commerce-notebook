@@ -4,6 +4,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
@@ -117,6 +118,20 @@ public class AdministradorController {
         ModelAndView mv=new ModelAndView("/adm/detalhePedido.html");
         Compra compra= compraServico.findById(hash).get();
         compraServico.setStatus(compra, compraServico.nextAdm(compra.getStatus()));
+        compra= compraServico.findById(hash).get();
+        if (compra.getStatus() == Status.TROCA_CONCLUIDA)
+            compraServico.concluirTroca(compra);
+
+        mv.addObject("compra", CompraDTO.objetoToDto(compra));
+        return mv;
+    }
+
+    @GetMapping("/pedidos/detalhe/{hash}/nextStage/troca/{acao}")
+    public ModelAndView detalhePedidoNextStageTroca(@PathVariable("hash") UUID hash,
+                                                    @PathVariable("acao") Boolean acao){
+        ModelAndView mv=new ModelAndView("/adm/detalhePedido.html");
+        Compra compra= compraServico.findById(hash).get();
+        compraServico.setStatus(compra, compraServico.nextTrocaAdm(compra.getStatus(), acao));
 
         mv.addObject("compra", CompraDTO.objetoToDto(compraServico.findById(hash).get()));
         return mv;

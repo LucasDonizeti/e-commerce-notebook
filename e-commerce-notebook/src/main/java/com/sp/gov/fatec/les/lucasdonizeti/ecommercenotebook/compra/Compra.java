@@ -30,7 +30,6 @@ public class Compra extends EntidadeDominio implements Serializable {
     public Frete frete;
 
     @ManyToOne
-    @JsonIgnore
     public Cliente cliente;
 
     @Column(name = "status", nullable = false, length = 30)
@@ -43,7 +42,7 @@ public class Compra extends EntidadeDominio implements Serializable {
     @OneToMany
     private List<Cupom> cupomsDeTroca=new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(optional = true)
     private Cupom cupomPromocional;
 
     public Float getValorDeCompra(){
