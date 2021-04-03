@@ -33,7 +33,7 @@ public class MvcConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers(HttpMethod.GET, AccessControl.getCAMINHOS_PUBLICOS_GET()).permitAll()
                 //.antMatchers(HttpMethod.POST, AccessControl.getCAMINHOS_PUBLICOS_POST()).permitAll()
 
-                .antMatchers("/adm/**").hasAuthority("ROLA_ADM")
+                .antMatchers("/adm/**").hasAuthority("ROLE_ADM")
 
                 .anyRequest().authenticated()
 

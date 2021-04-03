@@ -10,74 +10,9 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-2">
-                <a href="index.html">
-                    <img src="../static/img/logo.png" class="img-fluid" alt="Imagem responsiva" style="height: 100px;">
-                </a>
-            </div>
-            <div class="col-md-8">
-                <form>
-                    <div class="row">
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" placeholder="O que você procura?">
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-outline-primary">Pesquisar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-2">
-                <div class="row">
-                    <div class="col-md-6" style="text-align: center;">
-                        <a th:href="@{'/cliente/cli/perfil/' + ${cliente.id}}">
-                            <ion-icon name="person-circle-outline" size="large"></ion-icon>
-                            <spam>Perfil</spam>
-                        </a>
-                    </div>
-                    <div class="col-md-6" style="text-align: center;">
-                        <a th:href="@{'/cliente/carrinho/' + ${cliente.id}}">
-                            <ion-icon name="cart-outline" size="large"></ion-icon>
-                            <span>carrinho</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:replace="fragments/fragments :: header"></div>
     <div class="row" style="margin-left: 15px; margin-right: 15px;">
-        <div class="col-md-3">
-            <div class="row">
-                <div class="list-group col-md-12">
-                    <button type="button" class="list-group-item list-group-item-action">
-                        <a th:href="@{'/cliente/cli/perfil/' + ${cliente.id}}" style="text-decoration: none; color: blue;">
-                            <ion-icon name="person-circle-outline"></ion-icon>
-                            <span>Visão Geral</span>
-                        </a>
-                    </button>
-                    <button type="button" class="list-group-item list-group-item-action">
-                        <a th:href="@{'/cliente/cli/editarPerfil/' + ${cliente.id}}" style="text-decoration: none; color: blue;">
-                            <ion-icon name="pencil-outline"></ion-icon>
-                            Editar Perfil
-                        </a>
-                    </button>
-                    <button type="button" class="list-group-item list-group-item-action active">
-                        <a th:href="@{'/cliente/cli/mudarSenha/' + ${cliente.id}}" style="text-decoration: none; color: white;">
-                            <ion-icon name="lock-open-outline"></ion-icon>
-                            Mudar Senha
-                        </a>
-                    </button>
-                    <button class="list-group-item list-group-item-action" type="button">
-                        <a th:href="@{'/cliente/cli/acompanharPedidos/' + ${cliente.id}}" style="text-decoration: none; color: blue;">
-                            <ion-icon name="bag-handle-outline"></ion-icon>
-                            Acompanhar Pedidos
-                        </a>
-                    </button>
-                </div>
-            </div>
-        </div>
+        <div th:replace="fragments/fragments :: menu-cli"></div>
         <div class="row col-md-9 align-items-center justify-content-md-center">
             <form th:action="@{/cliente/cli/mudarSenha}" method="post" th:object="${usuario}">
                 <input type="text" th:field="*{id}" hidden>

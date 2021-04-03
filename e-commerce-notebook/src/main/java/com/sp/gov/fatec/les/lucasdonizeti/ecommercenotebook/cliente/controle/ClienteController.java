@@ -143,10 +143,10 @@ public class ClienteController {
 
     //Varificado
     @PreAuthorize("hasAuthority('ROLE_CLI')")
-    @GetMapping("/cli/editarPerfil/{hash}")
-    public ModelAndView editarPerfil(@PathVariable("hash") UUID hash) {
+    @GetMapping("/cli/editarPerfil")
+    public ModelAndView editarPerfil(@AuthenticationPrincipal Usuario usuario) {
         ModelAndView mv = new ModelAndView("/cliente/cadastro.html");
-        Optional<Cliente> cliente = clienteServico.findById(hash);
+        Optional<Cliente> cliente = clienteServico.findByUsuarioId(usuario.getId());
 
         if (!cliente.isPresent()) {
             System.out.println("cliente não está presente");
@@ -264,10 +264,11 @@ public class ClienteController {
 
 
     //Verificado
-    @GetMapping("/cli/perfil/{hash}")
-    public ModelAndView perfil(@PathVariable("hash") UUID hash) {
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
+    @GetMapping("/cli/perfil")
+    public ModelAndView perfil(@AuthenticationPrincipal Usuario usuario) {
         ModelAndView mv = new ModelAndView("/cliente/cliPerfil.html");
-        mv.addObject("cliente", ClienteDTO.objetoToDto(clienteServico.findById(hash).get()));
+        mv.addObject("cliente", ClienteDTO.objetoToDto(clienteServico.findByUsuarioId(usuario.getId()).get()));
         return mv;
     }
 
@@ -279,8 +280,7 @@ public class ClienteController {
         Cliente cliente=clienteServico.findByUsuarioId(usuario.getId()).get();
         mv.addObject("cliente", ClienteDTO.objetoToDto(cliente));
         List<CompraDTO> compraDTOList=new ArrayList<>();
-        compraServico.findCompraByClienteId(cliente.getId()).forEach(c->{
-            if (c.isHabilitado())
+        compraServico.findCompraHabilitadoByClienteId(cliente.getId()).forEach(c->{
                 compraDTOList.add(CompraDTO.objetoToDto(c));
         });
         mv.addObject("pedidos", compraDTOList);
@@ -288,11 +288,12 @@ public class ClienteController {
     }
 
     //Verificado
-    @GetMapping("/cli/mudarSenha/{hashCliente}")
-    public ModelAndView mudarSenhaCli(@PathVariable("hashCliente") UUID hashCliente) {
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
+    @GetMapping("/cli/mudarSenha")
+    public ModelAndView mudarSenhaCli(@AuthenticationPrincipal Usuario usuario) {
         ModelAndView mv = new ModelAndView("cliente/cliMudarSenha.html");
-        mv.addObject("cliente", ClienteDTO.objetoToDto(clienteServico.findById(hashCliente).get()));
-        Optional<Cliente> clienteOptional = clienteServico.findById(hashCliente);
+        mv.addObject("cliente", ClienteDTO.objetoToDto(clienteServico.findByUsuarioId(usuario.getId()).get()));
+        Optional<Cliente> clienteOptional = clienteServico.findByUsuarioId(usuario.getId());
         if (clienteOptional.isPresent()) {
             MudarSenhaDTO mudarSenhaDTO = new MudarSenhaDTO();
             mudarSenhaDTO.setId(clienteOptional.get().getId());
@@ -305,6 +306,7 @@ public class ClienteController {
     }
 
     //Varificado
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
     @PostMapping("/cli/mudarSenha")
     public ModelAndView postMudarSenhaCli(@Valid @ModelAttribute("usuario") MudarSenhaDTO mudarSenhaDTO,
                                           BindingResult erros) {

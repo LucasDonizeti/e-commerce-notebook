@@ -10,107 +10,10 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-2">
-                <a href="index.html">
-                    <img src="../static/img/logo.png" class="img-fluid" alt="Imagem responsiva" style="height: 100px;">
-                </a>
-            </div>
-            <div class="col-md-8">
-                <form>
-                    <div class="row">
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" placeholder="O que você procura?">
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-outline-primary">Pesquisar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-2">
-                <div class="row">
-                    <div class="col-md-6" style="text-align: center;">
-                        <a th:href="@{/cliente/cli/perfil}">
-                            <ion-icon name="person-circle-outline" size="large"></ion-icon>
-                            <spam>Perfil</spam>
-                        </a>
-                    </div>
-                    <div class="col-md-6" style="text-align: center;">
-                        <a th:href="@{/cliente/carrinho}">
-                            <ion-icon name="cart-outline" size="large"></ion-icon>
-                            <span>carrinho</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:replace="fragments/fragments :: header"></div>
     <div class="row justify-content-md-center">
         <div class="col-md-7">
-            <table class="table" style="background-color: aliceblue;">
-                <thead>
-                    <tr>
-                        <th class="col">
-                            Nome do Produto
-                        </th>
-                        <th class="col">
-                            Quantidade
-                        </th>
-                        <th class="col">
-                            Preco Unitário
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="item : ${compra.itens}">
-                        <th class="row" th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}">
-                        </th>
-                        <td th:text="${item.quantidade}">
-                            
-                        </td>
-                        <td th:text="${item.produto.precoDeVenda}">
-                            
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="row">
-                            Frete
-                        </th>
-                        <td colspan="2" th:text="${compra.frete.endereco.rua + ', ' + compra.frete.endereco.numero + ' ' + compra.frete.endereco.cidade.nome + '/' + compra.frete.endereco.cidade.estado.descricao + ' ' + compra.frete.endereco.cep}">
-                            Rua a, 15 Mogi das Cruzes/SP
-                        </td>
-                        <td th:text="${compra.frete.valor}">
-                            R$15,00
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col" colspan="3" style="width: 85%;">
-                            Valor Total
-                        </th>
-                        <th class="col" style="width: 15%;" th:text="${compra.valorDeCompra}">
-                            R$14.015,00
-                        </th>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table">
-                <thead class="thead-dark">
-                  <tr>
-                    <th scope="col" colspan="3">status</th>
-                    <th scope="col" th:text="${compra.status.descricao}">Em análise</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr th:each="pagamento : ${compra.pagamentos}">
-                    <th scope="row" th:text="${pagamento.cartao.nome}">Cartão 1</th>
-                    <td th:text="${pagamento.cartao.numero}">5527 7196 3092 8164</td>
-                    <td><img th:src="${pagamento.cartao.bandeira.imagem}"></td>
-                    <td th:text="${pagamento.valor}">R$14.015,00</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div th:replace="fragments/fragments :: compra-detail"></div>
             <div class="col-md-12">
                 <a th:href="@{/cliente/cli/acompanharPedidos}">
                     <button class="btn btn-outline-primary">Voltar</button>

@@ -149,7 +149,7 @@ public class CompraController {
         }
 
         ModelAndView mv = new ModelAndView("/compra/confirmarCompra.html");
-        compraDTO = CompraDTO.objetoToDto(compraServico.setStatus(CompraDTO.dtoToObjeto(compraDTO), Status.APROVADA));
+        compraDTO = CompraDTO.objetoToDto(compraServico.setStatus(CompraDTO.dtoToObjeto(compraDTO), compraServico.nextValidSystem(compraDTO.getStatus())));
         mv.addObject("compra", compraDTO);
         return mv;
     }

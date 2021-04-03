@@ -13,4 +13,8 @@ import java.util.UUID;
 @Repository
 public interface CompraDAO extends JpaRepository<Compra, UUID> {
     List<Compra> findCompraByClienteId(UUID id);
+
+    List<Compra> findByHabilitadoTrue();
+
+    List<Compra> findCompraByClienteIdAndHabilitadoTrue(UUID id);
 }

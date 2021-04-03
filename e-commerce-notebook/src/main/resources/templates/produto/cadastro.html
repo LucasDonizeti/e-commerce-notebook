@@ -10,43 +10,7 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-2">
-                <a href="#">
-                    <img th:src="@{/img/logo.png}" class="img-fluid" alt="Imagem responsiva" style="height: 100px;">
-                </a>
-            </div>
-            <div class="col-md-8">
-                <form>
-                    <div class="row">
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" placeholder="O que você procura?">
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-outline-primary">Pesquisar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-2">
-                <div class="row">
-                    <div class="col-md-6" style="text-align: center;">
-                        <a href="#">
-                            <ion-icon name="log-in-outline" size="large"></ion-icon>
-                            <spam>login</spam>
-                        </a>
-                    </div>
-                    <div class="col-md-6" style="text-align: center;">
-                        <a href="#">
-                            <ion-icon name="cart-outline" size="large"></ion-icon>
-                            <span>carrinho</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:replace="fragments/fragments :: header"></div>
     <div class="row align-items-center justify-content-md-center">
         <!--Produto-->
         <form class="form-row col-md-8" th:action="@{/produto/cadastro}" th:object="${produto}" method="post">
@@ -127,8 +91,7 @@
                 <input type="text"
                     th:class="${#fields.hasErrors('notebook.marca')?'form-control is-invalid':'form-control'}"
                     placeholder="Marca" th:field="*{notebook.marca}">
-                <spam class="text-danger" th:if="${#fields.hasErrors('notebook.marca')}"
-                    th:errors="*{notebook.marca}">
+                <spam class="text-danger" th:if="${#fields.hasErrors('notebook.marca')}" th:errors="*{notebook.marca}">
                 </spam>
             </div>
             <div class="form-group col-md-6">
@@ -164,16 +127,14 @@
 
             <div class="form-group col-md-4">
                 <label>Categoria</label>
-                <select class="custom-select"
-                    th:field="*{notebook.categoria}">
+                <select class="custom-select" th:field="*{notebook.categoria}">
                     <option value="">Selecione a categoria do notebook</option>
                     <option
                         th:each="categoriaOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.Categoria).values()}"
                         th:class="${#fields.hasErrors('notebook.categoria')?'form-control is-invalid':'form-control'}"
                         th:value="${categoriaOpt}" th:text="${categoriaOpt.getDescricao()}"></option>
                 </select>
-                <spam class="text-danger"
-                    th:if="${#fields.hasErrors('notebook.categoria')}"
+                <spam class="text-danger" th:if="${#fields.hasErrors('notebook.categoria')}"
                     th:errors="*{notebook.categoria}"></spam>
             </div>
 
@@ -199,23 +160,21 @@
 
             <div class="form-group col-md-4">
                 <label>Sistema Operacional</label>
-                <select class="custom-select"
-                    th:field="*{notebook.so}">
+                <select class="custom-select" th:field="*{notebook.so}">
                     <option value="">Selecione o sistema operacional</option>
                     <option
                         th:each="soOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.SO).values()}"
                         th:class="${#fields.hasErrors('notebook.so')?'form-control is-invalid':'form-control'}"
                         th:value="${soOpt}" th:text="${soOpt.getDescricao()}"></option>
                 </select>
-                <spam class="text-danger"
-                    th:if="${#fields.hasErrors('notebook.so')}"
-                    th:errors="*{notebook.so}"></spam>
+                <spam class="text-danger" th:if="${#fields.hasErrors('notebook.so')}" th:errors="*{notebook.so}"></spam>
             </div>
 
             <div class="form-row col-md-12 align-items-center justify-content-md-center" id="forms-documento">
                 <div class="form-group col-md-9">
                     <h3>Memória RAM</h3>
-                    <spam class="text-danger" th:if="${#fields.hasErrors('notebook.ramList')}" th:errors="*{notebook.ramList}">
+                    <spam class="text-danger" th:if="${#fields.hasErrors('notebook.ramList')}"
+                        th:errors="*{notebook.ramList}">
                     </spam>
                 </div>
                 <div class="form-group col-md-3">
@@ -232,7 +191,8 @@
                         <input type="number"
                             th:class="${#fields.hasErrors('notebook.ramList[__${i.index}__].memoria')?'form-control is-invalid':'form-control'}"
                             placeholder="Memória" th:field="*{notebook.ramList[__${i.index}__].memoria}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('notebook.ramList[__${i.index}__].memoria')}"
+                        <spam class="text-danger"
+                            th:if="${#fields.hasErrors('notebook.ramList[__${i.index}__].memoria')}"
                             th:errors="*{notebook.ramList[__${i.index}__].memoria}"></spam>
                     </div>
                     <div class="form-group col-md-5">
@@ -253,7 +213,8 @@
             <div class="form-row col-md-12 align-items-center justify-content-md-center" id="forms-documento">
                 <div class="form-group col-md-9">
                     <h3>Armazenamento interno:</h3>
-                    <spam class="text-danger" th:if="${#fields.hasErrors('notebook.armazenamentoList')}" th:errors="*{notebook.armazenamentoList}">
+                    <spam class="text-danger" th:if="${#fields.hasErrors('notebook.armazenamentoList')}"
+                        th:errors="*{notebook.armazenamentoList}">
                     </spam>
                 </div>
                 <div class="form-group col-md-3">
@@ -270,7 +231,8 @@
                         <input type="number"
                             th:class="${#fields.hasErrors('notebook.armazenamentoList[__${i.index}__].memoria')?'form-control is-invalid':'form-control'}"
                             placeholder="Memória" th:field="*{notebook.armazenamentoList[__${i.index}__].memoria}">
-                        <spam class="text-danger" th:if="${#fields.hasErrors('notebook.armazenamentoList[__${i.index}__].memoria')}"
+                        <spam class="text-danger"
+                            th:if="${#fields.hasErrors('notebook.armazenamentoList[__${i.index}__].memoria')}"
                             th:errors="*{notebook.armazenamentoList[__${i.index}__].memoria}"></spam>
                     </div>
                     <div class="form-group col-md-5">
@@ -281,12 +243,14 @@
                             <option
                                 th:each="tipoArmazenamentoOpt : ${T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.notebook.TipoArmazenamento).values()}"
                                 th:class="${#fields.hasErrors('notebook.armazenamentoList[__${i.index}__].tipoArmazenamento')?'form-control is-invalid':'form-control'}"
-                                th:value="${tipoArmazenamentoOpt}" th:text="${tipoArmazenamentoOpt.getDescricao()}"></option>
+                                th:value="${tipoArmazenamentoOpt}" th:text="${tipoArmazenamentoOpt.getDescricao()}">
+                            </option>
                         </select>
                         <spam class="text-danger"
                             th:if="${#fields.hasErrors('notebook.armazenamentoList[__${i.index}__].tipoArmazenamento')}"
                             th:errors="*{notebook.armazenamentoList[__${i.index}__].tipoArmazenamento}"></spam>
-                        <spam class="text-danger" th:if="${#fields.hasErrors('notebook.armazenamentoList[__${i.index}__]')}"
+                        <spam class="text-danger"
+                            th:if="${#fields.hasErrors('notebook.armazenamentoList[__${i.index}__]')}"
                             th:errors="*{notebook.armazenamentoList[__${i.index}__]}"></spam>
                     </div>
                     <div class="form-group col-md-2">
@@ -298,19 +262,15 @@
 
             <div class="form-group col-md-8">
                 <label>Grupo de Precificação</label>
-                <select class="custom-select"
-                    th:field="*{precificacao.id}">
+                <select class="custom-select" th:field="*{precificacao.id}">
                     <option value=>Selecione o grupo de precificação</option>
-                    <option
-                        th:each="precificacao : ${precificacoes}"
+                    <option th:each="precificacao : ${precificacoes}"
                         th:class="${#fields.hasErrors('precificacao')?'form-control is-invalid':'form-control'}"
                         th:value="${precificacao.id}" th:text="${precificacao.nome}"></option>
                 </select>
-                <spam class="text-danger"
-                    th:if="${#fields.hasErrors('precificacao')}"
-                    th:errors="*{precificacao}"></spam>
-                    <spam class="text-danger"
-                    th:text="${precificacaoErro}"></spam>
+                <spam class="text-danger" th:if="${#fields.hasErrors('precificacao')}" th:errors="*{precificacao}">
+                </spam>
+                <spam class="text-danger" th:text="${precificacaoErro}"></spam>
             </div>
 
             <div class="form-group offset-md-8 col-md-4 align-bottom" style="text-align: right;">
