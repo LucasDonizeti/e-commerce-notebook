@@ -24,6 +24,7 @@ public class UsuarioServico {
     }
 
     public Usuario save(Usuario usuario){
+        usuario.setSenha(BCrypt.hashpw(usuario.getSenha(), BCrypt.gensalt()));
         return usuarioDAO.save(usuario);
     }
 

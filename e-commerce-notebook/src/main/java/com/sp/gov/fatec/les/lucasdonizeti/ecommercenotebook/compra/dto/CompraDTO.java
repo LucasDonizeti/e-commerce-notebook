@@ -52,7 +52,7 @@ public class CompraDTO {
     private List<CupomDTO> cupomsDeTroca = new ArrayList<>();
 
 
-    private CupomDTO cupomPromocional=new CupomDTO();
+    private CupomDTO cupomPromocional;
 
 
 
@@ -85,7 +85,7 @@ public class CompraDTO {
         for (CupomDTO c:cupomsDeTroca)
             totalPago+=c.getValor();
 
-        if (cupomPromocional.getValor()!=null)
+        if (cupomPromocional!=null)
             totalPago+=cupomPromocional.getValor();
 
         return totalPago;

@@ -21,6 +21,6 @@ public class Imagem extends EntidadeDominio implements Serializable {
     @ManyToOne
     private Produto produto;
 
-    @Column(name = "link", length = 128)
+    @Column(name = "link", length = 256)
     private String link;
 }

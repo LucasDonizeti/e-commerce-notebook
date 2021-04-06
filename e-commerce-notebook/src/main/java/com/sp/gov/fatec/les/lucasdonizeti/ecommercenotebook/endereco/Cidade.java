@@ -21,7 +21,7 @@ import java.util.UUID;
 public class Cidade extends EntidadeDominio implements Serializable {
     @Column(name = "cidade", length = 50)
     private String nome;
-    @Column(name = "estado", nullable = false, length = 15)
+    @Column(name = "estado", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
     private Estado estado;
 }

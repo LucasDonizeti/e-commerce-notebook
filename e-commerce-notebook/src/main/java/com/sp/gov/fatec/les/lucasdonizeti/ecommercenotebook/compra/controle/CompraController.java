@@ -135,12 +135,9 @@ public class CompraController {
             mv.addObject("erros", erro);
             return mv;
         }
-        if (compraDTO.getCupomPromocional().getId() == null)
-            compraDTO.setCupomPromocional(null);
-        if (compraDTO.getFrete().getEndereco().getId()==null)
-            compraDTO.getFrete().setEndereco(null);
-
         compraDTO = CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
+        System.out.println(compraDTO.getValorDeCompra());
+        System.out.println(compraDTO.getTotalPago());
         try {
             if (compraDTO.getValorDeCompra().intValue() != compraDTO.getTotalPago().intValue()) {
                 ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");

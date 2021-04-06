@@ -77,7 +77,7 @@
                 <a th:href="@{/cliente/carrinho}">
                     <button class="btn btn-danger">Cancelar</button>
                 </a>
-                <a th:href="@{'/compra/realizar-compra/' + compra.id}">
+                <a th:href="@{'/compra/realizar-compra/' + ${compra.id}}">
                     <button class="btn btn-warning">Voltar</button>
                 </a>
                 <a th:href="@{/cliente/cli/acompanharPedidos}">
