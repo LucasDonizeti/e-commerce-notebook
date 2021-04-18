@@ -2,13 +2,8 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Item;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Pagamento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomDTO;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ProdutoDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromocionalDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.dozer.DozerBeanMapperBuilder;
@@ -49,13 +44,10 @@ public class CompraDTO {
     private List<PagamentoDTO> pagamentos = new ArrayList<>();
 
     @NotNull
-    private List<CupomDTO> cupomsDeTroca = new ArrayList<>();
+    private List<CupomTrocaSelecionadoDTO> cupomsDeTroca = new ArrayList<>();
 
 
-    private CupomDTO cupomPromocional;
-
-
-
+    private CupomPromocionalDTO cupomPromocional;
 
     public float getTotal(){
         AtomicReference<Float> buff= new AtomicReference<>(0f);
@@ -79,11 +71,13 @@ public class CompraDTO {
     public Float getTotalPago(){
         float totalPago=0;
         for (PagamentoDTO p:pagamentos)
-            totalPago+=p.getValor();
+            if (p.getHabilitado() == true)
+                totalPago+=p.getValor();
 
 
-        for (CupomDTO c:cupomsDeTroca)
-            totalPago+=c.getValor();
+        for (CupomTrocaSelecionadoDTO c:cupomsDeTroca)
+            if(c.getIsSelecionado())
+                totalPago+=c.getValor();
 
         if (cupomPromocional!=null)
             totalPago+=cupomPromocional.getValor();

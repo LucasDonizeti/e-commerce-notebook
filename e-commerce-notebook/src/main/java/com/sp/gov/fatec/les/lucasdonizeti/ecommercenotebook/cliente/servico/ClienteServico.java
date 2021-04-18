@@ -2,7 +2,7 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.persistencia.ClienteDAO;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,11 @@ import java.util.UUID;
 public class ClienteServico {
     private final ClienteDAO clienteDAO;
     private final UsuarioServico usuarioServico;
-    private final CupomServico cupomServico;
+    private final CupomTrocaService cupomServico;
 
 
     @Autowired
-    public ClienteServico(ClienteDAO clienteDAO, UsuarioServico usuarioServico, CupomServico cupomServico) {
+    public ClienteServico(ClienteDAO clienteDAO, UsuarioServico usuarioServico, CupomTrocaService cupomServico) {
         this.clienteDAO = clienteDAO;
         this.usuarioServico = usuarioServico;
         this.cupomServico = cupomServico;
@@ -46,7 +46,7 @@ public class ClienteServico {
     public Optional<Cliente> findById(UUID id) {
         Optional<Cliente> cliente = clienteDAO.findById(id);
         if (cliente.isPresent())
-            cliente.get().setCupoms(cupomServico.findByClienteId(cliente.get().getId()));
+            cliente.get().setCupomsDeTroca(cupomServico.findByClienteId(cliente.get().getId()));
 
         return cliente;
     }
@@ -54,7 +54,7 @@ public class ClienteServico {
     public Optional<Cliente> findByUsuarioId(UUID usuario){
         Optional<Cliente> cliente = clienteDAO.findByUsuarioId(usuario);
         if (cliente.isPresent())
-            cliente.get().setCupoms(cupomServico.findByClienteId(cliente.get().getId()));
+            cliente.get().setCupomsDeTroca(cupomServico.findByClienteId(cliente.get().getId()));
 
         return cliente;
     }

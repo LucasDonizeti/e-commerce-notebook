@@ -1,6 +1,6 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.persistencia;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +10,8 @@ import java.util.UUID;
 /**
  * author LucasDonizeti
  */
+
 @Repository
-public interface CupomDAO extends JpaRepository<Cupom, UUID> {
-    List<Cupom> findByClienteId(UUID hash);
+public interface CupomTrocaDAO extends JpaRepository<CupomTroca, UUID> {
+    List<CupomTroca> findByClienteId(UUID hash);
 }

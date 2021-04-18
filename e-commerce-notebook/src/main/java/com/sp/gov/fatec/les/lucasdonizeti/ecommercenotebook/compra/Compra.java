@@ -3,7 +3,8 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,10 +41,10 @@ public class Compra extends EntidadeDominio implements Serializable {
     private List<Pagamento> pagamentos=new ArrayList<>();
 
     @OneToMany
-    private List<Cupom> cupomsDeTroca=new ArrayList<>();
+    private List<CupomTroca> cupomsDeTroca=new ArrayList<>();
 
     @OneToOne(optional = true)
-    private Cupom cupomPromocional;
+    private CupomPromocional cupomPromocional;
 
     public Float getValorDeCompra(){
         float valorDeCompraFinal=0;
@@ -60,8 +61,7 @@ public class Compra extends EntidadeDominio implements Serializable {
         for (Pagamento p:pagamentos)
             totalPago+=p.getValor();
 
-
-        for (Cupom c:cupomsDeTroca)
+        for (CupomTroca c:cupomsDeTroca)
             totalPago+=c.getValor();
 
         if (cupomPromocional!=null)

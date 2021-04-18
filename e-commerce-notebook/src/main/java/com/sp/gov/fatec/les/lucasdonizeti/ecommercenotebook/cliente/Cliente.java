@@ -3,7 +3,7 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.Cartao;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config.EntidadeDominio;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.telefone.Telefone;
@@ -54,8 +54,8 @@ public class Cliente extends EntidadeDominio implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos=new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Cupom> cupoms=new ArrayList<>();
+    @OneToMany
+    private List<CupomTroca> cupomsDeTroca=new ArrayList<>();
 
     @OneToOne
     private Usuario usuario;

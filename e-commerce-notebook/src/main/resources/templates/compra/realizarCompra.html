@@ -145,25 +145,31 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-12 border" style="margin-bottom: 10px;">
+            <div class="col-md-6 border" style="margin-bottom: 10px;">
                 <h3>Cupom</h3>
                 <div class="row col-md-12  align-items-center">
                     <ul>
                         <li th:each="cupom, i : ${compra.cupomsDeTroca}">
-                           <!-- <input type="text" th:field="*{cupomsDeTroca[__${i.index}__].id}" hidden>
-                            <input type="checkbox" th:value="${cupom.habilitado}" th:field="*{cupomsDeTroca[__${i.index}__].habilitado}">
-                            -->
-                            <input type="checkbox" value="false">
+                          <input type="text" th:field="*{cupomsDeTroca[__${i.index}__].id}" hidden>
+                            <input type="checkbox" th:value="${cupom.isSelecionado}" th:field="*{cupomsDeTroca[__${i.index}__].isSelecionado}">
+                            
                             <label th:text="${cupom.codigo +' R$'+cupom.valor}"></label>
                         </li>
                     </ul>
                 </div>
-               <!-- <select class="custom-select" th:field="*{cupomPromocional.id}">-->
-                <select class="custom-select">
-                    <option th:if="${compra.cupomPromocional==null}" value="">Selecione um cupom</option>
-                    <option th:each="cupom : ${compra.cliente.cupoms}" th:value="${cupom.id}" th:text="${cupom.codigo}"
-                     th:if="${cupom.tipoCupom == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom).PROMOCIONAL}"></option>
-                </select>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-8">
+                <input type="text" th:field="${compra.cupomPromocional.id}" hidden>
+                <input type="text" th:field="${compra.cupomPromocional.valor}" hidden>
+
+                <input type="text" th:field="${compra.cupomPromocional.codigo}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" nome="verifica" value="cupomPromocional">
+                    Verificar cupom Promocional
+                </button>
+            </div>
             </div>
             <div class="col-md-12">
                 <a th:href="@{/cliente/carrinho}">

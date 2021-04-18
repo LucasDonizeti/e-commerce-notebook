@@ -1,21 +1,21 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.controle;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.dto.CartaoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.servico.CartaoSarvice;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CupomTrocaSelecionadoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.FreteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.PagamentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromocionalDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomTrocaDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomPromocionalService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.servico.EnderecoServico;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ProdutoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
@@ -46,10 +46,11 @@ public class CompraController {
     private final UsuarioServico usuarioServico;
     private final EnderecoServico enderecoServico;
     private final CartaoSarvice cartaoSarvice;
+    private final CupomPromocionalService cupomPromocionalService;
 
 
     @Autowired
-    public CompraController(CompraServico compraServico, ProdutoService produtoService, ClienteServico clienteServico, UsuarioServico usuarioServico, EnderecoServico enderecoServico, CartaoSarvice cartaoSarvice) {
+    public CompraController(CompraServico compraServico, ProdutoService produtoService, ClienteServico clienteServico, UsuarioServico usuarioServico, EnderecoServico enderecoServico, CartaoSarvice cartaoSarvice, CupomPromocionalService cupomPromocionalService) {
         this.compraServico = compraServico;
         this.produtoService = produtoService;
         this.clienteServico = clienteServico;
@@ -57,6 +58,7 @@ public class CompraController {
 
         this.enderecoServico = enderecoServico;
         this.cartaoSarvice = cartaoSarvice;
+        this.cupomPromocionalService = cupomPromocionalService;
     }
 
     @PreAuthorize("hasAuthority('ROLE_CLI')")
@@ -103,10 +105,8 @@ public class CompraController {
                 pagamentoDTO.setValor(0f);
                 compraDTO.getPagamentos().add(pagamentoDTO);
             });
-            compraDTO.getCliente().getCupoms().forEach(c -> {
-                if (c.getTipoCupom() == TipoCupom.TROCA) {
-                    compraDTO.getCupomsDeTroca().add(c);
-                }
+            compraDTO.getCliente().getCupomsTroca().forEach(c -> {
+                compraDTO.getCupomsDeTroca().add(CupomTrocaSelecionadoDTO.objetoToDto(CupomTrocaDTO.dtoToObjeto(c)));
             });
         }
 
@@ -117,7 +117,24 @@ public class CompraController {
     @PreAuthorize("hasAuthority('ROLE_CLI')")
     @PostMapping("/realizar-compra")
     public ModelAndView realizarCompraPost(@Valid @ModelAttribute("compra") CompraDTO compraDTO,
-                                           BindingResult erro) {
+                                           BindingResult erro,
+                                           @ModelAttribute("verifica") Optional<String> verifica) {
+
+        if (verifica.isPresent())
+            if (!verifica.get().equals("") && verifica.get() != null) {
+                if (verifica.get().equals("cupomPromocional")) {
+                    String codigo = compraDTO.getCupomPromocional().getCodigo();
+
+                    Optional<CupomPromocional> cupomPromocionalOptional = cupomPromocionalService.findByCodigo(codigo);
+                    if (cupomPromocionalOptional.isPresent())
+                        compraDTO.setCupomPromocional(CupomPromocionalDTO.objetoToDto(cupomPromocionalOptional.get()));
+
+                    ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");
+                    mv.addObject("compra", compraDTO);
+                    mv.addObject("erros", erro);
+                    return mv;
+                }
+            }
 
         if (compraDTO.getFrete().getEndereco().getId() != null) {
             FreteDTO freteDTO = new FreteDTO();
@@ -138,15 +155,8 @@ public class CompraController {
         compraDTO = CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
         System.out.println(compraDTO.getValorDeCompra());
         System.out.println(compraDTO.getTotalPago());
-        try {
-            if (compraDTO.getValorDeCompra().intValue() != compraDTO.getTotalPago().intValue()) {
-                ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");
-                mv.addObject("compra", compraDTO);
-                mv.addObject("erros", erro);
-                mv.addObject("PagamentoRejeitadoException", "Pagamento não pode ser efetuado dessa forma");
-                return mv;
-            }
-        } catch (Exception e) {
+
+        if (compraDTO.getValorDeCompra().intValue() != compraDTO.getTotalPago().intValue()) {
             ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");
             mv.addObject("compra", compraDTO);
             mv.addObject("erros", erro);
@@ -154,20 +164,13 @@ public class CompraController {
             return mv;
         }
 
+
         ModelAndView mv = new ModelAndView("/compra/confirmarCompra.html");
         compraDTO = CompraDTO.objetoToDto(compraServico.setStatus(CompraDTO.dtoToObjeto(compraDTO), compraServico.nextValidSystem(compraDTO.getStatus())));
         mv.addObject("compra", compraDTO);
         return mv;
     }
 
-    @PreAuthorize("hasAuthority('ROLE_CLI')")
-    @GetMapping("/confirmar-compra")
-    public ModelAndView confirmarCompra(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView mv = new ModelAndView("compra/confirmarCompra.html");
-        CompraDTO compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
-        mv.addObject("compra", compraDTO);
-        return mv;
-    }
 
     @PreAuthorize("hasAuthority('ROLE_CLI')")
     @GetMapping("/cli/detalheCompra/{hash}")

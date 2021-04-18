@@ -1,7 +1,5 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto;
 
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.Documento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.TipoDocumento;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.validacao.DocumentoValidador;

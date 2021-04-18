@@ -14,27 +14,18 @@ import java.io.Serializable;
 /**
  * author LucasDonizeti
  */
+
 @Getter
 @Setter
-@Entity(name = "_cupom")
-@SQLDelete(sql = "update _cupom set habilitado = 0 where id = ?")
-public class Cupom extends EntidadeDominio implements Serializable {
+@Entity(name = "_cupom_promocional")
+@SQLDelete(sql = "update _cupom_promocional set habilitado = 0 where id = ?")
+public class CupomPromocional extends EntidadeDominio implements Serializable {
     @Column(name = "valor", nullable = false)
     private Float valor;
     @Column(name = "codigo", nullable = false, length = 10)
     private String codigo;
-
-    @Column(name = "tipo", nullable = false, length = 15)
-    @Enumerated(EnumType.STRING)
-    private TipoCupom tipoCupom;
-
-    @ManyToOne
-    @JsonIgnore
-    private Cliente cliente;
-
+    
     @OneToOne
     @JsonIgnore
     private Compra compra;
-
-
 }

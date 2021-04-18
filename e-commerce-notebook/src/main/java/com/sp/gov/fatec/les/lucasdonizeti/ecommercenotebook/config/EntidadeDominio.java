@@ -1,6 +1,5 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.config;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -8,6 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -36,5 +36,18 @@ public class EntidadeDominio implements Serializable {
     public EntidadeDominio() {
         this.id=UUID.randomUUID();
         this.dataCriacao = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntidadeDominio that = (EntidadeDominio) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

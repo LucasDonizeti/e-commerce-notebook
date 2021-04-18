@@ -6,9 +6,8 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.Clie
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.persistencia.CompraDAO;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.Cupom;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.TipoCupom;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +25,10 @@ public class CompraServico {
     private final ProdutoService produtoService;
     private final ClienteServico clienteServico;
     private final CartaoSarvice cartaoSarvice;
-    private final CupomServico cupomServico;
+    private final CupomTrocaService cupomServico;
 
     @Autowired
-    public CompraServico(CompraDAO compraDAO, ProdutoService produtoService, ClienteServico clienteServico, CartaoSarvice cartaoSarvice, CupomServico cupomServico) {
+    public CompraServico(CompraDAO compraDAO, ProdutoService produtoService, ClienteServico clienteServico, CartaoSarvice cartaoSarvice, CupomTrocaService cupomServico) {
         this.compraDAO = compraDAO;
         this.produtoService = produtoService;
         this.clienteServico = clienteServico;
@@ -125,8 +124,7 @@ public class CompraServico {
     public void concluirTroca(Compra compra){
         compra=findById(compra.getId()).get();
         Cliente cliente=clienteServico.findById(compra.getCliente().getId()).get();
-        Cupom cupom=new Cupom();
-        cupom.setTipoCupom(TipoCupom.TROCA);
+        CupomTroca cupom=new CupomTroca();
         cupom.setCodigo("TROCA");
         cupom.setValor(compra.getTotalPago());
 
