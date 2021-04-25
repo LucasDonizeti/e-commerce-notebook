@@ -17,6 +17,7 @@
         </div>
         <div class="com-md-9">
             <form class="form-row" th:action="@{/adm/cupoms/cadastro}" th:object="${cupom}" method="post">
+                <input type="text" th:field="*{id}" hidden>
                 <div class="form-group col-md-12">
                     <label for="inputCodigo">Codigo</label>
                     <input type="text"
@@ -42,7 +43,7 @@
                     </spam>
                 </div>
                 <div class="col-md-6">
-                    <button class="btn btn-primary" type="submit">Cadastrar</button>
+                    <button class="btn btn-primary" type="submit" th:text="${cupom.id!=null?'Editar':'Cadastrar'}">Cadastrar</button>
                 </div>
                 <div class="col-md-6">
                     <a th:href="@{/adm/cupoms}">

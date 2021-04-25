@@ -46,10 +46,6 @@ public class ProdutoDTO {
         return custo;
     }
 
-    public float getSubtotal(){
-        return getPrecoDeVenda() * estoque;
-    }
-
 
     public void addImagem(ImagemDTO imagem) {
         this.imagemList.add(imagem);

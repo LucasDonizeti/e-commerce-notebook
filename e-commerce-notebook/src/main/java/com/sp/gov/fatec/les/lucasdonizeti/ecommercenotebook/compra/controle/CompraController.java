@@ -131,7 +131,7 @@ public class CompraController {
         if (verifica.isPresent())
             if (!verifica.get().equals("") && verifica.get() != null) {
                 if (verifica.get().equals("cupomPromocional")) {
-                    compraDTO=verificaCupomPromocional(compraDTO, verifica.get());
+                    compraDTO=verificaCupomPromocional(compraDTO, compraDTO.getCupomPromocional().getCodigo());
                     return preparaRealizaCompra(compraDTO, erro);
                 }
             }
@@ -149,7 +149,8 @@ public class CompraController {
 
         compraDTO=beforeCompraPreprare(compraDTO);
         compraDTO = CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
-        cupomPromocionalService.subtrairUso(compraDTO.getCupomPromocional().getId());
+        if (compraDTO.getCupomPromocional()!=null)
+            cupomPromocionalService.subtrairUso(compraDTO.getCupomPromocional().getId());
 
         ModelAndView mv = new ModelAndView("/compra/confirmarCompra.html");
         compraDTO = CompraDTO.objetoToDto(compraServico.setStatus(CompraDTO.dtoToObjeto(compraDTO), compraServico.nextValidSystem(compraDTO.getStatus())));
@@ -171,10 +172,17 @@ public class CompraController {
         return compraDTO;
     }
     private CompraDTO verificaCupomPromocional(CompraDTO compraDTO, String codigoCupom){
-
         Optional<CupomPromocional> cupomPromocionalOptional = cupomPromocionalService.findUtilizavelByCodigo(codigoCupom);
         if (cupomPromocionalOptional.isPresent())
             compraDTO.setCupomPromocional(CupomPromocionalDTO.objetoToDto(cupomPromocionalOptional.get()));
+
+        System.out.println("codigo cupom: " + codigoCupom);
+        System.out.println(cupomPromocionalOptional.isPresent());
+        if (cupomPromocionalOptional.isPresent()){
+            System.out.println(cupomPromocionalOptional.get().getId());
+            System.out.println(cupomPromocionalOptional.get().getCodigo());
+            System.out.println(cupomPromocionalOptional.get().getValor());
+        }
 
         return compraDTO;
     }

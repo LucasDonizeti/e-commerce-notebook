@@ -266,11 +266,13 @@
                     <td th:text="${pagamento.valor}"></td>
                 </tr>
                 <tr th:each="cupom : ${compra.cupomsDeTroca}">
-                    <th colspan="3" scope="row" th:text="${cupom.codigo}"></th>
+                    <th>Cupom de Troca</th>
+                    <td colspan="2" scope="row" th:text="${cupom.codigo}"></td>
                     <td th:text="${cupom.valor}"></td>
                 </tr>
                 <tr th:if="${compra.cupomPromocional != null}">
-                    <th colspan="3" scope="row" th:text="${compra.cupomPromocional.codigo}"></th>
+                    <th>Cupom Promocional</th>
+                    <td colspan="2" scope="row" th:text="${compra.cupomPromocional.codigo}"></td>
                     <td th:text="${compra.cupomPromocional.valor}"></td>
                 </tr>
             </tbody>

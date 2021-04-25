@@ -31,8 +31,8 @@
                     <th scope="row" th:text="${cupom.codigo}"></th>
                     <td th:text="${cupom.valor}"></td>
                     <td th:text="${cupom.quantidade}"></td>
-                    <td>editar</td>
-                    <td>deletar</td>
+                    <td><a th:href="@{/adm/cupoms/editar/} + ${cupom.id}"><span>Editar</span></a></td>
+                    <td><a th:href="@{/adm/cupoms/deletar/} + ${cupom.id}"><span>Deletar</span></a></td>
                   </tr>
                 </tbody>
               </table>

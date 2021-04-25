@@ -32,6 +32,10 @@ public class ItemDTO {
 
     private CompraDTO compra;
 
+    public float getSubtotal(){
+        return quantidade * produto.getPrecoDeVenda();
+    }
+
     public static ItemDTO objetoToDto(Item item) {
         return DozerBeanMapperBuilder.buildDefault().map(item, ItemDTO.class);
     }

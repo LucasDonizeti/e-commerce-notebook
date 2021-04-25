@@ -53,7 +53,7 @@ public class CompraDTO {
     public float getTotal(){
         AtomicReference<Float> buff= new AtomicReference<>(0f);
         itens.forEach(i->{
-            buff.updateAndGet(v -> v + i.getProduto().getSubtotal());
+            buff.updateAndGet(v -> v + i.getSubtotal());
         });
 
         return buff.get();

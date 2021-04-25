@@ -173,7 +173,7 @@ public class AdministradorController {
     public ModelAndView cupoms(){
         ModelAndView mv = new ModelAndView("/adm/cupoms.html");
         List<CupomPromocionalDTO> cupomPromocionalDTOS=new ArrayList<>();
-        cupomPromocionalService.findAll().forEach(c->{
+        cupomPromocionalService.findHabilitado().forEach(c->{
             cupomPromocionalDTOS.add(CupomPromocionalDTO.objetoToDto(c));
         });
         mv.addObject("cupomList",cupomPromocionalDTOS);
@@ -187,6 +187,25 @@ public class AdministradorController {
         return mv;
     }
 
+    @GetMapping("/cupoms/editar/{hash}")
+    public ModelAndView editCupoms(@PathVariable("hash")UUID id){
+        Optional<CupomPromocional> cupomPromocionalOptional=cupomPromocionalService.findById(id);
+        if (cupomPromocionalOptional.isPresent()){
+            ModelAndView mv = new ModelAndView("/adm/cadCupoms.html");
+            mv.addObject("cupom",cupomPromocionalOptional.get());
+            return mv;
+        }
+        return new ModelAndView("redirect:/adm/cupoms");
+    }
+
+    @GetMapping("/cupoms/deletar/{hash}")
+    public ModelAndView deleteCupoms(@PathVariable("hash")UUID id){
+        Optional<CupomPromocional> cupomPromocionalOptional=cupomPromocionalService.findById(id);
+        if (cupomPromocionalOptional.isPresent())
+            cupomPromocionalService.delete(cupomPromocionalOptional.get());
+        return new ModelAndView("redirect:/adm/cupoms");
+    }
+
     @PostMapping("/cupoms/cadastro")
     public ModelAndView postcadCupoms(@Valid @ModelAttribute("cupom") CupomPromocionalDTO cupomPromocionalDTO,
                                    BindingResult erros){
@@ -196,9 +215,7 @@ public class AdministradorController {
             mv.addObject("erros", erros.getAllErrors());
             return mv;
         }
-
-        CupomPromocional cupomPromocional= cupomPromocionalService.save(CupomPromocionalDTO.dtoToObjeto(cupomPromocionalDTO));
-
+        cupomPromocionalService.save(CupomPromocionalDTO.dtoToObjeto(cupomPromocionalDTO));
         return new ModelAndView("redirect:/adm/cupoms");
     }
 

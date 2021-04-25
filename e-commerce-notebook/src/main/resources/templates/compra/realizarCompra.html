@@ -18,170 +18,180 @@
                 <input type="text" th:field="*{status}" hidden>
                 <input type="text" th:field="*{id}" hidden>
 
-            <table class="table" style="background-color: aliceblue;">
-                <thead>
-                    <tr>
-                        <th class="col">
-                            Nome do Produto
-                        </th>
-                        <th class="col">
-                            Quantidade
-                        </th>
-                        <th class="col">
-                            Preco Unitário
-                        </th>
-                        <th class="col">
-                            Subtotal
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="item, i : ${compra.itens}">
-                        <input type="text" th:field="*{itens[__${i.index}__].id}" hidden>
-                        <input type="text" th:field="*{itens[__${i.index}__].produto.id}" hidden>
-                        <input type="text" th:field="*{itens[__${i.index}__].status}" hidden>
-                        <input type="text" th:field="*{itens[__${i.index}__].quantidade}" hidden>
-                        <th class="row">
-                            <span th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}"></span>
-                        </th>
-                        <td class="col">
-                            <span th:text="${item.quantidade}">1</span>
-                        </td>
-                        <td>
-                            <span th:text="${'R$' + item.produto.precoDeVenda}"></span>
-                        </td>
-                        <td>
-                            <span th:text="${'R$' + item.produto.subtotal}"></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th class="col">
+                <table class="table" style="background-color: aliceblue;">
+                    <thead>
+                        <tr>
+                            <th class="col">
+                                Nome do Produto
+                            </th>
+                            <th class="col">
+                                Quantidade
+                            </th>
+                            <th class="col">
+                                Preco Unitário
+                            </th>
+                            <th class="col">
+                                Subtotal
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item, i : ${compra.itens}">
+                            <input type="text" th:field="*{itens[__${i.index}__].id}" hidden>
+                            <input type="text" th:field="*{itens[__${i.index}__].produto.id}" hidden>
+                            <input type="text" th:field="*{itens[__${i.index}__].status}" hidden>
+                            <input type="text" th:field="*{itens[__${i.index}__].quantidade}" hidden>
+                            <th class="row">
+                                <span
+                                    th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}"></span>
+                            </th>
+                            <td class="col">
+                                <span th:text="${item.quantidade}">1</span>
+                            </td>
+                            <td>
+                                <span th:text="${'R$' + item.produto.precoDeVenda}"></span>
+                            </td>
+                            <td>
+                                <span th:text="${'R$' + item.subtotal}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col">
 
-                        </th>
-                        <th class="col">
+                            </th>
+                            <th class="col">
 
-                        </th>
-                        <th class="col">
+                            </th>
+                            <th class="col">
 
-                        </th>
-                        <th class="col">
-                            <span th:text="${compra.total}"></span>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <table class="table align-items-center">
-                <thead>
-                    <tr>
-                        <th class="col" style="width: 20%;">
-                            Frete
-                        </th>
-                        <th class="col" style="width: 60%;">
-                            <div class="row">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text" for="inputGroupEndereco">Endereço de
-                                            entrega</label>
+                            </th>
+                            <th class="col">
+                                <span th:text="${compra.total}"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <table class="table align-items-center">
+                    <thead>
+                        <tr>
+                            <th class="col" style="width: 20%;">
+                                Frete
+                            </th>
+                            <th class="col" style="width: 60%;">
+                                <div class="row">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text" for="inputGroupEndereco">Endereço de
+                                                entrega</label>
+                                        </div>
+                                        <select th:field="*{frete.endereco.id}">
+                                            <option th:if="${compra.frete.endereco.id==null}" value="">Selecione o
+                                                endereço de entrega</option>
+                                            <option th:each="endereco : ${compra.cliente.enderecos}"
+                                                th:value="${endereco.id}"
+                                                th:text="${endereco.rua + ', ' + endereco.numero + ' - ' + endereco.cep}">
+                                            </option>
+                                        </select>
                                     </div>
-                                    <select th:field="*{frete.endereco.id}">
-                                        <option th:if="${compra.frete.endereco.id==null}" value="">Selecione o endereço de entrega</option>
-                                        <option th:each="endereco : ${compra.cliente.enderecos}"
-                                        th:value="${endereco.id}"
-                                            th:text="${endereco.rua + ', ' + endereco.numero + ' - ' + endereco.cep}">
-                                        </option>
-                                    </select>
                                 </div>
-                            </div>
-                        </th>
-                        <th class="col" style="width: 20%;">
-                            <span th:text="${compra.frete.valor!=null?compra.frete.valor:''}"></span>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div class="col-md-12">
-                <div class="alert alert-warning" role="alert">
-                    <ion-icon name="alert-circle-outline"></ion-icon>
-                    <spam>Voce Pode Cadastrar outro endereço de entrega <a href="adicionarEndereco.html">aqui</a>!
-                    </spam>
+                            </th>
+                            <th class="col" style="width: 20%;">
+                                <span th:text="${compra.frete.valor!=null?compra.frete.valor:''}"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="col-md-12">
+                    <div class="alert alert-warning" role="alert">
+                        <ion-icon name="alert-circle-outline"></ion-icon>
+                        <spam>Voce Pode Cadastrar outro endereço de entrega <a href="adicionarEndereco.html">aqui</a>!
+                        </spam>
+                    </div>
                 </div>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th class="col" style="width: 85%;">
-                            Valor Total
-                        </th>
-                        <th class="col" style="width: 15%;">
-                            <span th:text="${compra.valorDeCompra}"></span>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col" style="width: 85%;">
+                                Valor Total
+                            </th>
+                            <th class="col" style="width: 15%;">
+                                <span th:text="${compra.valorDeCompra}"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
 
-            <div class="col-md-12 border" style="margin-bottom: 10px;">
-                <h3>Cartao de credito</h3>
-                <div th:each="p, i : ${compra.pagamentos}" class="row col-md-12  align-items-center">
-                    <div class="row col-md-6 align-items-center">
-                        <div class="col-md-8">
-                            <input type="text" th:field="*{pagamentos[__${i.index}__].id}" hidden>
-                            <input type="text" th:field="*{pagamentos[__${i.index}__].cartao.id}" hidden>
-                            <input type="checkbox" th:field="*{pagamentos[__${i.index}__].habilitado}">
-                            <label th:text="${p.cartao.nome}"></label>
-                            <img th:src="*{pagamentos[__${i.index}__].cartao.bandeira.imagem}">
+                <div class="col-md-12 border" style="margin-bottom: 10px;">
+                    <h3>Cartao de credito</h3>
+                    <div th:each="p, i : ${compra.pagamentos}" class="row col-md-12  align-items-center">
+                        <div class="row col-md-6 align-items-center">
+                            <div class="col-md-8">
+                                <input type="text" th:field="*{pagamentos[__${i.index}__].id}" hidden>
+                                <input type="text" th:field="*{pagamentos[__${i.index}__].cartao.id}" hidden>
+                                <input type="checkbox" th:field="*{pagamentos[__${i.index}__].habilitado}">
+                                <label th:text="${p.cartao.nome}"></label>
+                                <img th:src="*{pagamentos[__${i.index}__].cartao.bandeira.imagem}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="number" class="form-control" th:field="*{pagamentos[__${i.index}__].valor}"
+                                placeholder="valor" />
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <input type="number" class="form-control" th:field="*{pagamentos[__${i.index}__].valor}"  placeholder="valor"/>
+                    <div class="col-md-12">
+                        <button class="btn btn-outline-secondary">
+                            <ion-icon name="add-circle-outline"></ion-icon> <span>Adicionar outro cartão</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-12 border" style="margin-bottom: 10px;">
+                    <h3>Cupom</h3>
+                    <div class="row col-md-12  align-items-center">
+                        <ul>
+                            <li th:each="cupom, i : ${compra.cupomsDeTroca}">
+                                <input type="text" th:field="*{cupomsDeTroca[__${i.index}__].id}" hidden>
+                                <input type="checkbox" th:value="${cupom.habilitado}"
+                                    th:field="*{cupomsDeTroca[__${i.index}__].habilitado}">
+
+                                <label th:text="${cupom.codigo +' R$'+cupom.valor}"></label>
+                            </li>
+                        </ul>
+
+                        <div th:if="${#lists.size(compra.cupomsDeTroca) == 0}">
+                            <span>Você não tem nenhum cupom de troca!</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 border">
+                    <h3> Cupom Promocional </h3>
+                    <div class="col-md-12">
+                        <input type="text" th:field="*{cupomPromocional.id}" hidden>
+                        <input type="text" th:field="*{cupomPromocional.valor}" hidden>
+
+                        <input type="text" th:field="*{cupomPromocional.codigo}">
+                        <button class="btn btn=secondary" type="submit" name="verifica" value="cupomPromocional">
+                            Verificar cupom Promocional
+                        </button>
+                    </div>
+                    <div class="col-md-12">
+                            <ion-icon
+                                th:name="${compra.cupomPromocional.id!=null?'checkmark-circle-outline':'closed-circle-outline'}">
+                            </ion-icon>
+                        <spam th:text="${(compra.cupomPromocional.id!=null?(compra.cupomPromocional.codigo + ' - R$' +compra.cupomPromocional.valor) : '')}">
+                        </spam>
                     </div>
                 </div>
                 <div class="col-md-12">
-                    <button class="btn btn-outline-secondary">
-                        <ion-icon name="add-circle-outline"></ion-icon> <span>Adicionar outro cartão</span>
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-6 border" style="margin-bottom: 10px;">
-                <h3>Cupom</h3>
-                <div class="row col-md-12  align-items-center">
-                    <ul>
-                        <li th:each="cupom, i : ${compra.cupomsDeTroca}">
-                          <input type="text" th:field="*{cupomsDeTroca[__${i.index}__].id}">
-                            <input type="checkbox" th:value="${cupom.habilitado}" th:field="*{cupomsDeTroca[__${i.index}__].habilitado}">
-                            
-                            <label th:text="${cupom.codigo +' R$'+cupom.valor}"></label>
-                        </li>
-                    </ul>
-
-                    <div th:if="${#lists.size(compra.cupomsDeTroca) == 0}">
-                            <span>Você não tem nenhum cupom de troca!</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="col-md-8">
-                <input type="text" th:field="${compra.cupomPromocional.id}" hidden>
-                <input type="text" th:field="${compra.cupomPromocional.valor}" hidden>
-
-                <input type="text" th:field="${compra.cupomPromocional.codigo}">
-            </div>
-            <div class="col-md-4">
-                <button type="submit" name="verifica" value="cupomPromocional">
-                    Verificar cupom Promocional
-                </button>
-            </div>
-            </div>
-            <div class="col-md-12">
-                <a th:href="@{/cliente/carrinho}">
-                    <button type="button" class="btn btn-danger">Cancelar</button>
-                </a>
+                    <a th:href="@{/cliente/carrinho}">
+                        <button type="button" class="btn btn-danger">Cancelar</button>
+                    </a>
                     <button type="submit" class="btn btn-success">Avançar</button>
-            </div>
-        </form>
+                </div>
+            </form>
         </div>
     </div>
     </div>

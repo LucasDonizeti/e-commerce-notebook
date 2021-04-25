@@ -26,8 +26,20 @@ public class CupomPromocionalService {
         return cupomPromocionalDAO.findAll();
     }
 
+    public List<CupomPromocional> findHabilitado(){
+        return cupomPromocionalDAO.findHabilitado();
+    }
+
+    public Optional<CupomPromocional> findById(UUID id){
+        return cupomPromocionalDAO.findById(id);
+    }
+
     public CupomPromocional save(CupomPromocional cupom){
         return cupomPromocionalDAO.save(cupom);
+    }
+
+    public void delete(CupomPromocional cupomPromocional){
+        cupomPromocionalDAO.delete(cupomPromocional);
     }
 
     public void subtrairUso(UUID id){
