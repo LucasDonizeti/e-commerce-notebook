@@ -6,12 +6,15 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.Clie
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.persistencia.CompraDAO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomPromocionalService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,14 +29,16 @@ public class CompraServico {
     private final ClienteServico clienteServico;
     private final CartaoSarvice cartaoSarvice;
     private final CupomTrocaService cupomServico;
+    private final CupomPromocionalService cupomPromocionalService;
 
     @Autowired
-    public CompraServico(CompraDAO compraDAO, ProdutoService produtoService, ClienteServico clienteServico, CartaoSarvice cartaoSarvice, CupomTrocaService cupomServico) {
+    public CompraServico(CompraDAO compraDAO, ProdutoService produtoService, ClienteServico clienteServico, CartaoSarvice cartaoSarvice, CupomTrocaService cupomServico, CupomPromocionalService cupomPromocionalService) {
         this.compraDAO = compraDAO;
         this.produtoService = produtoService;
         this.clienteServico = clienteServico;
         this.cartaoSarvice = cartaoSarvice;
         this.cupomServico = cupomServico;
+        this.cupomPromocionalService = cupomPromocionalService;
     }
 
     public Optional<Compra> findById(UUID hash) {
@@ -53,8 +58,7 @@ public class CompraServico {
     }
 
     public Compra save(Compra compra) {
-        Compra compra1 = compraDAO.save(compra);
-        return findById(compra1.getId()).get();
+        return compraDAO.save(compra);
     }
 
     public Compra setStatus(Compra compra, Status status) {
@@ -125,11 +129,16 @@ public class CompraServico {
         compra=findById(compra.getId()).get();
         Cliente cliente=clienteServico.findById(compra.getCliente().getId()).get();
         CupomTroca cupom=new CupomTroca();
-        cupom.setCodigo("TROCA");
+        cupom.setCodigo(gerarCodigoTroca());
         cupom.setValor(compra.getTotalPago());
 
         cupom.setCliente(cliente);
         cupomServico.save(cupom);
+    }
+
+    private String gerarCodigoTroca(){
+        LocalDate localDate=LocalDate.now();
+        return ("TROCA" + (localDate.getDayOfMonth()<10?"0":"") + localDate.getDayOfMonth() + (localDate.getMonthValue()<10?"0":"") + localDate.getMonthValue() + localDate.getYear());
     }
 
 

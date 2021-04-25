@@ -4,6 +4,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteD
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromocionalDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomTrocaDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.dozer.DozerBeanMapperBuilder;
@@ -44,7 +45,7 @@ public class CompraDTO {
     private List<PagamentoDTO> pagamentos = new ArrayList<>();
 
     @NotNull
-    private List<CupomTrocaSelecionadoDTO> cupomsDeTroca = new ArrayList<>();
+    private List<CupomTrocaDTO> cupomsDeTroca = new ArrayList<>();
 
 
     private CupomPromocionalDTO cupomPromocional;
@@ -63,7 +64,9 @@ public class CompraDTO {
         for (ItemDTO i : itens){
             valorDeCompraFinal+=(i.getProduto().getPrecoDeVenda() * i.getQuantidade());
         }
-        valorDeCompraFinal+=frete.getValor();
+
+        if (frete!=null)
+            valorDeCompraFinal+=frete.getValor();
 
         return valorDeCompraFinal;
     }
@@ -75,8 +78,8 @@ public class CompraDTO {
                 totalPago+=p.getValor();
 
 
-        for (CupomTrocaSelecionadoDTO c:cupomsDeTroca)
-            if(c.getIsSelecionado())
+        for (CupomTrocaDTO c:cupomsDeTroca)
+            if(c.getHabilitado())
                 totalPago+=c.getValor();
 
         if (cupomPromocional!=null)

@@ -1,7 +1,6 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
 import lombok.Getter;
 import lombok.Setter;
 import org.dozer.DozerBeanMapperBuilder;
@@ -23,6 +22,9 @@ public class CupomPromocionalDTO {
     private Float valor;
     @NotEmpty
     private String codigo;
+
+    @NotNull
+    private int quantidade;
 
     public static CupomPromocionalDTO objetoToDto(CupomPromocional cupom){
         return DozerBeanMapperBuilder.buildDefault().map(cupom, CupomPromocionalDTO.class);

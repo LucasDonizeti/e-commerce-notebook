@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class CupomTroca extends EntidadeDominio implements Serializable {
     @Column(name = "valor", nullable = false)
     private Float valor;
-    @Column(name = "codigo", nullable = false, length = 10)
+    @Column(name = "codigo", nullable = false, length = 16)
     private String codigo;
 
     @ManyToOne

@@ -22,8 +22,10 @@ import java.io.Serializable;
 public class CupomPromocional extends EntidadeDominio implements Serializable {
     @Column(name = "valor", nullable = false)
     private Float valor;
-    @Column(name = "codigo", nullable = false, length = 10)
+    @Column(name = "codigo", nullable = false, length = 64)
     private String codigo;
+    @Column(name = "quantidade", nullable = false)
+    private int quantidade;
     
     @OneToOne
     @JsonIgnore

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
+    <title>Document</title>
+</head>
+
+<body>
+    <div th:replace="fragments/fragments :: header"></div>
+    <div class="row" style="margin-left: 15px; margin-right: 15px;">
+        <div class="col-md-3">
+            <div th:replace="fragments/fragments :: menu-adm"></div>
+        </div>
+        <div class="com-md-9">
+                <form class="form-row" th:action="@{/adm/cadastro}" th:object="${usuario}" method="post">
+                    <input type="text" th:field="*{id}" hidden>
+                    <input type="text" th:field="*{tipoUsuario}" hidden>
+                    <div>
+                        <div class="form-group col-md-12">
+                            <label for="inputNome">Nome</label>
+                            <input type="text"
+                                th:class="${#fields.hasErrors('nome')?'form-control is-invalid':'form-control'}"
+                                id="inputNome" placeholder="Nome" th:field="*{nome}">
+                            <spam class="text-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">
+                            </spam>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" th:field="*{id}" hidden>
+                            <label for="inputNome">Email</label>
+                            <input type="text"
+                                th:class="${#fields.hasErrors('login')?'form-control is-invalid':'form-control'}"
+                                id="inputNome" placeholder="Email" th:field="*{login}">
+                            <spam class="text-danger" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">
+                            </spam>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputNome">Senha</label>
+                            <input type="text"
+                                th:class="${#fields.hasErrors('senha')?'form-control is-invalid':'form-control'}"
+                                id="inputNome" placeholder="Email" th:field="*{senha}">
+                            <spam class="text-danger" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}">
+                            </spam>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-primary" type="submit">Cadastrar</button>
+                        </div>
+                        <div class="col-md-6">
+                            <a th:href="@{/adm/visaoGeral}">
+                                <button class="btn btn-secondary">
+                                    Voltar
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+    <script th:src="@{\js\plugins\jquery-3.3.1\jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/js/plugins/popper/popper.min.js}"></script>
+    <script th:src="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.js}"></script>
+
+</body>
+
+</html>

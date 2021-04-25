@@ -7,18 +7,23 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromocionalDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomPromocionalService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.PrecificacaoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.TipoUsuario;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.dto.UsuarioDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,15 +42,17 @@ public class AdministradorController {
     private final UsuarioServico usuarioServico;
     private final ClienteServico clienteServico;
     private final CompraServico compraServico;
+    private final CupomPromocionalService cupomPromocionalService;
 
     @Autowired
     public AdministradorController(ProdutoService produtoService, PrecificacaoService precificacaoService,
-                                   UsuarioServico usuarioServico, ClienteServico clienteServico, CompraServico compraServico) {
+                                   UsuarioServico usuarioServico, ClienteServico clienteServico, CompraServico compraServico, CupomPromocionalService cupomPromocionalService) {
         this.produtoService = produtoService;
         this.precificacaoService = precificacaoService;
         this.usuarioServico = usuarioServico;
         this.clienteServico = clienteServico;
         this.compraServico = compraServico;
+        this.cupomPromocionalService = cupomPromocionalService;
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADM')")
@@ -135,6 +142,64 @@ public class AdministradorController {
 
         mv.addObject("compra", CompraDTO.objetoToDto(compraServico.findById(hash).get()));
         return mv;
+    }
+
+    @GetMapping("/cadastro")
+    public ModelAndView cadastroAdmin(){
+        ModelAndView mv = new ModelAndView("/adm/admCadastro.html");
+        UsuarioDTO usuarioDTO=new UsuarioDTO();
+        usuarioDTO.setTipoUsuario(TipoUsuario.ADMINISTRADOR);
+        mv.addObject("usuario",usuarioDTO);
+        return mv;
+    }
+
+    @PostMapping("/cadastro")
+    public ModelAndView postCadastroAdmin(@Valid @ModelAttribute("usuario")UsuarioDTO usuarioDTO,
+                                          BindingResult erros){
+        usuarioDTO.setTipoUsuario(TipoUsuario.ADMINISTRADOR);
+        if (erros.hasErrors()){
+            ModelAndView mv = new ModelAndView("/adm/admCadastro.html");
+            mv.addObject("usuario", usuarioDTO);
+            mv.addObject("erros", erros.getAllErrors());
+            return mv;
+        }
+        Usuario usuario = usuarioServico.save(UsuarioDTO.dtoToObjeto(usuarioDTO));
+
+        System.out.println("usuario criado: " + usuario.getLogin());
+        return new ModelAndView("/adm/admCadastro.html");
+    }
+
+    @GetMapping("/cupoms")
+    public ModelAndView cupoms(){
+        ModelAndView mv = new ModelAndView("/adm/cupoms.html");
+        List<CupomPromocionalDTO> cupomPromocionalDTOS=new ArrayList<>();
+        cupomPromocionalService.findAll().forEach(c->{
+            cupomPromocionalDTOS.add(CupomPromocionalDTO.objetoToDto(c));
+        });
+        mv.addObject("cupomList",cupomPromocionalDTOS);
+        return mv;
+    }
+
+    @GetMapping("/cupoms/cadastro")
+    public ModelAndView cadCupoms(){
+        ModelAndView mv = new ModelAndView("/adm/cadCupoms.html");
+        mv.addObject("cupom",new CupomPromocionalDTO());
+        return mv;
+    }
+
+    @PostMapping("/cupoms/cadastro")
+    public ModelAndView postcadCupoms(@Valid @ModelAttribute("cupom") CupomPromocionalDTO cupomPromocionalDTO,
+                                   BindingResult erros){
+        if (erros.hasErrors()){
+            ModelAndView mv = new ModelAndView("/adm/cadCupoms.html");
+            mv.addObject("cupom", cupomPromocionalDTO);
+            mv.addObject("erros", erros.getAllErrors());
+            return mv;
+        }
+
+        CupomPromocional cupomPromocional= cupomPromocionalService.save(CupomPromocionalDTO.dtoToObjeto(cupomPromocionalDTO));
+
+        return new ModelAndView("redirect:/adm/cupoms");
     }
 
 

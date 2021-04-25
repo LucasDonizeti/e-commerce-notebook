@@ -125,13 +125,13 @@
 
             <div class="col-md-12 border" style="margin-bottom: 10px;">
                 <h3>Cartao de credito</h3>
-                <div th:each="cartao, i : ${compra.cliente.cartoes}" class="row col-md-12  align-items-center">
+                <div th:each="p, i : ${compra.pagamentos}" class="row col-md-12  align-items-center">
                     <div class="row col-md-6 align-items-center">
                         <div class="col-md-8">
                             <input type="text" th:field="*{pagamentos[__${i.index}__].id}" hidden>
                             <input type="text" th:field="*{pagamentos[__${i.index}__].cartao.id}" hidden>
                             <input type="checkbox" th:field="*{pagamentos[__${i.index}__].habilitado}">
-                            <label th:text="${cartao.nome}"></label>
+                            <label th:text="${p.cartao.nome}"></label>
                             <img th:src="*{pagamentos[__${i.index}__].cartao.bandeira.imagem}">
                         </div>
                     </div>
@@ -150,12 +150,16 @@
                 <div class="row col-md-12  align-items-center">
                     <ul>
                         <li th:each="cupom, i : ${compra.cupomsDeTroca}">
-                          <input type="text" th:field="*{cupomsDeTroca[__${i.index}__].id}" hidden>
-                            <input type="checkbox" th:value="${cupom.isSelecionado}" th:field="*{cupomsDeTroca[__${i.index}__].isSelecionado}">
+                          <input type="text" th:field="*{cupomsDeTroca[__${i.index}__].id}">
+                            <input type="checkbox" th:value="${cupom.habilitado}" th:field="*{cupomsDeTroca[__${i.index}__].habilitado}">
                             
                             <label th:text="${cupom.codigo +' R$'+cupom.valor}"></label>
                         </li>
                     </ul>
+
+                    <div th:if="${#lists.size(compra.cupomsDeTroca) == 0}">
+                            <span>Você não tem nenhum cupom de troca!</span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -166,7 +170,7 @@
                 <input type="text" th:field="${compra.cupomPromocional.codigo}">
             </div>
             <div class="col-md-4">
-                <button type="submit" nome="verifica" value="cupomPromocional">
+                <button type="submit" name="verifica" value="cupomPromocional">
                     Verificar cupom Promocional
                 </button>
             </div>

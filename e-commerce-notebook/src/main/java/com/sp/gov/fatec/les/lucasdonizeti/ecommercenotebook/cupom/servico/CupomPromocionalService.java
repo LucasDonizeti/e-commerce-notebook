@@ -5,7 +5,9 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.persistencia.C
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * author LucasDonizeti
@@ -20,11 +22,30 @@ public class CupomPromocionalService {
         this.cupomPromocionalDAO = cupomPromocionalDAO;
     }
 
+    public List<CupomPromocional> findAll(){
+        return cupomPromocionalDAO.findAll();
+    }
+
     public CupomPromocional save(CupomPromocional cupom){
         return cupomPromocionalDAO.save(cupom);
     }
 
-    public Optional<CupomPromocional> findByCodigo(String codigo){
-        return cupomPromocionalDAO.findByCodigo(codigo);
+    public void subtrairUso(UUID id){
+        Optional<CupomPromocional> cupomPromocionalOptional=cupomPromocionalDAO.findById(id);
+        if (cupomPromocionalOptional.isPresent()) {
+            CupomPromocional cupomPromocional = cupomPromocionalOptional.get();
+            cupomPromocional.setQuantidade(cupomPromocional.getQuantidade() - 1);
+            cupomPromocionalDAO.save(cupomPromocional);
+        }
+    }
+
+    public Optional<CupomPromocional> findUtilizavelByCodigo(String codigo){
+        Optional<CupomPromocional> cupomPromocionalOptional = cupomPromocionalDAO.findByCodigo(codigo);
+        if (cupomPromocionalOptional.isPresent()) {
+            if (cupomPromocionalOptional.get().getQuantidade() > 0) {
+                return cupomPromocionalOptional;
+            }
+        }
+        return Optional.empty();
     }
 }

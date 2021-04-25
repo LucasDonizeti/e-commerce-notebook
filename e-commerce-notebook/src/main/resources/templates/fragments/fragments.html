@@ -167,6 +167,15 @@
                     Dados
                 </a>
             </button>
+            <button
+                th:class="${#httpServletRequest.getRequestURI() == '/adm/cadastro'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
+                type="button">
+                <a th:href="@{/adm/cadastro}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/adm/cadastro'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                    <ion-icon name="person-add-outline"></ion-icon>
+                    Cadastro
+                </a>
+            </button>
         </div>
     </div>
     <!-- <div th:replace="fragments/fragments :: compra-detail"></div> -->
