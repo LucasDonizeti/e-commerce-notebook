@@ -5,11 +5,11 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.servico.Carta
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.ItemDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.servico.DocumentoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
@@ -52,11 +52,12 @@ public class ClienteController {
     private final CartaoSarvice cartaoSarvice;
     private final EnderecoServico enderecoServico;
     private final CompraServico compraServico;
+    private final CupomTrocaService cupomTrocaService;
 
     @Autowired
     public ClienteController(ClienteServico clienteServico, ProdutoService produtoService,
                              DocumentoService documentoService, UsuarioServico usuarioServico,
-                             CartaoSarvice cartaoSarvice, EnderecoServico enderecoServico, CompraServico compraServico) {
+                             CartaoSarvice cartaoSarvice, EnderecoServico enderecoServico, CompraServico compraServico, CupomTrocaService cupomTrocaService) {
         this.clienteServico = clienteServico;
         this.produtoService = produtoService;
         this.documentoService = documentoService;
@@ -64,6 +65,7 @@ public class ClienteController {
         this.cartaoSarvice = cartaoSarvice;
         this.enderecoServico = enderecoServico;
         this.compraServico = compraServico;
+        this.cupomTrocaService = cupomTrocaService;
     }
 
     @GetMapping("/all")
@@ -355,6 +357,15 @@ public class ClienteController {
         return mv;
     }
 
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
+    @GetMapping("/cli/cupoms")
+    public ModelAndView cupoms(@AuthenticationPrincipal Usuario usuario) {
 
+        Cliente cliente = clienteServico.findByUsuarioId(usuario.getId()).get();
+
+        ModelAndView mv = new ModelAndView("/cliente/cliCupoms.html");
+        mv.addObject("cupoms", cupomTrocaService.findByClienteId(cliente.getId()));
+        return mv;
+    }
 }
 

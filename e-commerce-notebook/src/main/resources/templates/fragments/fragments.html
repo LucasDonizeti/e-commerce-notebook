@@ -103,6 +103,15 @@
                         Acompanhar Pedidos
                     </a>
                 </button>
+                <button
+                    th:class="${#httpServletRequest.getRequestURI() == '/cliente/cli/cupoms'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
+                    type="button">
+                    <a th:href="@{/cliente/cli/cupoms}"
+                        th:style="${#httpServletRequest.getRequestURI() == '/cliente/cli/cupoms'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                        <ion-icon name="ticket-outline"></ion-icon>
+                        Cupoms
+                    </a>
+                </button>
                 <button class="list-group-item list-group-item-action" type="button">
                     <a th:href="@{/logout}" style="text-decoration: none; color: blue;">
                         <ion-icon name="exit-outline"></ion-icon>
