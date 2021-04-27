@@ -186,6 +186,10 @@
                     </div>
                 </div>
                 <div class="col-md-12">
+                    Total: <span th:text="${compra.valorDeCompra}"></span><br>
+                    Total Pago: <span th:text="${compra.totalPago}"></span>
+                </div>
+                <div class="col-md-12">
                     <a th:href="@{/cliente/carrinho}">
                         <button type="button" class="btn btn-danger">Cancelar</button>
                     </a>

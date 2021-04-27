@@ -20,6 +20,8 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.Prod
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -117,6 +119,7 @@ public class CompraController {
 
         mv.addObject("compra", compraDTO);
         return mv;
+        //return new ResponseEntity<>(compraDTO, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasAuthority('ROLE_CLI')")
@@ -220,7 +223,7 @@ public class CompraController {
         cupomTrocaDTOS.addAll(compraDTO.getCupomsDeTroca());
         for (CupomTrocaDTO c:cupomTrocaDTOS){
             if (c.getHabilitado()==false){
-                compraDTO.getCupomsDeTroca();
+                compraDTO.getCupomsDeTroca().remove(c);
             }
         }
         List<PagamentoDTO> pagamentoDTOS= new ArrayList<>();

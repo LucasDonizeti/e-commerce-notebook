@@ -72,17 +72,18 @@ public class CompraDTO {
     }
 
     public Float getTotalPago(){
-        float totalPago=0;
+        Float totalPago=0f;
+
         for (PagamentoDTO p:pagamentos)
             if (p.getHabilitado() == true)
                 totalPago+=p.getValor();
-
 
         for (CupomTrocaDTO c:cupomsDeTroca)
             if(c.getHabilitado())
                 totalPago+=c.getValor();
 
         if (cupomPromocional!=null)
+            if (cupomPromocional.getValor()!=null)
             totalPago+=cupomPromocional.getValor();
 
         return totalPago;
