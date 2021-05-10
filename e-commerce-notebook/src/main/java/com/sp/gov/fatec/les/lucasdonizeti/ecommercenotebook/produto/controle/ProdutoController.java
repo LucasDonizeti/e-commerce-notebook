@@ -54,7 +54,7 @@ public class ProdutoController {
     @GetMapping
     public ModelAndView inicial(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv = new ModelAndView("/produto/index.html");
-        mv.addObject("produtos", produtoService.findAll());
+        mv.addObject("produtos", produtoService.findAllHabilitado());
         CompraDTO compraDTO;
         if (request.getSession().getAttribute("compra") == null)
             compraDTO = new CompraDTO();

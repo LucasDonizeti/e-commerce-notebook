@@ -7,16 +7,15 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromo
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomTrocaDTO;
 import lombok.Getter;
 import lombok.Setter;
+import net.bytebuddy.description.type.TypeList;
 import org.dozer.DozerBeanMapperBuilder;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * author LucasDonizeti
@@ -31,14 +30,16 @@ public class CompraDTO {
     @Size(min = 1)
     public List<ItemDTO> itens = new ArrayList<>();
 
-    @NotNull
-    @Valid
-    public FreteDTO frete;
+    private Float valorDeCompra;
+
+    private Float totalPago;
 
     @NotNull
-    public ClienteDTO cliente;
+    private ClienteDTO cliente;
 
-    private Status status=Status.REPROVADA;
+    private Status status = Status.REPROVADA;
+
+    private FreteDTO frete;
 
     @NotNull
     @Size(min = 1)
@@ -47,53 +48,94 @@ public class CompraDTO {
     @NotNull
     private List<CupomTrocaDTO> cupomsDeTroca = new ArrayList<>();
 
-
     private CupomPromocionalDTO cupomPromocional;
 
-    public float getTotal(){
-        AtomicReference<Float> buff= new AtomicReference<>(0f);
-        itens.forEach(i->{
-            buff.updateAndGet(v -> v + i.getSubtotal());
-        });
-
-        return buff.get();
+    public void calcularValores() {
+        calcTotalPago();
+        calcItem();
+        calcValorDeCompra();
+        calcFrete();
     }
 
-    public Float getValorDeCompra(){
-        float valorDeCompraFinal=0;
-        for (ItemDTO i : itens){
-            valorDeCompraFinal+=(i.getProduto().getPrecoDeVenda() * i.getQuantidade());
+    private void calcFrete(){
+        Float frete=0f;
+        for (ItemDTO i:itens){
+            if (i!=null)
+                if (i.getFrete()!=null)
+                    if (i.getFrete().getValor()!=null)
+            frete+=i.getFrete().getValor() * i.getQuantidade();
         }
-
-        if (frete!=null)
-            valorDeCompraFinal+=frete.getValor();
-
-        return valorDeCompraFinal;
+        if (this.frete!=null)
+        this.frete.setValor(frete);
     }
 
-    public Float getTotalPago(){
-        Float totalPago=0f;
-
-        for (PagamentoDTO p:pagamentos)
-            if (p.getHabilitado() == true)
-                totalPago+=p.getValor();
-
-        for (CupomTrocaDTO c:cupomsDeTroca)
-            if(c.getHabilitado())
-                totalPago+=c.getValor();
-
-        if (cupomPromocional!=null)
-            if (cupomPromocional.getValor()!=null)
-            totalPago+=cupomPromocional.getValor();
-
-        return totalPago;
+    private void calcItem(){
+        for(int x=0;x<itens.size();x++){
+            itens.get(x).setPrecoDeVendaProdutos(itens.get(x).getProduto().getPrecoDeVenda());
+        }
     }
 
-    public void addProduto(ItemDTO item){
+    public Boolean temItemSemFrete() {
+        Boolean result = false;
+        for (ItemDTO i : itens) {
+            if (i.getFrete() != null)
+                if (i.getFrete().getValor() == null || i.getFrete().getValor() == 0)
+                    result = true;
+            if (i.getFrete() == null)
+                result = true;
+        }
+        return result;
+    }
+
+    private void calcValorDeCompra() {
+        float valorDeCompraFinal = 0;
+        for (ItemDTO i : itens) {
+            valorDeCompraFinal += i.getTotalItem();
+        }
+        valorDeCompra = valorDeCompraFinal;
+    }
+
+    private void calcTotalPago() {
+        float totalPago = 0;
+        for (PagamentoDTO p : pagamentos)
+            if (p.getHabilitado()==true)
+                totalPago += p.getValor();
+
+        for (CupomTrocaDTO c : cupomsDeTroca)
+            if (c.getHabilitado()==true)
+                totalPago += c.getValor();
+
+        if (cupomPromocional != null)
+            totalPago += cupomPromocional.getValor();
+
+        this.totalPago = totalPago;
+    }
+
+    public Float getTotalFrete() {
+        float totalFrete = 0;
+        for (ItemDTO i : itens) {
+            if (i.getFrete() != null)
+                if (i.getFrete().getValor() != null)
+                    totalFrete += i.getFrete().getValor();
+        }
+        return totalFrete;
+    }
+
+    public Float getValorDeCompraSemFrete() {
+        float x = 0;
+        for (ItemDTO i : itens) {
+            if (i.getFrete() != null)
+                if (i.getFrete().getValor() != null)
+                    x += i.getFrete().getValor() * i.getQuantidade();
+        }
+        return x;
+    }
+
+    public void addProduto(ItemDTO item) {
         itens.add(item);
     }
 
-    public void setQuantidade(int indice, int quantidade){
+    public void setQuantidade(int indice, int quantidade) {
         itens.get(indice).setQuantidade(quantidade);
     }
 

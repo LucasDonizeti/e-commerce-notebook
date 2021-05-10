@@ -12,7 +12,10 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.Compr
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.dto.DocumentoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.documento.servico.DocumentoService;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.infrestructure.cep.CepAPIDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.infrestructure.cep.CepClientAPI;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.servico.EnderecoServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ProdutoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
@@ -24,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 /**
@@ -88,17 +93,22 @@ public class ClienteController {
     @GetMapping("/carrinho")
     public ModelAndView carrinhoDeCompra(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
-        mv.addObject("compra", request.getSession().getAttribute("compra"));
+        if (request.getSession().getAttribute("compra") == null){
+            request.getSession().setAttribute("compra", new CompraDTO());
+        }
+        CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
+        compraDTO.calcularValores();
+        mv.addObject("compra", compraDTO);
         return mv;
     }
 
     //Refatorar
     @GetMapping("/carrinho/{hash}")
     public ModelAndView carrinhoDeCompraLogado(HttpServletRequest request, HttpServletResponse response,
-                                               @PathVariable("hash")UUID hash, @AuthenticationPrincipal Usuario usuario) {
+                                               @PathVariable("hash") UUID hash, @AuthenticationPrincipal Usuario usuario) {
         ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
         mv.addObject("usuarioLogado", clienteServico.findByUsuarioId(usuario.getId()).get());
-        CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
+        CompraDTO compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
         compraDTO.setCliente(ClienteDTO.objetoToDto(clienteServico.findByUsuarioId(usuario.getId()).get()));
         request.getSession().setAttribute("compra", compraDTO);
         mv.addObject("compra", compraDTO);
@@ -108,7 +118,7 @@ public class ClienteController {
     //Refatorar
     @PostMapping("/carrinho/qtd/{i}")
     public ModelAndView carrinhoDeCompraQuantidade(HttpServletRequest request, HttpServletResponse response,
-                                                   @RequestParam("n") String n, @PathVariable("i") String i){
+                                                   @RequestParam("n") String n, @PathVariable("i") String i) {
         ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
         CompraDTO compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
         compraDTO.setQuantidade(Integer.parseInt(i), Integer.parseInt(n));
@@ -121,7 +131,7 @@ public class ClienteController {
 
     @PostMapping("/carrinho/exc/{i}")
     public ModelAndView carrinhoDeCompraExcluir(HttpServletRequest request, HttpServletResponse response,
-                                                   @PathVariable("i") String i){
+                                                @PathVariable("i") String i) {
         ModelAndView mv = new ModelAndView("/cliente/carrinho.html");
         CompraDTO compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
         compraDTO.excProduto(Integer.parseInt(i));
@@ -134,8 +144,8 @@ public class ClienteController {
     @PostMapping("/carrinho/{hash}")
     public ModelAndView addCarrinho(HttpServletRequest request, HttpServletResponse response, @PathVariable("hash") UUID hash) {
         ModelAndView mv = new ModelAndView("redirect:/cliente/carrinho");
-        CompraDTO compraDTO= (CompraDTO) request.getSession().getAttribute("compra");
-        ItemDTO item=new ItemDTO();
+        CompraDTO compraDTO = (CompraDTO) request.getSession().getAttribute("compra");
+        ItemDTO item = new ItemDTO();
         item.setProduto(ProdutoDTO.objetoToDto(produtoService.findById(hash).get()));
         item.setStatus(Status.REPROVADA);
         compraDTO.addProduto(item);
@@ -235,6 +245,7 @@ public class ClienteController {
                     clienteDTO.addEmptyEndereco();
                     break;
             }
+        clienteDTO.setEnderecos(autoCompletarEnderecosPeloCEP(clienteDTO.getEnderecos()));
 
         if (!senhaRepetida.get().equals(clienteDTO.getUsuario().getSenha()) && clienteDTO.getId() == null) {
             System.out.println("senha repetida");
@@ -260,9 +271,26 @@ public class ClienteController {
             mv.addObject("usuarioDto", clienteDTO.getUsuario());
             return mv;
         } else {
-            ModelAndView mv = new ModelAndView("redirect:/cliente/cli/perfil/" + cl.getId());
+            ModelAndView mv = new ModelAndView("redirect:/cliente/cli/perfil/");
             return mv;
         }
+    }
+
+    private List<EnderecoDTO> autoCompletarEnderecosPeloCEP(List<EnderecoDTO> enderecoDTOS) {
+        return enderecoDTOS.stream()
+                .map(e -> autoCompleteEnderecoDTOByCEP(e))
+                .collect(Collectors.toList());
+    }
+
+    private EnderecoDTO autoCompleteEnderecoDTOByCEP(EnderecoDTO e) {
+        Endereco endereco = EnderecoDTO.dtoToObjeto(e);
+        Optional<CepAPIDTO> cepAPIDTO = CepClientAPI.findCepByViaCepAPI(endereco.getCep());
+        if (cepAPIDTO.isPresent())
+            if (!cepAPIDTO.get().getErro()) {
+                endereco = CepAPIDTO.mergeEndereco(endereco, cepAPIDTO.get());
+            }
+
+        return EnderecoDTO.objetoToDto(endereco);
     }
 
 
@@ -279,12 +307,12 @@ public class ClienteController {
     @PreAuthorize("hasAuthority('ROLE_CLI')")
     @GetMapping("/cli/acompanharPedidos")
     public ModelAndView acompanharPedidos(@AuthenticationPrincipal Usuario usuario) {
-        ModelAndView mv= new ModelAndView("/cliente/cliAcompanharPedidos.html");
-        Cliente cliente=clienteServico.findByUsuarioId(usuario.getId()).get();
+        ModelAndView mv = new ModelAndView("/cliente/cliAcompanharPedidos.html");
+        Cliente cliente = clienteServico.findByUsuarioId(usuario.getId()).get();
         mv.addObject("cliente", ClienteDTO.objetoToDto(cliente));
-        List<CompraDTO> compraDTOList=new ArrayList<>();
-        compraServico.findCompraHabilitadoByClienteId(cliente.getId()).forEach(c->{
-                compraDTOList.add(CompraDTO.objetoToDto(c));
+        List<CompraDTO> compraDTOList = new ArrayList<>();
+        compraServico.findCompraHabilitadoByClienteId(cliente.getId()).forEach(c -> {
+            compraDTOList.add(CompraDTO.objetoToDto(c));
         });
         mv.addObject("pedidos", compraDTOList);
         return mv;
@@ -335,12 +363,12 @@ public class ClienteController {
 
         Optional<Cliente> clienteOptional = clienteServico.findById(mudarSenhaDTO.getId());
         if (clienteOptional.isPresent()) {
-            if (mudarSenhaDTO.getAntiga().equals(clienteOptional.get().getUsuario().getSenha())) {
+            if (BCrypt.checkpw(mudarSenhaDTO.getAntiga(), clienteOptional.get().getUsuario().getPassword())) {
                 Usuario usuario = clienteOptional.get().getUsuario();
                 usuario.setSenha(mudarSenhaDTO.getNova());
                 usuarioServico.save(usuario);
 
-                ModelAndView mv = new ModelAndView("redirect:/cliente/cli/perfil/" + mudarSenhaDTO.getId());
+                ModelAndView mv = new ModelAndView("redirect:/cliente/cli/perfil/");
                 return mv;
             } else {
                 ModelAndView mv = new ModelAndView("/cliente/cliMudarSenha.html");

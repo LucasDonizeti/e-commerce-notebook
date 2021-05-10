@@ -5,10 +5,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -24,4 +21,7 @@ public class Frete extends EntidadeDominio implements Serializable {
 
     @Column(name = "valor")
     private Float valor=0f;
+
+    @OneToOne
+    private Item item;
 }

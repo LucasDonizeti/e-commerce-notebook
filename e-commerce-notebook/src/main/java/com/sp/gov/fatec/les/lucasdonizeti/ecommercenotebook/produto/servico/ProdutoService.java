@@ -27,6 +27,10 @@ public class ProdutoService {
         return produtoDAO.findAll();
     }
 
+    public List<Produto> findAllHabilitado(){
+        return produtoDAO.findByHabilitado(true);
+    }
+
     public Produto save(Produto produto){
         return produtoDAO.save(produto);
     }
@@ -41,6 +45,30 @@ public class ProdutoService {
             produtoOptional.get().setHabilitado(!produtoOptional.get().isHabilitado());
             produtoDAO.save(produtoOptional.get());
         }
+    }
+
+    public Optional<Produto> adicionarEstoque(UUID hash, int quantidade){
+        Optional<Produto> produtoOptional = produtoDAO.findById(hash);
+        if (produtoOptional.isPresent()){
+            Produto produto=produtoOptional.get();
+            produto.setEstoque(produto.getEstoque()+quantidade);
+            return Optional.ofNullable(produtoDAO.save(produto));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Produto> removerEstoque(UUID hash, int quantidade){
+        Optional<Produto> produtoOptional = produtoDAO.findById(hash);
+        if (produtoOptional.isPresent()){
+            Produto produto=produtoOptional.get();
+            if (produto.getEstoque()>=quantidade)
+                produto.setEstoque(produto.getEstoque()-quantidade);
+            else
+                produto.setEstoque(0);
+
+            return Optional.ofNullable(produtoDAO.save(produto));
+        }
+        return Optional.empty();
     }
 
 }

@@ -24,13 +24,32 @@ public class Item extends EntidadeDominio implements Serializable {
     private Produto produto;
 
     @Column(name = "quantidade")
-    private int quantidade=1;
+    private int quantidade = 1;
+
+    @Column(name = "quantidade_em_troca")
+    private int quantidadeEmTroca = 0;
 
     @Column(name = "status", length = 30)
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Frete frete;
+
+    @Column(name = "preco_de_venda_produtos")
+    private Float precoDeVendaProdutos;
+
     @ManyToOne
     @JsonIgnore
     private Compra compra;
+
+    public Float getTotalItem() {
+        Float soma = 0f;
+        if (precoDeVendaProdutos != null)
+            soma += precoDeVendaProdutos;
+        if (frete != null)
+            if (frete.getValor() != null)
+                soma += frete.getValor();
+        return soma*quantidade;
+    }
 }

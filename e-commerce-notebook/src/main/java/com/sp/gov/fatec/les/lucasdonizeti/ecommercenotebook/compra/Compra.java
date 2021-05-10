@@ -27,9 +27,6 @@ public class Compra extends EntidadeDominio implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Item> itens=new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    public Frete frete;
-
     @ManyToOne
     public Cliente cliente;
 
@@ -43,20 +40,29 @@ public class Compra extends EntidadeDominio implements Serializable {
     @OneToMany
     private List<CupomTroca> cupomsDeTroca=new ArrayList<>();
 
+    @Column(name = "valor_de_compra")
+    private Float valorDeCompra;
+
+    @Column(name = "total_pago")
+    private Float totalPago;
+
     @OneToOne(optional = true)
     private CupomPromocional cupomPromocional;
 
-    public Float getValorDeCompra(){
-        float valorDeCompraFinal=0;
-        for (Item i : itens){
-            valorDeCompraFinal+=i.getProduto().getPrecoDeVenda();
-        }
-        valorDeCompraFinal+=frete.getValor();
-
-        return valorDeCompraFinal;
+    public void calcularValores(){
+        calcValorDeCompra();
+        calcTotalPago();
     }
 
-    public Float getTotalPago(){
+    public void calcValorDeCompra(){
+        float valorDeCompraFinal=0;
+        for (Item i : itens){
+            valorDeCompraFinal+=i.getTotalItem();
+        }
+        valorDeCompra=valorDeCompraFinal;
+    }
+
+    public void calcTotalPago(){
         float totalPago=0;
         for (Pagamento p:pagamentos)
             totalPago+=p.getValor();
@@ -67,7 +73,7 @@ public class Compra extends EntidadeDominio implements Serializable {
         if (cupomPromocional!=null)
             totalPago+=cupomPromocional.getValor();
 
-        return totalPago;
+        this.totalPago=totalPago;
     }
 
 

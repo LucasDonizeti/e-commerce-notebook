@@ -4,12 +4,14 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.servico.Carta
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Item;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.persistencia.CompraDAO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomPromocionalService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * author LucasDonizeti
@@ -61,14 +64,30 @@ public class CompraServico {
         return compraDAO.save(compra);
     }
 
-    public Compra setStatus(Compra compra, Status status) {
-        Optional<Compra> compra1 = findById(compra.getId());
-        if (compra1.isPresent()) {
-            compra = compra1.get();
+    public Compra setStatusCompraItem(Compra compra, Status status) {
+        Boolean itensMesmoStatus=true;
+        for (int x=0;x<compra.getItens().size();x++)
+            if (compra.getItens().get(x).getStatus() != compra.getStatus() && itensMesmoStatus)
+                itensMesmoStatus=false;
+        if (itensMesmoStatus) {
+            compra.setStatus(status);
+            for (int x=0;x<compra.getItens().size();x++)
+                compra.getItens().get(x).setStatus(status);
+            return compraDAO.save(compra);
+        }
+        return compra;
+    }
+
+    public Compra setStatusCompra(Compra compra, Status status) {
+        Boolean itensMesmoStatus=true;
+        for (int x=0;x<compra.getItens().size();x++)
+            if (compra.getItens().get(x).getStatus() != compra.getStatus() && itensMesmoStatus)
+                itensMesmoStatus=false;
+        if (itensMesmoStatus) {
             compra.setStatus(status);
             return compraDAO.save(compra);
         }
-        return null;
+        return compra;
     }
 
     public List<Compra> findAll() {
@@ -125,10 +144,10 @@ public class CompraServico {
         return status;
     }
 
-    public void concluirTroca(Compra compra){
-        compra=findById(compra.getId()).get();
-        Cliente cliente=clienteServico.findById(compra.getCliente().getId()).get();
-        CupomTroca cupom=new CupomTroca();
+    public void concluirTroca(Compra compra) {
+        compra = findById(compra.getId()).get();
+        Cliente cliente = clienteServico.findById(compra.getCliente().getId()).get();
+        CupomTroca cupom = new CupomTroca();
         cupom.setCodigo(gerarCodigoTroca());
         cupom.setValor(compra.getTotalPago());
 
@@ -136,10 +155,30 @@ public class CompraServico {
         cupomServico.save(cupom);
     }
 
-    private String gerarCodigoTroca(){
-        LocalDate localDate=LocalDate.now();
-        return ("TROCA" + (localDate.getDayOfMonth()<10?"0":"") + localDate.getDayOfMonth() + (localDate.getMonthValue()<10?"0":"") + localDate.getMonthValue() + localDate.getYear());
+    public void concluirTrocaItem(Compra compra, UUID item, Boolean reporEstoque) {
+        for (int x = 0; x < compra.getItens().size(); x++) {
+            if (compra.getItens().get(x).getId().equals(item)) {
+                if (reporEstoque)
+                    produtoService.adicionarEstoque(compra.getItens().get(x).getProduto().getId(), compra.getItens().get(x).getQuantidadeEmTroca());
+
+                compra.getItens().get(x).setQuantidade(compra.getItens().get(x).getQuantidade() - compra.getItens().get(x).getQuantidadeEmTroca());
+                compra.getItens().get(x).setQuantidadeEmTroca(0);
+                if (compra.getItens().get(x).getQuantidade()>0)
+                    compra.getItens().get(x).setStatus(Status.ENTREGUE);
+                compraDAO.save(compra);
+
+                CupomTroca cupom = new CupomTroca();
+                cupom.setCodigo(gerarCodigoTroca());
+                cupom.setValor(compra.getTotalPago());
+
+                cupom.setCliente(clienteServico.findById(compra.getCliente().getId()).get());
+                cupomServico.save(cupom);
+            }
+        }
     }
 
-
+    private String gerarCodigoTroca() {
+        LocalDate localDate = LocalDate.now();
+        return ("TROCA" + (localDate.getDayOfMonth() < 10 ? "0" : "") + localDate.getDayOfMonth() + (localDate.getMonthValue() < 10 ? "0" : "") + localDate.getMonthValue() + localDate.getYear());
+    }
 }

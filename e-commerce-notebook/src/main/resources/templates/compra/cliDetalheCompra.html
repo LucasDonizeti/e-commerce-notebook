@@ -20,8 +20,7 @@
                 </a>
             </div>
             <div class="col-md-6"
-                th:if="${compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).ENTREGUE
-                || compra.status== T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).TROCA_NAO_AUTORIZADA}">
+                th:if="${podeNextStageCompra}">
                 <a th:href="@{'/compra/cli/detalheCompra/' + ${compra.id} + '/nextStage' }">
                     <button class="btn btn-outline-primary">Solicitar Troca!</button>
                 </a>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.css}">
+    <title>Document</title>
+</head>
+
+<body>
+    <div th:replace="fragments/fragments :: header"></div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-7">
+            <form th:action="@{'/compra/cli/detalheCompra/' + ${compra.id} + '/item/' + ${item.id} + '/troca'}" method="POST">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li th:each="imagem, i : ${item.produto.imagemList}"
+                                    data-target="#carouselExampleIndicators" th:data-slide-to="${i.index}"
+                                    th:class="((${i.index} == 0) ? 'active' : '')"></li>
+                            </ol>
+                            <div class="carousel-inner">
+                                <div th:each="imagem, i : ${item.produto.imagemList}"
+                                    th:class="((${i.index} == 0) ? 'carousel-item active' : 'carousel-item')">
+                                    <img class="d-block w-100" th:src="${imagem.link}">
+                                </div>
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                                data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Anterior</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                                data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Próximo</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-12" style="text-align: center;">
+                            <spam style="font-weight: bold;">Avell A52 LIV</spam>
+                            <a href="#" style="text-decoration: none;">
+                                <div class="col-md-12"
+                                    style="background-color: #93c157; color: #f8f8ff; text-align: center;">
+                                    <span th:text="${'R$' + item.produto.precoDeVenda}"></span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-12">
+                            <ul>
+                                <li th:text="${item.produto.notebook.gpu.modelo}"></li>
+                                <li th:text="${item.produto.notebook.cpu.modelo}"></li>
+                                <li
+                                    th:text="${item.produto.notebook.tela.tamanho + '” ' + item.produto.notebook.tela.clock + 'Hz'}">
+                                </li>
+                                <li>
+                                    </spam>
+                                    <spam th:if="${#lists.size(item.produto.notebook.ramList) == 2}"
+                                        th:text="${item.produto.notebook.ramTotal + 'GB dualchannel - '}"></spam>
+                                    <spam th:each="ram : ${item.produto.notebook.ramList}"
+                                        th:text="${ram.memoria + 'GB '}">
+                                    </spam>
+                                </li>
+                                <li>
+                                    <spam th:each="memoria : ${item.produto.notebook.armazenamentoList}"
+                                        th:text="${memoria.memoria + 'GB ' +  memoria.tipoArmazenamento + '  '}"></spam>
+                                </li>
+                                <li th:text="${item.produto.notebook.so.getDescricao()}">Windows 10 Home Single Language
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-12">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Preço de Venda</th>
+                                        <td><span th:text="${'R$' + item.produto.precoDeVenda}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th th:text="${'frete:' + item.frete.endereco.cep}"></th>
+                                        <td><span
+                                                th:text="${'R$' + (item.frete!=null?item.frete.valor:'não calculado') }"></span></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Quantidade</th>
+                                        <td><span th:text="${item.quantidade}">1</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total</th>
+                                        <td><span th:text="${'R$' + item.totalItem}"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row justify-content-center">
+                                <div class="col-md-12">
+                                    <span>Quantidade</span>
+                                    <input type="number" name="quantidade" id="quantidade" value="1" min="1"
+                                        th:max="${item.quantidade}">
+                                </div>
+                                <div class="col-md-6">
+                                    <a th:href="@{'/compra/cli/detalheCompra/' + ${compra.id}}">
+                                        <button class="btn btn-outline-primary">Voltar</button>
+                                    </a>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-outline-primary">Solicitar Troca!</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    </div>
+
+
+
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+    <script th:src="@{\js\plugins\jquery-3.3.1\jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/js/plugins/popper/popper.min.js}"></script>
+    <script th:src="@{/js/plugins/bootstrap-4.1.3/bootstrap.min.js}"></script>
+</body>
+
+</html>

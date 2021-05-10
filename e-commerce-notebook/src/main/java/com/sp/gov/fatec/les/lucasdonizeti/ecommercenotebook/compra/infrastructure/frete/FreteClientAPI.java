@@ -27,14 +27,16 @@ public class FreteClientAPI {
         return xmlToFreteAPIDTO(response);
     }
 
-    public static FreteAPIDTO findFreteByCorreios(String sCepOrigem, String sCepDestino, String nVlValorDeclarado) {
+    public static FreteAPIDTO findFreteByCorreios(String sCepOrigem, String sCepDestino, Float nVlValorDeclarado) {
         RestTemplate restTemplate = new RestTemplateBuilder().build();
-        String url = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx?nCdEmpresa=" + nCdEmpresa + "&sDsSenha=" + nDsSenha + "&sCepOrigem=" + sCepOrigem + "&sCepDestino=" + sCepDestino + "&nVlPeso=" + nVlPeso + "&nCdFormato=" + nCdFormato + "&nVlComprimento=" + nVlComprimento + "&nVlAltura=" + nVlAltura + "&nVlLargura=" + nVlLargura + "&sCdMaoPropria=" + sCdMaoPropria + "&nVlValorDeclarado=" + nVlValorDeclarado + "&sCdAvisoRecebimento=" + sCdAvisoRecebimento + "&nCdServico=" + nCdServico + "&nVlDiametro=" + nVlDiametro + "&StrRetorno=xml&nIndicaCalculo=3";
+        String url = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx?nCdEmpresa=" + nCdEmpresa + "&sDsSenha=" + nDsSenha + "&sCepOrigem=" + sCepOrigem + "&sCepDestino=" + sCepDestino + "&nVlPeso=" + nVlPeso + "&nCdFormato=" + nCdFormato + "&nVlComprimento=" + nVlComprimento + "&nVlAltura=" + nVlAltura + "&nVlLargura=" + nVlLargura + "&sCdMaoPropria=" + sCdMaoPropria + "&nVlValorDeclarado=" + String.valueOf((nVlValorDeclarado>10000?10000:nVlValorDeclarado)) + "&sCdAvisoRecebimento=" + sCdAvisoRecebimento + "&nCdServico=" + nCdServico + "&nVlDiametro=" + nVlDiametro + "&StrRetorno=xml&nIndicaCalculo=3";
+        System.out.println(url);
         String response = restTemplate.getForObject(url, String.class);
         return xmlToFreteAPIDTO(response);
     }
 
     private static FreteAPIDTO xmlToFreteAPIDTO(String response) {
+        System.out.println(response);
         XStream xStream = new XStream();
         xStream.alias("Servicos", Servicos.class);
         xStream.alias("cServico", FreteAPIDTO.class);
@@ -55,7 +57,7 @@ public class FreteClientAPI {
     }
 
     public static void main(String[] args) {
-        FreteAPIDTO freteAPIDTO = FreteClientAPI.findFreteByCorreios("01153000", "08940000", "9000");
+        FreteAPIDTO freteAPIDTO = FreteClientAPI.findFreteByCorreios("01153000", "08940000", 9000f);
         System.out.println(freteAPIDTO.logDetalhesFrete());
     }
 }

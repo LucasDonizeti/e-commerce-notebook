@@ -1,6 +1,7 @@
 package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Frete;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Item;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.Produto;
@@ -32,8 +33,21 @@ public class ItemDTO {
 
     private CompraDTO compra;
 
-    public float getSubtotal(){
-        return quantidade * produto.getPrecoDeVenda();
+    private Float precoDeVendaProdutos;
+
+    public FreteDTO frete;
+
+    private int quantidadeEmTroca = 0;
+
+
+    public float getTotalItem(){
+        Float soma = 0f;
+        if (precoDeVendaProdutos != null)
+            soma += precoDeVendaProdutos;
+        if (frete != null)
+            if (frete.getValor() != null)
+                soma += frete.getValor();
+        return soma*quantidade;
     }
 
     public static ItemDTO objetoToDto(Item item) {

@@ -114,12 +114,12 @@
                 <div class="col-md-10">
                     <ul>
                         <li th:each="item : ${session.compra.itens}"><span
-                                th:text="${'(' + item.quantidade + ') ' + item.produto.notebook.marca + ' ' + item.produto.notebook.modelo + ' - R$' + item.subtotal}"></span>
+                                th:text="${'(' + item.quantidade + ') ' + item.produto.notebook.marca + ' ' + item.produto.notebook.modelo + ' - R$' + item.totalItem}"></span>
                         </li>
                     </ul>
                     <div class="col-md-12"
                         style="background-color: #93c157; color: #f8f8ff; text-align: center; margin-bottom: 20px">
-                        <span th:text="${session.compra.total}"></span>
+                        <span th:text="${session.compra.valorDeCompra}"></span>
                     </div>
                 </div>
                 <div class="col-md-auto text-center">

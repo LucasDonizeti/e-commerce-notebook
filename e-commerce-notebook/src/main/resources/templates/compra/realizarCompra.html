@@ -31,6 +31,9 @@
                                 Preco Unitário
                             </th>
                             <th class="col">
+                                Frete do Produto
+                            </th>
+                            <th class="col">
                                 Subtotal
                             </th>
                         </tr>
@@ -41,6 +44,8 @@
                             <input type="text" th:field="*{itens[__${i.index}__].produto.id}" hidden>
                             <input type="text" th:field="*{itens[__${i.index}__].status}" hidden>
                             <input type="text" th:field="*{itens[__${i.index}__].quantidade}" hidden>
+                            <input type="text" th:field="*{itens[__${i.index}__].frete.valor}" hidden>
+                            <input type="text" th:field="*{itens[__${i.index}__].frete.endereco.id}" hidden>
                             <th class="row">
                                 <span
                                     th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}"></span>
@@ -52,7 +57,10 @@
                                 <span th:text="${'R$' + item.produto.precoDeVenda}"></span>
                             </td>
                             <td>
-                                <span th:text="${'R$' + item.subtotal}"></span>
+                                <span th:text="${'R$' + (item.frete!=null?item.frete.valor:'não calculado') }"></span>
+                            </td>
+                            <td>
+                                <span th:text="${'R$' + item.totalItem}"></span>
                             </td>
                         </tr>
                     </tbody>
@@ -70,7 +78,7 @@
 
                             </th>
                             <th class="col">
-                                <span th:text="${compra.total}"></span>
+                                <span th:text="${'R$' + compra.valorDeCompra}"></span>
                             </th>
                         </tr>
                     </thead>
@@ -100,7 +108,7 @@
                                 </div>
                             </th>
                             <th class="col" style="width: 20%;">
-                                <span th:text="${compra.frete.valor!=null?compra.frete.valor:''}"></span>
+                                <span th:text="${'R$' + (compra.frete.valor!=null?(#numbers.formatDecimal(compra.frete.valor, 1, 2, 'COMMA')):'')}"></span>
                             </th>
                         </tr>
                     </thead>
@@ -119,7 +127,7 @@
                                 Valor Total
                             </th>
                             <th class="col" style="width: 15%;">
-                                <span th:text="${compra.valorDeCompra}"></span>
+                                <span th:text="${'R$' + compra.valorDeCompra}"></span>
                             </th>
                         </tr>
                     </thead>

@@ -202,25 +202,43 @@
                     <th class="col">
                         Preco Unitário
                     </th>
+                    <th class="col">Frete</th>
+                    <th class="col">Total Item</th>
                     <td colspan="1">
                     </td>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="item : ${compra.itens}">
-                    <th class="row" th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}">
-                    </th>
-                    <td th:text="${item.quantidade}">
-
-                    </td>
-                    <td th:text="${item.produto.precoDeVenda}">
-
-                    </td>
+                        <th class="row">
+                            <span
+                                th:text="${item.produto.notebook.marca + ' ' + item.produto.notebook.modelo}"></span>
+                        </th>
+                        <td class="col">
+                            <span th:text="${item.quantidade}">1</span>
+                        </td>
+                        <td>
+                            <span th:text="${'R$' + item.produto.precoDeVenda}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${'R$' + (item.frete!=null?item.frete.valor:'não calculado') }"></span>
+                        </td>
+                        <td>
+                            <span th:text="${'R$' + item.totalItem}"></span>
+                        </td>
+                        <th scope="col" th:style="${'color: ' + item.status.color}" th:text="${item.status.descricao}"></th>
                     <td>
-                        <div sec:authorize="hasRole('ROLE_CLI')" th:if="${compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).ENTREGUE}">
-                            <a th:href="@{'/compra/cli/detalheCompra/' + ${compra.id} + '/nextStage/produto/' + ${item.id} }">
+                        <div sec:authorize="hasRole('ROLE_CLI')" th:if="${item.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).ENTREGUE}">
+                            <a th:href="@{'/compra/cli/detalheCompra/' + ${compra.id} + '/item/' + ${item.id} }">
                                 <button class="btn btn-danger">
                                     Solicitar troca!
+                                </button>
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('ROLE_ADM')" th:if="${item.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).EM_TROCA || item.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).TROCA_AUTORIZADA}">
+                            <a th:href="@{'/adm/pedidos/detalhe/' + ${compra.id} + '/item/' + ${item.id} }">
+                                <button class="btn btn-primary">
+                                    Detalhes Troca!
                                 </button>
                             </a>
                         </div>
@@ -228,27 +246,14 @@
                 </tr>
                 <tr class="table-primary">
                     <th class="row">
-                        Endereco
+                        Endereco de entrega
                     </th>
-                    <th>
-                        CEP
-                    </th>
-                    <th>
-                        Valor
-                    </th>
-                    <td colspan="1">
-                    </td>
                 </tr>
                 <tr>
                     <td class="row"
                         th:text="${compra.frete.endereco.rua + ', ' + compra.frete.endereco.numero + ' ' + compra.frete.endereco.cidade.nome + '/' + compra.frete.endereco.cidade.estado.descricao}">
                     </td>
                     <td th:text="${compra.frete.endereco.cep}">
-                    </td>
-                    <td th:text="${compra.frete.valor}">
-                    </td>
-                    <td colspan="1">
-
                     </td>
                 </tr>
                 <tr class="table-info">

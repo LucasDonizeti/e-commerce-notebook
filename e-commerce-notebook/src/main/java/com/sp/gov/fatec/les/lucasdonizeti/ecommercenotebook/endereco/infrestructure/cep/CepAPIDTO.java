@@ -18,6 +18,7 @@ public class CepAPIDTO {
     private String cep;
     private String uf;
     private String localidade;
+    private Boolean erro=false;
 
     public static Endereco mergeEndereco(Endereco endereco, CepAPIDTO cepAPIDTO) {
         if (cepAPIDTO.getCep() != null)

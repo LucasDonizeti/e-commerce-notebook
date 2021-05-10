@@ -5,7 +5,12 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cartao.servico.Carta
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Frete;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Item;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.*;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.infrastructure.frete.FreteAPIDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.infrastructure.frete.FreteClientAPI;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromocionalDTO;
@@ -36,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * author LucasDonizeti
@@ -117,9 +123,13 @@ public class CompraController {
             });
         }
 
+        for (int x = 0; x < compraDTO.getItens().size(); x++) {
+            compraDTO.getItens().get(x).setPrecoDeVendaProdutos(compraDTO.getItens().get(x).getProduto().getPrecoDeVenda());
+        }
+
+
         mv.addObject("compra", compraDTO);
         return mv;
-        //return new ResponseEntity<>(compraDTO, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasAuthority('ROLE_CLI')")
@@ -134,105 +144,110 @@ public class CompraController {
         if (verifica.isPresent())
             if (!verifica.get().equals("") && verifica.get() != null) {
                 if (verifica.get().equals("cupomPromocional")) {
-                    compraDTO=verificaCupomPromocional(compraDTO, compraDTO.getCupomPromocional().getCodigo());
+                    compraDTO = verificaCupomPromocional(compraDTO, compraDTO.getCupomPromocional().getCodigo());
                     return preparaRealizaCompra(compraDTO, erro);
                 }
             }
 
-        if (erro.hasErrors() || compraDTO.getFrete().getEndereco().getId() == null) {
+        if (erro.hasErrors() || compraDTO.temItemSemFrete()) {
             return preparaRealizaCompra(compraDTO, erro);
         }
 
-        if (compraDTO.getCupomPromocional().getId()==null)
+        if (compraDTO.getCupomPromocional().getId() == null)
             compraDTO.setCupomPromocional(null);
 
         if (!verificaPagamento(compraDTO)) {
             return preparaRealizaCompra(compraDTO, erro);
         }
 
-        compraDTO=beforeCompraPreprare(compraDTO);
+        compraDTO = beforeCompraPreprare(compraDTO);
+
         compraDTO = CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
-        if (compraDTO.getCupomPromocional()!=null)
+        if (compraDTO.getCupomPromocional() != null)
             cupomPromocionalService.subtrairUso(compraDTO.getCupomPromocional().getId());
 
         ModelAndView mv = new ModelAndView("/compra/confirmarCompra.html");
-        compraDTO = CompraDTO.objetoToDto(compraServico.setStatus(CompraDTO.dtoToObjeto(compraDTO), compraServico.nextValidSystem(compraDTO.getStatus())));
+        compraDTO = CompraDTO.objetoToDto(compraServico.setStatusCompraItem(CompraDTO.dtoToObjeto(compraDTO), compraServico.nextValidSystem(compraDTO.getStatus())));
+        FreteDTO freteDTO = new FreteDTO();
+        freteDTO.setEndereco(compraDTO.getItens().get(0).frete.getEndereco());
+        compraDTO.setFrete(freteDTO);
         mv.addObject("compra", compraDTO);
         return mv;
     }
 
-    private CompraDTO vefificaEnderecoFrete(CompraDTO compraDTO){
+    private CompraDTO vefificaEnderecoFrete(CompraDTO compraDTO) {
         if (compraDTO.getFrete().getEndereco().getId() != null) {
-            FreteDTO freteDTO = new FreteDTO();
             Optional<Endereco> endereco = enderecoServico.findById(compraDTO.getFrete().getEndereco().getId());
-            if (endereco.isPresent()) {
-                freteDTO.setEndereco(EnderecoDTO.objetoToDto(endereco.get()));
-                freteDTO.setValor(15f);
-                compraDTO.setFrete(freteDTO);
-            }
+            if (endereco.isPresent())
+                for (int x = 0; x < compraDTO.getItens().size(); x++) {
+                    Frete frete = new Frete();
+                    frete.setEndereco(endereco.get());
+                    FreteAPIDTO freteAPIDTO = FreteClientAPI.findFreteByCorreios("01153000", frete.getEndereco().getCep(), compraDTO.getItens().get(x).getPrecoDeVendaProdutos());
+                    frete = FreteAPIDTO.mergeFrete(freteAPIDTO, frete);
+                    compraDTO.getItens().get(x).setFrete(FreteDTO.objetoToDto(frete));
+                }
         }
 
         return compraDTO;
     }
-    private CompraDTO verificaCupomPromocional(CompraDTO compraDTO, String codigoCupom){
+
+    private CompraDTO verificaCupomPromocional(CompraDTO compraDTO, String codigoCupom) {
         Optional<CupomPromocional> cupomPromocionalOptional = cupomPromocionalService.findUtilizavelByCodigo(codigoCupom);
         if (cupomPromocionalOptional.isPresent())
             compraDTO.setCupomPromocional(CupomPromocionalDTO.objetoToDto(cupomPromocionalOptional.get()));
-
-        System.out.println("codigo cupom: " + codigoCupom);
-        System.out.println(cupomPromocionalOptional.isPresent());
-        if (cupomPromocionalOptional.isPresent()){
-            System.out.println(cupomPromocionalOptional.get().getId());
-            System.out.println(cupomPromocionalOptional.get().getCodigo());
-            System.out.println(cupomPromocionalOptional.get().getValor());
-        }
-
         return compraDTO;
     }
-    private Boolean verificaPagamento(CompraDTO compraDTO){
-        System.out.println("valor de compra " + compraDTO.getValorDeCompra().intValue());
-        System.out.println("total pago " + compraDTO.getTotalPago().intValue());
-        System.out.println(compraDTO.getValorDeCompra().intValue() == compraDTO.getTotalPago().intValue());
+
+    private Boolean verificaPagamento(CompraDTO compraDTO) {
         return compraDTO.getValorDeCompra().intValue() == compraDTO.getTotalPago().intValue();
     }
-    private CompraDTO preparaCompraDTO(CompraDTO compraDTO){
-        compraDTO=vefificaEnderecoFrete(compraDTO);
-        for(ItemDTO item : compraDTO.getItens()){
+
+    private CompraDTO preparaCompraDTO(CompraDTO compraDTO) {
+        for (ItemDTO item : compraDTO.getItens()) {
             item.setProduto(ProdutoDTO.objetoToDto(produtoService.findById(item.getProduto().getId()).get()));
+            item.setPrecoDeVendaProdutos(item.getProduto().getPrecoDeVenda());
         }
-        for (PagamentoDTO p:compraDTO.getPagamentos()){
+        for (PagamentoDTO p : compraDTO.getPagamentos()) {
             p.setCartao(CartaoDTO.objetoToDto(cartaoSarvice.findById(p.getCartao().getId()).get()));
         }
-        for (CupomTrocaDTO c:compraDTO.getCupomsDeTroca()){
+        for (CupomTrocaDTO c : compraDTO.getCupomsDeTroca()) {
             CupomTrocaDTO cupomTrocaDTO = CupomTrocaDTO.objetoToDto(cupomTrocaService.findById(c.getId()).get());
             c.setValor(cupomTrocaDTO.getValor());
             c.setCodigo(cupomTrocaDTO.getCodigo());
             c.setId(cupomTrocaDTO.getId());
         }
         compraDTO.setCliente(ClienteDTO.objetoToDto(clienteServico.findById(compraDTO.getCliente().getId()).get()));
+        compraDTO.calcularValores();
+        compraDTO = vefificaEnderecoFrete(compraDTO);
+        compraDTO.calcularValores();
         return compraDTO;
     }
-    private ModelAndView preparaRealizaCompra(CompraDTO compraDTO, BindingResult erro){
+
+    private ModelAndView preparaRealizaCompra(CompraDTO compraDTO, BindingResult erro) {
         ModelAndView mv = new ModelAndView("/compra/realizarCompra.html");
         mv.addObject("compra", compraDTO);
         mv.addObject("erros", erro);
         return mv;
     }
-    private CompraDTO beforeCompraPreprare(CompraDTO compraDTO){
-        List<CupomTrocaDTO> cupomTrocaDTOS=new ArrayList<>();
+
+    private CompraDTO beforeCompraPreprare(CompraDTO compraDTO) {
+        List<CupomTrocaDTO> cupomTrocaDTOS = new ArrayList<>();
         cupomTrocaDTOS.addAll(compraDTO.getCupomsDeTroca());
-        for (CupomTrocaDTO c:cupomTrocaDTOS){
-            if (c.getHabilitado()==false){
+        for (CupomTrocaDTO c : cupomTrocaDTOS) {
+            if (c.getHabilitado() == false) {
                 compraDTO.getCupomsDeTroca().remove(c);
             }
         }
-        List<PagamentoDTO> pagamentoDTOS= new ArrayList<>();
+        List<PagamentoDTO> pagamentoDTOS = new ArrayList<>();
         pagamentoDTOS.addAll(compraDTO.getPagamentos());
-        for (PagamentoDTO p:pagamentoDTOS){
-            if (p.getHabilitado()==false){
+        for (PagamentoDTO p : pagamentoDTOS) {
+            if (p.getHabilitado() == false) {
                 compraDTO.getPagamentos().remove(p);
             }
         }
+        for (ItemDTO i : compraDTO.getItens())
+            i.getFrete().setId(null);
+
         return compraDTO;
     }
 
@@ -241,20 +256,64 @@ public class CompraController {
     @GetMapping("/cli/detalheCompra/{hash}")
     public ModelAndView detalheCompraCli(@PathVariable("hash") UUID hash) {
         ModelAndView mv = new ModelAndView("compra/cliDetalheCompra.html");
-        Optional<Compra> compraOptional = compraServico.findById(hash);
-        mv.addObject("compra", CompraDTO.objetoToDto(compraOptional.get()));
+        Compra compra = compraServico.findById(hash).get();
+        CompraDTO compraDTO = CompraDTO.objetoToDto(compra);
+        FreteDTO freteDTO = new FreteDTO();
+        freteDTO.setEndereco(compraDTO.getItens().get(0).frete.getEndereco());
+        compraDTO.setFrete(freteDTO);
+        Boolean nextStageCompra = (compra.getStatus() == Status.ENTREGUE || compra.getStatus() == Status.TROCA_NAO_AUTORIZADA);
+        for (int x = 0; x < compra.getItens().size(); x++) {
+            if (compra.getItens().get(x).getStatus() != compra.getStatus() && nextStageCompra)
+                nextStageCompra = false;
+        }
+
+
+        mv.addObject("compra", compraDTO);
+        mv.addObject("podeNextStageCompra", nextStageCompra);
         return mv;
     }
 
     @PreAuthorize("hasAuthority('ROLE_CLI')")
     @GetMapping("/cli/detalheCompra/{hash}/nextStage")
     public ModelAndView detalhePedidoNextStage(@PathVariable("hash") UUID hash) {
-        ModelAndView mv = new ModelAndView("compra/cliDetalheCompra.html");
         Compra compra = compraServico.findById(hash).get();
-        compraServico.setStatus(compra, compraServico.nextCli(compra.getStatus()));
+        compraServico.setStatusCompraItem(compra, compraServico.nextCli(compra.getStatus()));
 
-        mv.addObject("compra", CompraDTO.objetoToDto(compraServico.findById(hash).get()));
-        return mv;
+        return new ModelAndView("redirect:/compra/cli/detalheCompra/" + hash);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
+    @GetMapping("/cli/detalheCompra/{hash}/item/{hashitem}")
+    public ModelAndView detalheItemNextStage(@PathVariable("hash") UUID hash,
+                                             @PathVariable("hashitem") UUID hashitem) {
+
+        Compra compra = compraServico.findById(hash).get();
+        Optional<Item> itemOptional = compra.getItens().stream().filter(i -> i.getId().equals(hashitem)).findFirst();
+        if (itemOptional.isPresent()) {
+            ModelAndView mv = new ModelAndView("compra/cliDetalheCompraItem.html");
+            mv.addObject("compra", CompraDTO.objetoToDto(compra));
+            mv.addObject("item", ItemDTO.objetoToDto(itemOptional.get()));
+            return mv;
+        } else {
+            return new ModelAndView("redirect:/compra/cli/detalheCompra/" + hash);
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_CLI')")
+    @PostMapping("/cli/detalheCompra/{hash}/item/{hashitem}/troca")
+    public ModelAndView detalheItemNextStagePost(@PathVariable("hash") UUID hash,
+                                                 @PathVariable("hashitem") UUID hashitem,
+                                                 @ModelAttribute("quantidade") Optional<String> quantidadeTroca) {
+        Compra compra = compraServico.findById(hash).get();
+        for (int x = 0; x < compra.getItens().size(); x++) {
+            if (compra.getItens().get(x).getId().equals(hashitem)) {
+                compra.getItens().get(x).setStatus(compraServico.nextCli(compra.getItens().get(x).getStatus()));
+                if (compra.getItens().get(x).getStatus() == Status.EM_TROCA)
+                    if (compra.getItens().get(x).getQuantidade() >= Integer.parseInt(quantidadeTroca.get()))
+                        compra.getItens().get(x).setQuantidadeEmTroca(Integer.parseInt(quantidadeTroca.get()));
+                compraServico.save(compra);
+            }
+        }
+        return new ModelAndView("redirect:/compra/cli/detalheCompra/" + hash);
+    }
 }

@@ -3,6 +3,7 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Longradouro;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.TipoResidencia;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.validacao.CepValidador;
 import lombok.Getter;
 import lombok.Setter;
 import org.dozer.DozerBeanMapper;
@@ -33,6 +34,7 @@ public class EnderecoDTO {
     private String rua;
     @NotBlank
     @Size(min = 8, max = 8, message = "Cep invalido")
+    @CepValidador
     private String cep;
 
     @NotNull

@@ -19,7 +19,7 @@ public class CupomPromocionalDTO {
     private UUID id;
     private Boolean habilitado;
     @NotNull
-    private Float valor;
+    private Float valor=0f;
     @NotEmpty
     private String codigo;
 

@@ -50,6 +50,14 @@ public class NotebookDTO {
     @Valid
     List<ArmazenamentoDTO> armazenamentoList = new ArrayList();
 
+    public int getRamTotal(){
+        int x=0;
+        for (RAMDTO r:ramList)
+            x+=r.getMemoria();
+
+        return x;
+    }
+
     public void rmRam(int indice){
         this.ramList.remove(indice);
     }

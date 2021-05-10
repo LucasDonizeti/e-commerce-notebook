@@ -4,8 +4,11 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.dto.ClienteDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico.ClienteServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Compra;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Item;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.CompraDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.FreteDTO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.dto.ItemDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromocionalDTO;
@@ -116,32 +119,68 @@ public class AdministradorController {
     @GetMapping("/pedidos/detalhe/{hash}")
     public ModelAndView detalhePedido(@PathVariable("hash") UUID hash){
         ModelAndView mv=new ModelAndView("/adm/detalhePedido.html");
-        mv.addObject("compra", CompraDTO.objetoToDto(compraServico.findById(hash).get()));
+        Compra compra = compraServico.findById(hash).get();
+        CompraDTO compraDTO = CompraDTO.objetoToDto(compra);
+        FreteDTO freteDTO=new FreteDTO();
+        freteDTO.setEndereco(compraDTO.getItens().get(0).frete.getEndereco());
+        compraDTO.setFrete(freteDTO);
+        mv.addObject("compra", compraDTO);
         return mv;
     }
 
     @GetMapping("/pedidos/detalhe/{hash}/nextStage")
     public ModelAndView detalhePedidoNextStage(@PathVariable("hash") UUID hash){
-        ModelAndView mv=new ModelAndView("/adm/detalhePedido.html");
         Compra compra= compraServico.findById(hash).get();
-        compraServico.setStatus(compra, compraServico.nextAdm(compra.getStatus()));
+        compraServico.setStatusCompraItem(compra, compraServico.nextAdm(compra.getStatus()));
         compra= compraServico.findById(hash).get();
         if (compra.getStatus() == Status.TROCA_CONCLUIDA)
             compraServico.concluirTroca(compra);
 
-        mv.addObject("compra", CompraDTO.objetoToDto(compra));
-        return mv;
+        return new ModelAndView("redirect:/adm/pedidos/detalhe/" + hash);
     }
 
     @GetMapping("/pedidos/detalhe/{hash}/nextStage/troca/{acao}")
     public ModelAndView detalhePedidoNextStageTroca(@PathVariable("hash") UUID hash,
                                                     @PathVariable("acao") Boolean acao){
-        ModelAndView mv=new ModelAndView("/adm/detalhePedido.html");
         Compra compra= compraServico.findById(hash).get();
-        compraServico.setStatus(compra, compraServico.nextTrocaAdm(compra.getStatus(), acao));
+        compraServico.setStatusCompraItem(compra, compraServico.nextTrocaAdm(compra.getStatus(), acao));
 
-        mv.addObject("compra", CompraDTO.objetoToDto(compraServico.findById(hash).get()));
+        return new ModelAndView("redirect:/adm/pedidos/detalhe/" + hash);
+    }
+
+    //continua
+    @GetMapping("/pedidos/detalhe/{hashCompra}/item/{hashItem}")
+    public ModelAndView detalheItem(@PathVariable("hashCompra") UUID hashCompra,
+                                    @PathVariable("hashItem") UUID hashitem){
+        ModelAndView mv = new ModelAndView("/adm/detalheItem.html");
+        Compra compra = compraServico.findById(hashCompra).get();
+        Item item = compra.getItens().stream().filter(i->i.getId().equals(hashitem)).findFirst().get();
+
+        mv.addObject("compra", CompraDTO.objetoToDto(compra));
+        mv.addObject("item", ItemDTO.objetoToDto(item));
         return mv;
+    }
+
+    @GetMapping("/pedidos/detalhe/{hashCompra}/item/{hashItem}/nextStage/{acao}")
+    public ModelAndView detalheItemNextFinal(@PathVariable("hashCompra") UUID hashCompra,
+                                        @PathVariable("hashItem") UUID hashitem,
+                                        @PathVariable("acao")Boolean acao){
+        Compra compra = compraServico.findById(hashCompra).get();
+        for (int x = 0; x < compra.getItens().size(); x++) {
+            if (compra.getItens().get(x).getId().equals(hashitem)) {
+                if (compra.getItens().get(x).getStatus() == Status.EM_TROCA) {
+                    compra.getItens().get(x).setStatus(compraServico.nextTrocaAdm(compra.getItens().get(x).getStatus(), acao));
+                    compraServico.save(compra);
+                }else {
+                    compra.getItens().get(x).setStatus(compraServico.nextAdm(compra.getItens().get(x).getStatus()));
+                    if (compra.getItens().get(x).getStatus() == Status.TROCA_CONCLUIDA) {
+                        compraServico.concluirTrocaItem(compra, compra.getItens().get(x).getId(), acao);
+                    }
+                }
+            }
+        }
+
+        return new ModelAndView("redirect:/adm/pedidos/detalhe/" + hashCompra);
     }
 
     @GetMapping("/cadastro")
