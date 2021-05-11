@@ -65,13 +65,13 @@ public class CompraServico {
     }
 
     public Compra setStatusCompraItem(Compra compra, Status status) {
-        Boolean itensMesmoStatus=true;
-        for (int x=0;x<compra.getItens().size();x++)
+        Boolean itensMesmoStatus = true;
+        for (int x = 0; x < compra.getItens().size(); x++)
             if (compra.getItens().get(x).getStatus() != compra.getStatus() && itensMesmoStatus)
-                itensMesmoStatus=false;
+                itensMesmoStatus = false;
         if (itensMesmoStatus) {
             compra.setStatus(status);
-            for (int x=0;x<compra.getItens().size();x++)
+            for (int x = 0; x < compra.getItens().size(); x++)
                 compra.getItens().get(x).setStatus(status);
             return compraDAO.save(compra);
         }
@@ -79,10 +79,10 @@ public class CompraServico {
     }
 
     public Compra setStatusCompra(Compra compra, Status status) {
-        Boolean itensMesmoStatus=true;
-        for (int x=0;x<compra.getItens().size();x++)
+        Boolean itensMesmoStatus = true;
+        for (int x = 0; x < compra.getItens().size(); x++)
             if (compra.getItens().get(x).getStatus() != compra.getStatus() && itensMesmoStatus)
-                itensMesmoStatus=false;
+                itensMesmoStatus = false;
         if (itensMesmoStatus) {
             compra.setStatus(status);
             return compraDAO.save(compra);
@@ -163,7 +163,8 @@ public class CompraServico {
 
                 compra.getItens().get(x).setQuantidade(compra.getItens().get(x).getQuantidade() - compra.getItens().get(x).getQuantidadeEmTroca());
                 compra.getItens().get(x).setQuantidadeEmTroca(0);
-                if (compra.getItens().get(x).getQuantidade()>0)
+
+                if (compra.getItens().get(x).getQuantidade() > 0)
                     compra.getItens().get(x).setStatus(Status.ENTREGUE);
                 compraDAO.save(compra);
 

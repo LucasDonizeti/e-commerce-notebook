@@ -25,11 +25,24 @@
                 || compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).ENTREGUE 
                 || compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).TROCA_NAO_AUTORIZADA
                 || compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).EM_TROCA
+                || compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).TROCA_AUTORIZADA
                 || compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).TROCA_CONCLUIDA}">
                 <a th:href="@{'/adm/pedidos/detalhe/' + ${compra.id} + '/nextStage' }">
                     <button class="btn btn-outline-primary">Concluir etapa!</button>
                 </a>
                 <!--reprovado, entregue, troca nao autorizada, troca autorizada-->
+            </div>
+            <div class="col-md-6"
+                th:if="${compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).TROCA_AUTORIZADA}">
+                <a th:href="@{'/adm/pedidos/detalhe/' + ${compra.id} + '/nextStage/troca/true' }">
+                    <button class="btn btn-outline-success">Concluir Troca e repor estoque!</button>
+                </a>
+            </div>
+            <div class="col-md-6"
+                th:if="${compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).TROCA_AUTORIZADA}">
+                <a th:href="@{'/adm/pedidos/detalhe/' + ${compra.id} + '/nextStage/troca/false' }">
+                    <button class="btn btn-outline-danger">Concluir Troca e não repor estoque!</button>
+                </a>
             </div>
             <div class="col-md-6"
                 th:if="${compra.status == T(com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.Status).EM_TROCA}">

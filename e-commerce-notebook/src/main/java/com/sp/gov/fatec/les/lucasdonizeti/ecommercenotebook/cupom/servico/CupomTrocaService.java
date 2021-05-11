@@ -24,15 +24,19 @@ public class CupomTrocaService {
         this.cupomTrocaDAO = cupomPromocionalDAO;
     }
 
-    public CupomTroca save(CupomTroca cupom){
+    public CupomTroca save(CupomTroca cupom) {
         return cupomTrocaDAO.save(cupom);
     }
 
-    public List<CupomTroca> findByClienteId(UUID hash){
+    public List<CupomTroca> findByClienteId(UUID hash) {
         return cupomTrocaDAO.findByClienteId(hash);
     }
 
-    public Optional<CupomTroca> findById(UUID id){
+    public List<CupomTroca> findByClienteIdAndHabilitadoTrue(UUID hash) {
+        return cupomTrocaDAO.findByClienteIdAndHabilitadoTrue(hash);
+    }
+
+    public Optional<CupomTroca> findById(UUID id) {
         return cupomTrocaDAO.findById(id);
     }
 }

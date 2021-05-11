@@ -14,4 +14,8 @@ import java.util.UUID;
 @Repository
 public interface CupomTrocaDAO extends JpaRepository<CupomTroca, UUID> {
     List<CupomTroca> findByClienteId(UUID hash);
+
+    List<CupomTroca> findByClienteIdAndHabilitadoFalse(UUID hash);
+
+    List<CupomTroca> findByClienteIdAndHabilitadoTrue(UUID hash);
 }

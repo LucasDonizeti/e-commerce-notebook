@@ -13,6 +13,7 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.infrastructur
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.infrastructure.frete.FreteClientAPI;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.compra.servico.CompraServico;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomPromocional;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.CupomTroca;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomPromocionalDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomTrocaDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomPromocionalService;
@@ -118,7 +119,8 @@ public class CompraController {
                 compraDTO.getPagamentos().add(pagamentoDTO);
             });
             compraDTO.getCupomsDeTroca().clear();
-            cupomTrocaService.findByClienteId(compraDTO.getCliente().getId()).forEach(c -> {
+            cupomTrocaService.findByClienteIdAndHabilitadoTrue(compraDTO.getCliente().getId()).forEach(c -> {
+                c.setHabilitado(false);
                 compraDTO.getCupomsDeTroca().add(CupomTrocaSelecionadoDTO.objetoToDto(c));
             });
         }
@@ -163,8 +165,17 @@ public class CompraController {
         compraDTO = beforeCompraPreprare(compraDTO);
 
         compraDTO = CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
+        for (ItemDTO i : compraDTO.getItens()){
+            produtoService.removerEstoque(i.getProduto().getId(), i.getQuantidade());
+        }
         if (compraDTO.getCupomPromocional() != null)
             cupomPromocionalService.subtrairUso(compraDTO.getCupomPromocional().getId());
+        for (CupomTrocaDTO cupomTrocaDTO:compraDTO.getCupomsDeTroca()){
+            cupomTrocaDTO.setHabilitado(false);
+            CupomTroca cupom=CupomTrocaDTO.dtoToObjeto(cupomTrocaDTO);
+            cupom.setCliente(ClienteDTO.dtoToObjeto(compraDTO.getCliente()));
+            cupomTrocaService.save(cupom);
+        }
 
         ModelAndView mv = new ModelAndView("/compra/confirmarCompra.html");
         compraDTO = CompraDTO.objetoToDto(compraServico.setStatusCompraItem(CompraDTO.dtoToObjeto(compraDTO), compraServico.nextValidSystem(compraDTO.getStatus())));
@@ -278,7 +289,6 @@ public class CompraController {
     public ModelAndView detalhePedidoNextStage(@PathVariable("hash") UUID hash) {
         Compra compra = compraServico.findById(hash).get();
         compraServico.setStatusCompraItem(compra, compraServico.nextCli(compra.getStatus()));
-
         return new ModelAndView("redirect:/compra/cli/detalheCompra/" + hash);
     }
 

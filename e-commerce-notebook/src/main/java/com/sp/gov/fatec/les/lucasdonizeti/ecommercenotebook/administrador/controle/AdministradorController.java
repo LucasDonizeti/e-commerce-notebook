@@ -143,7 +143,18 @@ public class AdministradorController {
     public ModelAndView detalhePedidoNextStageTroca(@PathVariable("hash") UUID hash,
                                                     @PathVariable("acao") Boolean acao){
         Compra compra= compraServico.findById(hash).get();
-        compraServico.setStatusCompraItem(compra, compraServico.nextTrocaAdm(compra.getStatus(), acao));
+        if (compra.getStatus() == Status.TROCA_AUTORIZADA){
+            if (acao)
+                for (int x=0;x<compra.getItens().size(); x++){
+                    produtoService.adicionarEstoque(compra.getItens().get(x).getProduto().getId(), compra.getItens().get(x).getQuantidade());
+                    compra.getItens().get(x).setQuantidade(0);
+                    compra.getItens().get(x).setStatus(Status.TROCA_CONCLUIDA);
+                }
+            compra.setStatus(Status.TROCA_CONCLUIDA);
+            compraServico.save(compra);
+        }else {
+            compraServico.setStatusCompraItem(compra, compraServico.nextTrocaAdm(compra.getStatus(), acao));
+        }
 
         return new ModelAndView("redirect:/adm/pedidos/detalhe/" + hash);
     }
@@ -257,6 +268,8 @@ public class AdministradorController {
         cupomPromocionalService.save(CupomPromocionalDTO.dtoToObjeto(cupomPromocionalDTO));
         return new ModelAndView("redirect:/adm/cupoms");
     }
+
+
 
 
 
