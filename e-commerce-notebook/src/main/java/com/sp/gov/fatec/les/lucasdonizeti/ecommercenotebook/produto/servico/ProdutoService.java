@@ -52,6 +52,7 @@ public class ProdutoService {
         if (produtoOptional.isPresent()){
             Produto produto=produtoOptional.get();
             produto.setEstoque(produto.getEstoque()+quantidade);
+            produto.setHabilitado((produto.getEstoque()>0));
             return Optional.ofNullable(produtoDAO.save(produto));
         }
         return Optional.empty();
@@ -66,6 +67,7 @@ public class ProdutoService {
             else
                 produto.setEstoque(0);
 
+            produto.setHabilitado((produto.getEstoque()>0));
             return Optional.ofNullable(produtoDAO.save(produto));
         }
         return Optional.empty();

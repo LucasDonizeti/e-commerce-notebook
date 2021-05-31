@@ -125,6 +125,7 @@ public class CompraController {
             });
         }
 
+
         for (int x = 0; x < compraDTO.getItens().size(); x++) {
             compraDTO.getItens().get(x).setPrecoDeVendaProdutos(compraDTO.getItens().get(x).getProduto().getPrecoDeVenda());
         }
@@ -138,7 +139,9 @@ public class CompraController {
     @PostMapping("/realizar-compra")
     public ModelAndView realizarCompraPost(@Valid @ModelAttribute("compra") CompraDTO compraDTO,
                                            BindingResult erro,
-                                           @ModelAttribute("verifica") Optional<String> verifica) {
+                                           @ModelAttribute("verifica") Optional<String> verifica,
+                                           HttpServletRequest request,
+                                           HttpServletResponse response) {
 
 
         compraDTO = preparaCompraDTO(compraDTO);
@@ -176,6 +179,8 @@ public class CompraController {
             cupom.setCliente(ClienteDTO.dtoToObjeto(compraDTO.getCliente()));
             cupomTrocaService.save(cupom);
         }
+
+        request.getSession().setAttribute("compra", new CompraDTO());
 
         ModelAndView mv = new ModelAndView("/compra/confirmarCompra.html");
         compraDTO = CompraDTO.objetoToDto(compraServico.setStatusCompraItem(CompraDTO.dtoToObjeto(compraDTO), compraServico.nextValidSystem(compraDTO.getStatus())));

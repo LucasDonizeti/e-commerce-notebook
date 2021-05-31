@@ -168,10 +168,10 @@
                 </a>
             </button>
             <button
-                th:class="${#httpServletRequest.getRequestURI() == '/adm/dados'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
+                th:class="${#httpServletRequest.getRequestURI() == '/estatistica'?'list-group-item list-group-item-action active':'list-group-item list-group-item-action'}"
                 type="button">
-                <a th:href="@{/adm/dados}"
-                    th:style="${#httpServletRequest.getRequestURI() == '/adm/dados'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
+                <a th:href="@{/estatistica}"
+                    th:style="${#httpServletRequest.getRequestURI() == '/estatistica'?'text-decoration: none; color: white;': 'text-decoration: none; color: blue;'}">
                     <ion-icon name="pie-chart-outline"></ion-icon>
                     Dados
                 </a>

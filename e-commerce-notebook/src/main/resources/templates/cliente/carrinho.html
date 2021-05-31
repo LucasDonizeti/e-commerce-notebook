@@ -50,7 +50,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Quantidade</span>
                                 </div>
-                                <input type="number" min="1" class="form-control" placeholder="quantidade"
+                                <input type="number" min="1" th:max="${item.produto.estoque}" class="form-control" placeholder="quantidade"
                                     th:value="${session.compra.itens[__${i.index}__].quantidade}" id="n" name="n">
                             </div>
                             <div class="col-md-12">
