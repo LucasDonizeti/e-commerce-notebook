@@ -28,7 +28,7 @@ import java.util.List;
 @Entity(name = "_cliente")
 @SQLDelete(sql = "update _cliente set habilitado = 0 where id = ?")
 public class Cliente extends EntidadeDominio implements Serializable {
-    @Column(name = "data_nascimento", nullable = false, updatable = false)
+    @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataNascimento;
 
     @Column(name = "rank", nullable = false)

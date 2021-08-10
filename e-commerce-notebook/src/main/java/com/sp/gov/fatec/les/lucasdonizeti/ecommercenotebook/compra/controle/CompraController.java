@@ -19,15 +19,14 @@ import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.dto.CupomTroca
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomPromocionalService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.Endereco;
-import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.dto.EnderecoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.endereco.servico.EnderecoServico;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.log.LogVendaAcao;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.log.service.LogVendaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.dto.ProdutoDTO;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.produto.servico.ProdutoService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.Usuario;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * author LucasDonizeti
@@ -59,10 +57,11 @@ public class CompraController {
     private final CartaoSarvice cartaoSarvice;
     private final CupomPromocionalService cupomPromocionalService;
     private final CupomTrocaService cupomTrocaService;
+    private final LogVendaService logVendaService;
 
 
     @Autowired
-    public CompraController(CompraServico compraServico, ProdutoService produtoService, ClienteServico clienteServico, UsuarioServico usuarioServico, EnderecoServico enderecoServico, CartaoSarvice cartaoSarvice, CupomPromocionalService cupomPromocionalService, CupomTrocaService cupomTrocaService) {
+    public CompraController(CompraServico compraServico, ProdutoService produtoService, ClienteServico clienteServico, UsuarioServico usuarioServico, EnderecoServico enderecoServico, CartaoSarvice cartaoSarvice, CupomPromocionalService cupomPromocionalService, CupomTrocaService cupomTrocaService, LogVendaService logVendaService) {
         this.compraServico = compraServico;
         this.produtoService = produtoService;
         this.clienteServico = clienteServico;
@@ -72,6 +71,7 @@ public class CompraController {
         this.cartaoSarvice = cartaoSarvice;
         this.cupomPromocionalService = cupomPromocionalService;
         this.cupomTrocaService = cupomTrocaService;
+        this.logVendaService = logVendaService;
     }
 
     @PreAuthorize("hasAuthority('ROLE_CLI')")
@@ -170,6 +170,8 @@ public class CompraController {
         compraDTO = CompraDTO.objetoToDto(compraServico.save(CompraDTO.dtoToObjeto(compraDTO)));
         for (ItemDTO i : compraDTO.getItens()){
             produtoService.removerEstoque(i.getProduto().getId(), i.getQuantidade());
+            logVendaService.registrarLog(ProdutoDTO.dtoToObjeto(i.getProduto()), i.getQuantidade(), LogVendaAcao.VENDA);
+            clienteServico.somarRank(compraDTO.getCliente().getId(), i.getProduto().getPontuacaoCliente() * i.getQuantidade());
         }
         if (compraDTO.getCupomPromocional() != null)
             cupomPromocionalService.subtrairUso(compraDTO.getCupomPromocional().getId());

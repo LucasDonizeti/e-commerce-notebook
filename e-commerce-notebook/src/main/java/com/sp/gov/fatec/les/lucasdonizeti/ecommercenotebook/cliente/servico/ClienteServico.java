@@ -2,11 +2,13 @@ package com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.servico;
 
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.Cliente;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.persistencia.ClienteDAO;
+import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cliente.persistencia.ClientePersistencia;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.cupom.servico.CupomTrocaService;
 import com.sp.gov.fatec.les.lucasdonizeti.ecommercenotebook.usuario.servico.UsuarioServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,13 +22,15 @@ public class ClienteServico {
     private final ClienteDAO clienteDAO;
     private final UsuarioServico usuarioServico;
     private final CupomTrocaService cupomServico;
+    private final ClientePersistencia clientePersistencia;
 
 
     @Autowired
-    public ClienteServico(ClienteDAO clienteDAO, UsuarioServico usuarioServico, CupomTrocaService cupomServico) {
+    public ClienteServico(ClienteDAO clienteDAO, UsuarioServico usuarioServico, CupomTrocaService cupomServico, ClientePersistencia clientePersistencia) {
         this.clienteDAO = clienteDAO;
         this.usuarioServico = usuarioServico;
         this.cupomServico = cupomServico;
+        this.clientePersistencia = clientePersistencia;
     }
 
     public Cliente save(Cliente cliente) {
@@ -61,5 +65,14 @@ public class ClienteServico {
 
     public Optional<Cliente> findByCompraID(UUID id){
         return clienteDAO.findByComprasId(id);
+    }
+
+    public void somarRank(UUID clienteID, int adc){
+        System.out.println(" update _cliente as c set c.rank = (c.rank + " + adc +" ) where c.id = '" + clienteID +"' ");
+        try {
+            clientePersistencia.adcRank(clienteID, adc);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
